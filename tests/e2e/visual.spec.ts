@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 /**
  * 视觉回归基线。
@@ -11,18 +11,45 @@ import { expect, test } from '@playwright/test';
  * 首次运行会生成基线：`npm run test:visual:update`。
  */
 
+/**
+ * 让首屏编排与滚动显现进入稳定终态，避免全页截图捕捉到动画中间帧。
+ * 视觉用例仍依赖 Playwright 的 animations: 'disabled'，这里额外消除时序不确定性。
+ */
+async function settleVisuals(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((element) => {
+      element.classList.add('is-visible');
+    });
+    window.scrollTo(0, 0);
+  });
+  await page.waitForFunction(
+    () => {
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLElement>('.hero__copy > *, .hero__stage'),
+      );
+      return nodes.every((element) => Number(getComputedStyle(element).opacity) >= 0.99);
+    },
+    undefined,
+    { timeout: 3000 },
+  );
+  await page.waitForTimeout(700);
+}
+
 test.describe('页面视觉基线 @visual', () => {
   test('首页首屏', async ({ page }) => {
     await page.goto('/');
+    await settleVisuals(page);
     await expect(page.locator('.hero')).toBeVisible();
     await expect(page).toHaveScreenshot('home-hero.png', { fullPage: false });
   });
 
   test('首页全页', async ({ page }) => {
     await page.goto('/');
+    await settleVisuals(page);
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(300);
     await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(200);
     await expect(page).toHaveScreenshot('home-full.png', { fullPage: true });
   });
 
