@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4321",
-  "generatedAt": "2026-10-23T07:04:37.020Z",
+  "generatedAt": "2026-10-23T08:28:04.053Z",
   "totals": {
     "pass": 19,
     "fail": 0,
@@ -32,7 +32,7 @@
       "group": "A 首屏",
       "item": "设备框未横向溢出视口",
       "status": "PASS",
-      "detail": "{\"heroBox\":{\"x\":792.03125,\"y\":158.90118408203125,\"width\":288,\"height\":623.09375},\"heroSection\":{\"x\":0,\"y\":73,\"width\":1440,\"height\":884.671875},\"viewportWidth\":1440}",
+      "detail": "{\"heroBox\":{\"x\":792.03125,\"y\":158.9011993408203,\"width\":288,\"height\":623.0937347412109},\"heroSection\":{\"x\":0,\"y\":73,\"width\":1440,\"height\":884.671875},\"viewportWidth\":1440}",
       "screenshot": "docs/acceptance/independent-review/a-hero-desktop.png"
     },
     {

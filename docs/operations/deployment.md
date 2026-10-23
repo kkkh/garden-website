@@ -8,14 +8,14 @@
 
 ## 1. 线上形态
 
-| 项 | 值 | 证据 |
-| --- | --- | --- |
-| 域名 | `https://jl.43322.cn` | 站点正文与页脚 |
-| 仓库 | `https://github.com/kkkh/garden-website` | `git remote -v` |
-| 分支 | `main`（推送即触发线上更新） | 用户确认 |
-| 托管 | 腾讯云 EdgeOne Makers（静态） | 响应头 `Server: edgeone makers` |
-| v1 服务位置 | 仓库根目录 | v1 仓库结构（`index.html` 在根） |
-| v2 服务位置 | 仓库根目录（同步产物）+ `dist/`（构建产物） | `scripts/sync-root.mjs` |
+| 项          | 值                                          | 证据                             |
+| ----------- | ------------------------------------------- | -------------------------------- |
+| 域名        | `https://jl.43322.cn`                       | 站点正文与页脚                   |
+| 仓库        | `https://github.com/kkkh/garden-website`    | `git remote -v`                  |
+| 分支        | `main`（推送即触发线上更新）                | 用户确认                         |
+| 托管        | 腾讯云 EdgeOne Makers（静态）               | 响应头 `Server: edgeone makers`  |
+| v1 服务位置 | 仓库根目录                                  | v1 仓库结构（`index.html` 在根） |
+| v2 服务位置 | 仓库根目录（同步产物）+ `dist/`（构建产物） | `scripts/sync-root.mjs`          |
 
 ---
 
@@ -41,12 +41,12 @@ git push origin main
 v1 时代平台直接从仓库根目录服务静态文件；v2 使用 Astro，产物在 `dist/`。
 平台的输出目录配置无法从代码侧确认，因此采取双兼容：
 
-| 平台配置 | 站点实际服务的内容 | 结果 |
-| --- | --- | --- |
-| 纯静态，根目录 | 根目录同步产物 | ✅ |
-| 构建型，输出 `dist` | 平台构建产物 | ✅ |
-| 构建型，输出根目录 | 平台构建产物（覆盖同一位置） | ✅ |
-| 构建型但构建失败 | 根目录同步产物兜底 | ✅ |
+| 平台配置            | 站点实际服务的内容           | 结果 |
+| ------------------- | ---------------------------- | ---- |
+| 纯静态，根目录      | 根目录同步产物               | ✅   |
+| 构建型，输出 `dist` | 平台构建产物                 | ✅   |
+| 构建型，输出根目录  | 平台构建产物（覆盖同一位置） | ✅   |
+| 构建型但构建失败    | 根目录同步产物兜底           | ✅   |
 
 ---
 
@@ -108,12 +108,12 @@ curl -sI "$BASE" | grep -iE 'cache-control|server'
 
 ## 5. 缓存建议（平台侧可配置项）
 
-| 路径 | 建议响应头 |
-| --- | --- |
-| `/_astro/*` | `Cache-Control: public, max-age=31536000, immutable` |
-| `/icons/*`、`/og/*`、`/beian/*` | `Cache-Control: public, max-age=86400` |
-| `/*.html` | `Cache-Control: public, max-age=300, must-revalidate` |
-| `/site.webmanifest`、`/robots.txt`、`/sitemap*.xml` | `Cache-Control: public, max-age=3600` |
+| 路径                                                | 建议响应头                                            |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| `/_astro/*`                                         | `Cache-Control: public, max-age=31536000, immutable`  |
+| `/icons/*`、`/og/*`、`/beian/*`                     | `Cache-Control: public, max-age=86400`                |
+| `/*.html`                                           | `Cache-Control: public, max-age=300, must-revalidate` |
+| `/site.webmanifest`、`/robots.txt`、`/sitemap*.xml` | `Cache-Control: public, max-age=3600`                 |
 
 v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，HTML 短缓存即可保证更新及时。
 
@@ -121,13 +121,13 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 
 ## 6. 故障排查
 
-| 现象 | 可能原因 | 处理 |
-| --- | --- | --- |
+| 现象              | 可能原因                                 | 处理                                                                                     |
+| ----------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
 | 推送后线上仍是 v1 | 平台未监听该分支 / 部署未触发 / CDN 缓存 | 检查平台部署记录；`curl -sI` 看 `Cache-Control` 与 `Last-Modified`；必要时在平台刷新缓存 |
-| 线上 404 | 根目录产物缺失 | 本地 `npm run release` 后提交并重新推送 |
-| 页面无样式 | `_astro/` 未上传或被缓存 | 检查 `/_astro/*.css` 是否 200 |
-| 部分图片 404 | 产物未完整同步 | `node scripts/sync-root.mjs --check` 定位缺失文件 |
-| 根目录产物过期 | 改了源码但没跑 `release` | 跑 `npm run release` 并提交；CI 的 `check:release` 也会拦截 |
+| 线上 404          | 根目录产物缺失                           | 本地 `npm run release` 后提交并重新推送                                                  |
+| 页面无样式        | `_astro/` 未上传或被缓存                 | 检查 `/_astro/*.css` 是否 200                                                            |
+| 部分图片 404      | 产物未完整同步                           | `node scripts/sync-root.mjs --check` 定位缺失文件                                        |
+| 根目录产物过期    | 改了源码但没跑 `release`                 | 跑 `npm run release` 并提交；CI 的 `check:release` 也会拦截                              |
 
 ---
 
