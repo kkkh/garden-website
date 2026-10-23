@@ -572,14 +572,14 @@ a:hover { color: var(--gold); }
   box-shadow: 0 6px 18px rgba(176, 138, 62, 0.38);
 }
 
-/* 17 张截图：缩略图自适应铺满一行，窄屏横向滚动 */
-.cvr-rail { justify-content: flex-start; gap: 10px; }
+/* 22 张截图：缩略图自适应铺满一行，窄屏横向滚动 */
+.cvr-rail { justify-content: flex-start; gap: 8px; }
 
 .cvr-thumb {
   flex: 1 1 0;
   width: auto;
   height: auto;
-  min-width: 38px;
+  min-width: 32px;
   max-width: 52px;
   aspect-ratio: 1 / 1;
   opacity: 0.58;
@@ -589,6 +589,25 @@ a:hover { color: var(--gold); }
 
 /* 缩略图取画面中部，避免只露出白色导航栏 */
 .cvr-thumb img { object-position: center; }
+
+/* 22 张截图：宽屏双行铺开，全部可见；窄屏保持单行滑动 */
+@media (min-width: 641px) {
+  .cvr-rail {
+    display: grid;
+    grid-template-columns: repeat(11, 44px);
+    justify-content: center;
+    gap: 10px 8px;
+    overflow: visible;
+  }
+
+  .cvr-thumb {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    min-width: 0;
+    max-width: none;
+  }
+}
 
 /* ---------- 平台架构 ---------- */
 .flow-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
@@ -858,6 +877,13 @@ a:hover { color: var(--gold); }
   .doc-wrap { padding: 38px 26px; }
 }
 
+/* 窄屏平板：导航换行，避免品牌与链接相互挤压 */
+@media (max-width: 720px) {
+  .nav { height: auto; padding: 12px 0; flex-direction: column; gap: 10px; }
+  .nav-links { flex-wrap: wrap; gap: 12px 16px; justify-content: center; }
+  [id] { scroll-margin-top: 150px; }
+}
+
 @media (max-width: 640px) {
   [id] { scroll-margin-top: 180px; }
   .nav { height: auto; padding: 12px 0; flex-direction: column; gap: 10px; }
@@ -922,6 +948,15 @@ a:hover { color: var(--gold); }
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 0 0 1px rgba(216, 185, 106, 0.45);
+}
+
+/* 超窄屏：缩小手机框与箭头，避免箭头遮挡截图 */
+@media (max-width: 380px) {
+  .cvr-stage { height: 470px; }
+  .cvr-phone { height: calc(100% - 72px); }
+  .cvr-arrow { width: 34px; height: 34px; }
+  .cvr-arrow.prev { left: 3px; }
+  .cvr-arrow.next { right: 3px; }
 }
 
 @media (max-width: 560px) {
