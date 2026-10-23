@@ -175,3 +175,16 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 | 浏览器烟测 | Playwright 桌面 + 移动 25/25 通过；0 控制台错误、0 第三方请求                       |
 | 视觉证据   | `docs/acceptance/baseline/v2-device/`                                               |
 | 证据       | `docs/acceptance/logs/deployment-verification.txt`                                  |
+
+### 2026-10-23 · 全方位动效升级（commit `34710dd`）
+
+| 项         | 结果                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| 变更       | Hero 首屏编排、指针微倾斜、轮播方向感知、灯箱/抽屉入场、导航下划线、阅读进度线、图标微动 |
+| 生效观察   | 推送后轮询 21 次（5s 间隔）由旧版切到新版，约 105 秒                                     |
+| 动效判据   | 阅读进度线 `scaleX` 随滚动变化；轮播 `data-position` 为 before/active/after              |
+| 页面与资源 | 4 个页面 200；未知路径 404；全部静态资源 200                                             |
+| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                                 |
+| 浏览器烟测 | Playwright 桌面 + 移动 + 减弱动效 28/28 通过；0 控制台错误、0 第三方请求                 |
+| 视觉证据   | `docs/acceptance/baseline/v2-polish/`                                                    |
+| 证据       | `docs/acceptance/logs/deployment-verification.txt`                                       |
