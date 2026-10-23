@@ -13,7 +13,7 @@
 
 | #   | 门禁命令                       | 结果      | 关键输出                                                    | 日志                                           |
 | --- | ------------------------------ | --------- | ----------------------------------------------------------- | ---------------------------------------------- |
-| 1   | `npm run check:tokens`         | ✅        | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色 | `docs/acceptance/logs/verify.log`              |
+| 1   | `npm run check:tokens`         | ✅        | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色 | `docs/acceptance/logs/verify.txt`              |
 | 2   | `npm run check:contrast`       | ✅        | 检查 33 项，未通过 0 项                                     | `docs/design-system/contrast-report.md`        |
 | 3   | `npm run typecheck`            | ✅        | Result (53 files): 0 errors / 0 warnings / 0 hints          | 同上日志                                       |
 | 4   | `npm run lint`                 | ✅        | 无输出（0 problems）                                        | 同上日志                                       |
@@ -24,7 +24,7 @@
 | 9   | `npm audit --audit-level=high` | ✅        | found 0 vulnerabilities                                     | 见第 4 节                                      |
 | 10  | 生产部署与线上验证             | ⛔ 未执行 | 缺少平台凭据（协议允许暂停项）                              | —                                              |
 
-`npm run verify` 退出码：**0**（日志：`docs/acceptance/logs/verify.log`）。
+`npm run verify` 退出码：**0**（日志：`docs/acceptance/logs/verify.txt`）。
 
 ---
 
