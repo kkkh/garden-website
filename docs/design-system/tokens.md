@@ -197,18 +197,23 @@
 | 用途            | 触发          | 时长                                                | 缓动              | 降级                         |
 | --------------- | ------------- | --------------------------------------------------- | ----------------- | ---------------------------- |
 | 按钮/链接悬停   | hover         | `--duration-fast 140ms`                             | `--ease-standard` | reduced-motion 关闭过渡      |
+| 主按钮高光扫过  | hover         | 560ms                                               | `--ease-out`      | 关闭伪元素                   |
+| 按钮按压        | `:active`     | `--duration-fast 140ms`                             | `--ease-out`      | 由全局 reduced-motion 关闭   |
 | 卡片悬停抬升    | hover         | `--duration-base 220ms`                             | `--ease-out`      | 同上                         |
 | 卡片装饰线生长  | hover         | `--duration-slow 420ms`                             | `--ease-out`      | 同上                         |
 | 功能图标微动    | 卡片 hover    | `--duration-base 220ms`                             | `--ease-spring`   | 同上                         |
 | 导航下划线      | 当前区块变化  | `--duration-base 220ms`                             | `--ease-out`      | 直接切换                     |
 | 幻灯片切换      | 状态变化      | `--duration-slower 640ms`                           | `--ease-out`      | 过渡时长归零，状态即时切换   |
+| 缩略图选中回弹  | 切换后        | 320ms                                               | `--ease-spring`   | 取消动画                     |
+| 说明区轻移淡入  | 切换后        | 360ms + 60ms 延迟                                   | `--ease-out`      | 取消动画                     |
+| 截图点击放大    | 轻点/回车     | 灯箱 220ms                                          | `--ease-out`      | 直接打开                     |
 | 灯箱出现        | `showModal()` | `--duration-base 220ms`                             | `--ease-out`      | 由全局 reduced-motion 关闭   |
 | 移动抽屉出现    | `showModal()` | `--duration-base 220ms`                             | `--ease-out`      | 同上                         |
 | 滚动显现        | 进入视口      | `--duration-slow 420ms` / `--duration-slower 640ms` | `--ease-out`      | 直接可见（`reveal.ts` 判定） |
 | 首屏编排        | 页面加载      | `--duration-slower 640ms` + 40–340ms 阶梯           | `--ease-out`      | 动画关闭，内容直接可见       |
 | 阅读进度线      | 滚动          | 逐帧 `transform`                                    | —                 | 无过渡，直接更新             |
 | Hero 指针微倾斜 | 桌面指针移动  | `--duration-slow 420ms`                             | `--ease-out`      | 触控/减弱动效下禁用          |
-| Hero 设备浮动   | 循环          | 9s                                                  | `--ease-standard` | 动画关闭                     |
+| Hero 截图浮动   | 循环          | 9s                                                  | `--ease-standard` | 动画关闭                     |
 | 缩略图滚动定位  | 切换后        | 平滑滚动                                            | —                 | 改为 `auto`                  |
 
 规则：

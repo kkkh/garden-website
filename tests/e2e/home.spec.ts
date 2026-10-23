@@ -262,6 +262,44 @@ test.describe('灯箱', () => {
     await expect(page.locator('body')).not.toHaveClass(/is-locked/);
   });
 
+  test('轻点截图直接打开大图', async ({ page }) => {
+    const dialog = page.locator('dialog[data-lightbox]');
+    await page.locator('[data-carousel-slide][data-active="true"] .screenshot-card').click();
+    await expect(dialog).toBeVisible();
+    await expect(page.locator('[data-lightbox-count]')).toHaveText('01 / 22');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+  });
+
+  test('键盘回车打开大图', async ({ page }) => {
+    const dialog = page.locator('dialog[data-lightbox]');
+    await page.locator('[data-carousel-stage]').focus();
+    await page.keyboard.press('Enter');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+  });
+
+  test('横向拖动切图且不会误开大图', async ({ page }) => {
+    const dialog = page.locator('dialog[data-lightbox]');
+    const stage = page.locator('[data-carousel-stage]');
+    await stage.evaluate((element) =>
+      element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+    );
+    const box = await stage.boundingBox();
+    expect(box).not.toBeNull();
+    if (!box) return;
+
+    const y = box.y + box.height / 2;
+    await page.mouse.move(box.x + box.width * 0.7, y);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.3, y, { steps: 8 });
+    await page.mouse.up();
+
+    await expect(page.locator('[data-carousel-current]')).toHaveText('02');
+    await expect(dialog).toBeHidden();
+  });
+
   test('架构图可放大查看', async ({ page }) => {
     await page.goto('/#architecture');
     await page.locator('.architecture-card__button').first().click();

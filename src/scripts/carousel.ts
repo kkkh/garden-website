@@ -30,6 +30,7 @@ interface CarouselElements {
   readonly slides: readonly HTMLElement[];
   readonly thumbs: readonly HTMLButtonElement[];
   readonly current: HTMLElement | null;
+  readonly meta: HTMLElement | null;
   readonly captionTitle: HTMLElement | null;
   readonly captionBody: HTMLElement | null;
   readonly live: HTMLElement | null;
@@ -49,6 +50,7 @@ function collect(root: HTMLElement): CarouselElements {
     slides: Array.from(root.querySelectorAll<HTMLElement>('[data-carousel-slide]')),
     thumbs: Array.from(root.querySelectorAll<HTMLButtonElement>('[data-carousel-thumb]')),
     current: root.querySelector<HTMLElement>('[data-carousel-current]'),
+    meta: root.querySelector<HTMLElement>('.showcase__meta'),
     captionTitle: root.querySelector<HTMLElement>('[data-carousel-caption-title]'),
     captionBody: root.querySelector<HTMLElement>('[data-carousel-caption-body]'),
     live: root.querySelector<HTMLElement>('[data-carousel-live]'),
@@ -63,7 +65,8 @@ export class ScreenshotCarousel {
   private readonly total: number;
   private current = 0;
   private readonly preloaded = new Set<string>();
-  private pointerStart: { id: number; x: number; y: number } | null = null;
+  private pointerStart: { id: number; x: number; y: number; target: Element | null } | null = null;
+  private metaTimer = 0;
   private readonly reducedMotion: boolean;
 
   constructor(root: HTMLElement) {
@@ -149,8 +152,21 @@ export class ScreenshotCarousel {
     }
 
     if (source !== 'init') {
+      this.pulseMeta();
       this.scrollThumbIntoView(index);
     }
+  }
+
+  /** 切换截图时让计数与说明轻移淡入，形成明确的更替反馈。 */
+  private pulseMeta(): void {
+    const meta = this.el.meta;
+    if (!meta || this.reducedMotion) return;
+
+    window.clearTimeout(this.metaTimer);
+    meta.classList.remove('is-switching');
+    void meta.offsetWidth;
+    meta.classList.add('is-switching');
+    this.metaTimer = window.setTimeout(() => meta.classList.remove('is-switching'), 460);
   }
 
   private preloadAround(index: number): void {
@@ -212,6 +228,11 @@ export class ScreenshotCarousel {
 
     this.el.stage.addEventListener('keydown', (event) => {
       if (event.target instanceof HTMLElement && event.target.closest('button, a')) return;
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.el.expand?.click();
+        return;
+      }
       if (
         event.key !== 'ArrowLeft' &&
         event.key !== 'ArrowRight' &&
@@ -232,7 +253,12 @@ export class ScreenshotCarousel {
 
     this.el.stage.addEventListener('pointerdown', (event) => {
       if (event.target instanceof Element && event.target.closest('button, a')) return;
-      this.pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+      this.pointerStart = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        target: event.target instanceof Element ? event.target : null,
+      };
       try {
         this.el.stage.setPointerCapture(event.pointerId);
       } catch {
@@ -251,6 +277,14 @@ export class ScreenshotCarousel {
       if (!start || start.id !== event.pointerId) return;
       const dx = event.clientX - start.x;
       const dy = event.clientY - start.y;
+
+      // 轻点截图直接打开大图；拖动超过阈值则按滑动处理，避免误触。
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) {
+        const card = start.target?.closest('.showcase__slide[data-active="true"] .screenshot-card');
+        if (card) this.el.expand?.click();
+        return;
+      }
+
       if (!isHorizontalSwipe({ dx, dy })) return;
       this.go(this.current + (dx < 0 ? 1 : -1), 'swipe');
     });
