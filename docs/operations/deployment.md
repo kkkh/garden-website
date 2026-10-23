@@ -162,3 +162,16 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 
 结论：**在本地门禁、独立巡检（19/19）与上述线上验证证据下达到发布验收标准**。仍待人工完成的
 项目见 [验收报告第 5.2 节](../acceptance/verification-report.md)（真机走查、VoiceOver 朗读、打印复核）。
+
+### 2026-10-23 · iPhone 13 Pro Max 苍岭绿设备框（commit `423fb63`）
+
+| 项         | 结果                                                                                |
+| ---------- | ----------------------------------------------------------------------------------- |
+| 变更       | 新增 `DeviceFrame.astro`；Hero 与截图轮播共用苍岭绿机身框；新增机型/配色标注        |
+| 生效观察   | 推送后轮询 18 次（5s 间隔）由旧版切到新版，约 85 秒                                 |
+| 线上判据   | `data-device-model="iphone-13-pro-max"`、`data-device-finish="alpine-green"` 均存在 |
+| 页面与资源 | 4 个页面 200；未知路径 404；全部静态资源 200                                        |
+| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                            |
+| 浏览器烟测 | Playwright 桌面 + 移动 25/25 通过；0 控制台错误、0 第三方请求                       |
+| 视觉证据   | `docs/acceptance/baseline/v2-device/`                                               |
+| 证据       | `docs/acceptance/logs/deployment-verification.txt`                                  |

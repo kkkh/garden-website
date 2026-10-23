@@ -1,6 +1,6 @@
 # 验收报告
 
-- 验收对象：`main`，发布 commit `033f444`（v2 Astro 重构）
+- 验收对象：`main`，发布 commit `423fb63`（v2 Astro + iPhone 13 Pro Max 苍岭绿设备框）
 - 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
@@ -216,3 +216,17 @@
 
 此前 `beeb015` 的运行在 `typecheck` 阶段失败（Node 22.23.3 < Astro 要求的 22.23.4）；
 固定 Node 24 后，上述两次运行均成功，CI 缺陷闭环。
+
+### 8.3 设备框改版发布（2026-10-23）
+
+| 项             | 值                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| 发布提交       | `423fb63`（`main`）                                                                                  |
+| 变更           | 新增 `DeviceFrame.astro`；截图展示区改为 iPhone 13 Pro Max 苍岭绿；新增 alpine/device 令牌与机型标注 |
+| 生效观察       | 推送后轮询 18 次（5s 间隔）切到新版，约 85 秒                                                        |
+| 设备判据       | 线上 HTML 含 `data-device-model="iphone-13-pro-max"` 与 `data-device-finish="alpine-green"`          |
+| 页面与资源     | 4 个页面 200；未知路径 404；manifest/sitemap/OG/图标/备案图/AASA/CSS 全部 200                        |
+| 产物一致性     | 线上 `index.html` 与仓库根产物 `cmp` 逐字节一致                                                      |
+| 线上浏览器烟测 | Playwright 桌面 + 移动 25 项断言全部通过；0 控制台错误、0 未捕获异常、0 第三方请求                   |
+| 视觉证据       | `docs/acceptance/baseline/v2-device/`（桌面 Hero、桌面轮播、移动轮播）                               |
+| 证据           | `docs/acceptance/logs/deployment-verification.txt`                                                   |
