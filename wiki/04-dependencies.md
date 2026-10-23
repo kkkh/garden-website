@@ -228,12 +228,12 @@ flowchart TD
 
 | 项                 | 要求 / 版本                              | 说明                                                         |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
-| Node.js            | ≥ 22（`engines`）                        | `generate-tokens.mjs` 直接导入 `.ts`，依赖原生类型剥离        |
-| npm                | 随 Node 22                               | CI 使用 `npm ci` 严格安装                                     |
+| Node.js            | ≥ 24（`engines`）                        | `generate-tokens.mjs` 直接导入 `.ts`，依赖原生类型剥离；Astro 7.4.2 要求 ≥ 22.23.4 |
+| npm                | 随 Node 24                               | CI 使用 `npm ci` 严格安装                                     |
 | 操作系统（本地）   | macOS / Linux                            | `sharp` 需对应平台原生二进制                                  |
 | 浏览器（测试）     | Playwright Chromium                      | 视觉基线在 macOS 生成，文件名带 `-darwin`                     |
-| CI 门禁任务        | `ubuntu-latest`，Node 22                 | 令牌、对比度、类型、Lint、格式、单测、构建、E2E（非视觉）      |
-| CI 视觉任务        | `macos-latest`，Node 22                  | 仅跑 `@visual`，避免跨平台字体渲染差异                        |
+| CI 门禁任务        | `ubuntu-latest`，Node 24                 | 令牌、对比度、类型、Lint、格式、单测、构建、E2E（非视觉）      |
+| CI 视觉任务        | `macos-latest`，Node 24                  | 仅跑 `@visual`，避免跨平台字体渲染差异                        |
 | GitHub Actions     | `checkout@v4`、`setup-node@v4`、`upload-artifact@v4` | 见 [.github/workflows/ci.yml](../.github/workflows/ci.yml) |
 
 ---
@@ -246,7 +246,7 @@ flowchart TD
 | `sharp` 原生二进制与平台不匹配                   | 换机器/换 CI 镜像                 | `npm ci` 重装；CI 与本地均使用受支持平台                              |
 | `github-slugger` 与 `rehype-slug` 算法分叉       | 单独升级其一                      | 两者均锁定版本；法律页 E2E 校验目录锚点                              |
 | 视觉基线跨平台漂移                               | 升级 Chromium、系统字体变化       | 基线文件名带平台后缀；仅在 macOS 生成/更新                           |
-| Node < 22 无法运行脚本                           | 低版本 Node                       | `engines` 声明；README 与 wiki 明确要求                              |
+| Node 低于 24 / Astro 要求                         | 低版本 Node                       | `engines` 声明；CI 固定 Node 24；README 与 wiki 明确要求            |
 | 字体许可变化                                     | Fraunces 上游协议调整             | OFL-1.1 允许分发；必要时回退系统衬线栈                               |
 | 仓库体积过大                                     | 根目录产物 + 视觉基线入库         | `.release-manifest.json` 可审计；评估发布分支/外部存储（已知问题 P1-01、P2-04） |
 | 供应链风险                                       | 新增依赖                          | 精确版本 + `npm audit --audit-level=high`（CI 继续执行但不阻塞）      |

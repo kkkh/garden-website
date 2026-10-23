@@ -26,7 +26,7 @@
 | 质量门禁           | 令牌一致性、硬编码颜色扫描、33 项对比度、类型检查、ESLint、Prettier、37 个单元测试、E2E / axe / 视觉回归、发布一致性 |
 | 线上域名           | <https://jl.43322.cn>（2026-10-23 已上线 v2，commit `033f444`）                                                                     |
 | 部署方式           | 腾讯云 EdgeOne Makers 静态托管；推送 `main` 即上线（详见 [05](05-run-and-deploy.md)）                                         |
-| 运行环境           | Node.js ≥ 22；本地开发默认端口 `4321`                                                                                            |
+| 运行环境           | Node.js ≥ 24；本地开发默认端口 `4321`                                                                                            |
 
 ---
 
@@ -99,7 +99,7 @@ garden-website/
 ## 4. 五分钟开始
 
 ```bash
-# 环境要求：Node.js ≥ 22
+# 环境要求：Node.js ≥ 24
 npm ci                # 严格按 lockfile 安装
 npm run dev           # 先生成令牌，再启动 Astro 开发服务器（http://localhost:4321）
 ```

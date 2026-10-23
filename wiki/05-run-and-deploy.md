@@ -4,14 +4,14 @@
 
 | 项          | 要求                                        |
 | ----------- | ------------------------------------------- |
-| Node.js     | ≥ 22（`package.json` 的 `engines`）          |
-| npm         | 随 Node 22 提供                              |
+| Node.js     | ≥ 24（`package.json` 的 `engines`）          |
+| npm         | 随 Node 24 提供                              |
 | 操作系统    | macOS / Linux（`sharp` 需对应平台二进制）    |
 | 浏览器      | 现代浏览器；E2E 使用 Playwright Chromium     |
 | 磁盘        | 依赖 + 构建产物 + 视觉基线，建议预留 ≥ 1 GB  |
 | 网络        | 首次 `npm ci` 与 Playwright 浏览器下载需要   |
 
-> `scripts/generate-tokens.mjs` 直接 `import '../src/design/tokens.ts'`，依赖 Node 22+ 的原生 TypeScript 支持。Node 版本过低会在生成令牌阶段失败。
+> `scripts/generate-tokens.mjs` 直接 `import '../src/design/tokens.ts'`，依赖 Node 24 的原生 TypeScript 支持；Astro 7.4.2 自身要求 Node ≥ 22.23.4。Node 版本过低会在生成令牌或类型检查阶段失败。
 
 ---
 
@@ -305,7 +305,7 @@ v2 不再使用 `?v=` 手工版本号：CSS/JS/图片文件名带内容哈希，
 | 视觉回归大面积失败       | 字体/浏览器版本变化、非 macOS 更新了基线   | 在 macOS 重新 `test:visual:update`，人工审查差异                       |
 | `check:release` 失败     | 根产物与 `dist/` 不一致                    | 重新 `release`；确认没有手改根目录 HTML                                |
 | `check:tokens` 失败      | 手改生成 CSS 或组件写了颜色字面量          | 改 `tokens.ts` 后 `tokens:build`；或改用 `var(--color-...)`            |
-| `npm run dev` 启动失败   | Node < 22 / 依赖未按 lockfile 安装          | 升级 Node；`npm ci` 重装                                               |
+| `npm run dev` 启动失败   | Node < 24 / 依赖未按 lockfile 安装          | 升级 Node；`npm ci` 重装                                               |
 
 ---
 

@@ -5,7 +5,7 @@
   "type": "module",
   "description": "园枢 · 山西晋中理工学院校园移动应用官方网站",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "npm run tokens:build && astro dev",

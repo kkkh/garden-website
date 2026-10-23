@@ -12,7 +12,7 @@
 ## 快速开始
 
 ```bash
-# 环境要求：Node.js ≥ 22
+# 环境要求：Node.js ≥ 24
 npm ci              # 按 lockfile 安装依赖
 
 npm run dev         # 本地开发（默认 http://localhost:4321）

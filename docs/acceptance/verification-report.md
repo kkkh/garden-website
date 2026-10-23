@@ -194,3 +194,15 @@
 
 发布后结论：**在本地门禁、独立巡检与线上验证证据下达到发布验收标准**；仍保留第 5.2 节的
 真机、VoiceOver 与打印人工验收项，以及 `docs/operations/known-issues.md` 中的 P1/P2 残余项。
+
+### 8.1 CI Node 版本修复（2026-10-23）
+
+首次推送 `main` 后 GitHub Actions 在 `typecheck` 阶段失败：`setup-node` 的 `node-version: '22'`
+解析为 `22.23.3`，而 Astro 7.4.2 要求 `>=22.23.4`。本地 Node 24.19.0 不受影响。
+
+处置：
+
+- `package.json` 的 `engines.node` 从 `>=22.0.0` 调整为 `>=24.0.0`，并同步 `package-lock.json`；
+- `.github/workflows/ci.yml` 的两个 job 均固定 `node-version: '24'`；
+- README、Code Wiki、ADR 与已知问题中的 Node 版本说明同步为 24；
+- 调整后本地 `npm run verify` 再次通过（37 单测、100 E2E、发布一致性），等待新 CI 运行复核。

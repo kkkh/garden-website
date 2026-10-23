@@ -91,7 +91,7 @@ flowchart LR
 
 关键点：
 
-- `generate-tokens.mjs` 直接导入 `src/design/tokens.ts`（依赖 Node 22+ 的原生 TypeScript 支持），生成只读 CSS；
+- `generate-tokens.mjs` 直接导入 `src/design/tokens.ts`（依赖 Node 24 的原生 TypeScript 支持），生成只读 CSS；
 - `generate-icons.mjs` 用 sharp 从单张应用图标派生 favicon、PWA 图标、Apple Touch Icon 与 OG 图；
 - Astro 把 `.astro`、Markdown、数据模块与样式在构建期渲染为 HTML；图片经 sharp 转为 AVIF/WebP 多尺寸；
 - 客户端 `<script>` 被 Vite 打包为哈希命名的 ES 模块；

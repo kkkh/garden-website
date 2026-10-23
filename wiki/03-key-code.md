@@ -430,7 +430,7 @@ if (document.readyState === 'loading') {
 
 ### 10.1 `generate-tokens.mjs`
 
-- 直接 `import` 同仓库的 `.ts`，依赖 Node 22+ 的原生 TypeScript 支持；
+- 直接 `import` 同仓库的 `.ts`，依赖 Node 24 的原生 TypeScript 支持；
 - `build()` 输出三段：`:root`（原始色 + 浅色语义色 + 字体/间距/圆角/阴影/动效/布局/焦点/层级/打印）、`[data-theme='dark']`（深色语义色 + 深色阴影）、`@media (prefers-color-scheme: dark)` 下的 `:root:not([data-theme])` 兜底；
 - 键名转 kebab-case（`surfaceMuted` → `--color-surface-muted`）；
 - `--check` 用整份字符串比对，任何手改生成物都会失败。
