@@ -15,7 +15,7 @@
 | --- | ------------------------------ | ---- | -------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | 1   | `npm run check:tokens`         | ✅   | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色                                  | `docs/acceptance/logs/verify.txt`                  |
 | 2   | `npm run check:contrast`       | ✅   | 检查 33 项，未通过 0 项                                                                      | `docs/design-system/contrast-report.md`            |
-| 3   | `npm run typecheck`            | ✅   | Result (54 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
+| 3   | `npm run typecheck`            | ✅   | Result (55 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
 | 4   | `npm run lint`                 | ✅   | 无输出（0 problems）                                                                         | 同上日志                                           |
 | 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
 | 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 38 passed                                                         | 同上日志                                           |

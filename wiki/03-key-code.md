@@ -25,6 +25,9 @@
 | `data-carousel-current`                | `ShowcaseSection.astro`             | `carousel.ts`                     | 当前序号文本                                      |
 | `data-carousel-caption-title` / `-body`| `ShowcaseSection.astro`             | `carousel.ts`                     | 说明标题与正文                                    |
 | `data-carousel-live`                   | `ShowcaseSection.astro`             | `carousel.ts`                     | `role="status"` 读屏播报                          |
+| `data-position`                        | `carousel.ts`                       | CSS                               | `active` / `before` / `after`，驱动方向感知切换    |
+| `data-scroll-progress`                 | `BaseLayout.astro`                  | `header.ts`                       | 阅读进度线，写入 `scaleX`                          |
+| `data-hero-tilt`                       | `HeroSection.astro`                 | `hero-tilt.ts`                    | 桌面指针微倾斜作用域                              |
 | `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 会刷新其灯箱数据集               |
 | `data-device-model` / `data-device-finish` | `DeviceFrame.astro`             | 测试 / 样式                       | 固定为 `iphone-13-pro-max` / `alpine-green`      |
 | `data-device-label`                    | `ShowcaseSection.astro`             | 测试                              | 可见机型标注「iPhone 13 Pro Max · 苍岭绿」        |
@@ -408,6 +411,7 @@ function boot(): void {
   });
   initMobileNav();
   initHeader();
+  initHeroTilt();
   initLightbox();
   initCarousel();
   initLegalToc();

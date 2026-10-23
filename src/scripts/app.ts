@@ -2,6 +2,7 @@ import { initAnalytics } from '@/lib/analytics';
 import { initThemeToggle } from '@/lib/theme';
 import { initMobileNav } from '@/scripts/mobile-nav';
 import { initHeader } from '@/scripts/header';
+import { initHeroTilt } from '@/scripts/hero-tilt';
 import { initLightbox } from '@/scripts/lightbox';
 import { initReveal } from '@/scripts/reveal';
 import { initLegalToc } from '@/scripts/legal-toc';
@@ -48,6 +49,7 @@ function boot(): void {
   });
   initMobileNav();
   initHeader();
+  initHeroTilt();
   initLightbox();
   initCarousel();
   initLegalToc();

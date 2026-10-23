@@ -6,11 +6,13 @@ import { expect, test } from '@playwright/test';
  */
 test.use({ reducedMotion: 'reduce' });
 
-test('所有滚动显现内容直接可见，不依赖动画', async ({ page }) => {
+test('所有滚动显现与首屏编排内容直接可见，不依赖动画', async ({ page }) => {
   await page.goto('/');
 
   const hidden = await page.evaluate(() => {
-    const elements = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-reveal], .hero__copy > *, .hero__stage'),
+    );
     return elements
       .filter((element) => Number(getComputedStyle(element).opacity) < 0.99)
       .map((element) => element.className);

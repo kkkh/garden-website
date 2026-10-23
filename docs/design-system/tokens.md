@@ -199,16 +199,22 @@
 
 ## 6. 动效规范
 
-| 用途           | 触发          | 时长                    | 缓动              | 降级                         |
-| -------------- | ------------- | ----------------------- | ----------------- | ---------------------------- |
-| 按钮/链接悬停  | hover         | `--duration-fast 140ms` | `--ease-standard` | reduced-motion 关闭过渡      |
-| 卡片悬停抬升   | hover         | `--duration-base 220ms` | `--ease-out`      | 同上                         |
-| 卡片装饰线生长 | hover         | `--duration-slow 420ms` | `--ease-out`      | 同上                         |
-| 幻灯片切换     | 状态变化      | `--duration-slow 420ms` | `--ease-out`      | 过渡时长归零，状态即时切换   |
-| 灯箱出现       | `showModal()` | 浏览器原生              | —                 | 由浏览器处理                 |
-| 滚动显现       | 进入视口      | `--duration-slow 420ms` | `--ease-out`      | 直接可见（`reveal.ts` 判定） |
-| Hero 设备浮动  | 循环          | 9s                      | `--ease-standard` | 动画关闭                     |
-| 缩略图滚动定位 | 切换后        | 平滑滚动                | —                 | 改为 `auto`                  |
+| 用途            | 触发          | 时长                                                | 缓动              | 降级                         |
+| --------------- | ------------- | --------------------------------------------------- | ----------------- | ---------------------------- |
+| 按钮/链接悬停   | hover         | `--duration-fast 140ms`                             | `--ease-standard` | reduced-motion 关闭过渡      |
+| 卡片悬停抬升    | hover         | `--duration-base 220ms`                             | `--ease-out`      | 同上                         |
+| 卡片装饰线生长  | hover         | `--duration-slow 420ms`                             | `--ease-out`      | 同上                         |
+| 功能图标微动    | 卡片 hover    | `--duration-base 220ms`                             | `--ease-spring`   | 同上                         |
+| 导航下划线      | 当前区块变化  | `--duration-base 220ms`                             | `--ease-out`      | 直接切换                     |
+| 幻灯片切换      | 状态变化      | `--duration-slower 640ms`                           | `--ease-out`      | 过渡时长归零，状态即时切换   |
+| 灯箱出现        | `showModal()` | `--duration-base 220ms`                             | `--ease-out`      | 由全局 reduced-motion 关闭   |
+| 移动抽屉出现    | `showModal()` | `--duration-base 220ms`                             | `--ease-out`      | 同上                         |
+| 滚动显现        | 进入视口      | `--duration-slow 420ms` / `--duration-slower 640ms` | `--ease-out`      | 直接可见（`reveal.ts` 判定） |
+| 首屏编排        | 页面加载      | `--duration-slower 640ms` + 40–340ms 阶梯           | `--ease-out`      | 动画关闭，内容直接可见       |
+| 阅读进度线      | 滚动          | 逐帧 `transform`                                    | —                 | 无过渡，直接更新             |
+| Hero 指针微倾斜 | 桌面指针移动  | `--duration-slow 420ms`                             | `--ease-out`      | 触控/减弱动效下禁用          |
+| Hero 设备浮动   | 循环          | 9s                                                  | `--ease-standard` | 动画关闭                     |
+| 缩略图滚动定位  | 切换后        | 平滑滚动                                            | —                 | 改为 `auto`                  |
 
 规则：
 
@@ -216,7 +222,8 @@
 2. 微交互 140–220ms，较大过渡 420–640ms，均使用令牌而非字面量；
 3. 所有动画必须在 `@media (prefers-reduced-motion: reduce)` 下关闭或降级（`base.css` 全局归零 + `reveal.ts` 直接显示）；
 4. 装饰性循环动画最多一处（Hero 设备），且不承载信息；
-5. 禁止：视差滚动、自动播放的轮播、超过 1s 的入场动画、闪烁/抖动效果。
+5. 首屏编排总时长（含阶梯）不超过 1s；指针微倾斜最大 3°，仅桌面精确指针，不属于滚动视差；
+6. 禁止：视差滚动、自动播放的轮播、超过 1s 的入场动画、闪烁/抖动效果。
 
 ---
 

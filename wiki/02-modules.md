@@ -158,7 +158,8 @@ tests/              单元与端到端测试
 | `app.ts`          | 唯一启动入口：按顺序初始化各模块；轮播失败兜底；绑定 `data-shot-target` 点击                        | 无导出，导入即执行                                                                |
 | `carousel.ts`     | 截图轮播类与纯函数；箭头/缩略图/键盘/滑动切换、相邻预加载、缩略图居中、ARIA 同步、埋点                    | `ScreenshotCarousel`、`wrapIndex`、`formatIndex`、`isHorizontalSwipe`             |
 | `lightbox.ts`     | 灯箱类；按组读取 `data-lightbox-item`、打开/切换/关闭、焦点恢复、滚动锁定、相邻预加载、加载错误态         | `Lightbox`、`initLightbox`                                                        |
-| `header.ts`       | 滚动状态（`data-scrolled`）、当前区块 `aria-current`、回到顶部按钮显隐与滚动                                  | `initHeader`                                                                      |
+| `header.ts`       | 滚动状态（`data-scrolled`）、当前区块 `aria-current`、回到顶部按钮显隐、阅读进度线                       | `initHeader`                                                                      |
+| `hero-tilt.ts`    | Hero 设备框桌面指针微倾斜（最大 3°，触控/减弱动效禁用）                                                     | `initHeroTilt`                                                                    |
 | `mobile-nav.ts`   | 原生 `<dialog>` 打开/关闭、`aria-expanded`、`body.is-locked`、关闭恢复焦点、桌面断点自动关闭                 | `initMobileNav`                                                                   |
 | `reveal.ts`       | IntersectionObserver 显现；无 IO 或减弱动效时全部直接显示；暴露 `revealAll`                                 | `initReveal`、`revealAll`                                                         |
 | `legal-toc.ts`    | 重建法律页目录、Observer 高亮当前章节                                                                       | `initLegalToc`                                                                    |

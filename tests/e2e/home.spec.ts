@@ -79,9 +79,13 @@ test.describe('导航与锚点', () => {
   test('回到顶部按钮在滚动后出现', async ({ page }) => {
     await page.goto('/');
     const toTop = page.locator('[data-to-top]');
+    const progress = page.locator('[data-scroll-progress]');
     await expect(toTop).not.toHaveClass(/is-visible/);
+    await expect(progress).toHaveAttribute('aria-hidden', 'true');
     await page.evaluate(() => window.scrollTo(0, 2000));
     await expect(toTop).toHaveClass(/is-visible/);
+    const transform = await progress.evaluate((element) => getComputedStyle(element).transform);
+    expect(transform).not.toBe('matrix(0, 0, 0, 1, 0, 0)');
   });
 });
 
@@ -94,6 +98,7 @@ test.describe('截图轮播', () => {
     await expect(page.locator('[data-carousel-current]')).toHaveText('01');
     await expect(page.locator('.showcase__counter')).toContainText('22');
     await expect(page.locator('[data-carousel-slide][data-active="true"]')).toHaveCount(1);
+    await expect(page.locator('[data-carousel-slide][data-position="active"]')).toHaveCount(1);
     await expect(page.locator('[data-carousel-thumb]')).toHaveCount(22);
   });
 

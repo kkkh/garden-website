@@ -262,6 +262,16 @@
   background: var(--color-accent-soft);
   color: var(--color-accent-strong);
   border: 1px solid var(--color-accent);
+  transition:
+    transform var(--duration-base) var(--ease-spring),
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
+}
+
+.feature-item:hover .feature-item__mark {
+  transform: translateY(-2px) rotate(-4deg);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
 }
 
 .feature-item__mark svg {

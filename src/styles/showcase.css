@@ -184,6 +184,77 @@
   max-width: min(18rem, 36vh + 5rem);
 }
 
+/* 首屏编排：文案逐项进入，设备随后落位；只在 JS 增强下播放 */
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.js .hero__copy > * {
+  animation: hero-enter var(--duration-slower) var(--ease-out) both;
+}
+
+.js .hero__copy > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.js .hero__copy > *:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.js .hero__copy > *:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.js .hero__copy > *:nth-child(4) {
+  animation-delay: 220ms;
+}
+
+.js .hero__copy > *:nth-child(5) {
+  animation-delay: 280ms;
+}
+
+.js .hero__copy > *:nth-child(6) {
+  animation-delay: 340ms;
+}
+
+.js .hero__stage {
+  animation: hero-enter var(--duration-slower) var(--ease-out) 180ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .hero__copy > *,
+  .js .hero__stage {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 桌面精确指针下的轻微机身倾斜，跟随指针但不改变内容位置 */
+@media (hover: hover) and (pointer: fine) {
+  .hero__device .device-frame {
+    transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transform-style: preserve-3d;
+    transition: transform var(--duration-slow) var(--ease-out);
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__device .device-frame {
+    transform: none;
+    transition: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .hero__stage {
     max-width: min(16rem, 40vh + 4rem);
@@ -294,16 +365,27 @@
 .showcase__slide {
   position: absolute;
   inset: 0;
+  z-index: 1;
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.02);
+  transform: translate3d(0, 0, 0) scale(0.985);
   transition:
-    opacity var(--duration-slow) var(--ease-out),
-    transform var(--duration-slow) var(--ease-out),
-    visibility var(--duration-slow) linear;
+    opacity var(--duration-slower) var(--ease-out),
+    transform var(--duration-slower) var(--ease-out),
+    visibility var(--duration-slower) linear;
+}
+
+/* 方向感知：上一张向左退场，下一张从右侧进入；利用位置而非瞬时方向，避免快速切换抖动 */
+.showcase__slide[data-position='before'] {
+  transform: translate3d(-4%, 0, 0) scale(0.97);
+}
+
+.showcase__slide[data-position='after'] {
+  transform: translate3d(4%, 0, 0) scale(0.97);
 }
 
 .showcase__slide[data-active='true'] {
+  z-index: 2;
   opacity: 1;
   visibility: visible;
   transform: none;
@@ -545,6 +627,36 @@
 /* --------------------------------------------------------------------------
    灯箱
    -------------------------------------------------------------------------- */
+@keyframes lightbox-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lightbox-backdrop-enter {
+  from {
+    background: transparent;
+  }
+
+  to {
+    background: var(--color-overlay);
+  }
+}
+
+.lightbox[open] {
+  animation: lightbox-enter var(--duration-base) var(--ease-out) both;
+}
+
+.lightbox[open]::backdrop {
+  animation: lightbox-backdrop-enter var(--duration-base) var(--ease-out) both;
+}
+
 .lightbox {
   width: min(100vw - 2rem, 68rem);
   max-width: none;
@@ -599,6 +711,20 @@
   max-height: calc(100dvh - 14rem);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg);
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.lightbox__figure.is-loading img {
+  opacity: 0.35;
+  transform: scale(0.985);
+}
+
+.lightbox__figure.is-error img {
+  opacity: 0.2;
 }
 
 .lightbox__caption {

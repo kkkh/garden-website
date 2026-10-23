@@ -5,6 +5,7 @@ function prefersReducedMotion(): boolean {
 export function initHeader(): void {
   const header = document.querySelector<HTMLElement>('[data-site-header]');
   const toTop = document.querySelector<HTMLButtonElement>('[data-to-top]');
+  const progress = document.querySelector<HTMLElement>('[data-scroll-progress]');
   const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
 
   const sections = navLinks
@@ -24,6 +25,12 @@ export function initHeader(): void {
 
     if (header) header.dataset.scrolled = String(y > 8);
     if (toTop) toTop.classList.toggle('is-visible', y > 640);
+
+    if (progress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+      progress.style.transform = `scaleX(${ratio.toFixed(4)})`;
+    }
 
     if (sections.length === 0) return;
 

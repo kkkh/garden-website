@@ -124,7 +124,7 @@
 | -------------------------- | ---------------------------------------- | ------------------------------------------------- |
 | 令牌一致性与硬编码扫描     | 通过；0 处硬编码颜色                     | `docs/acceptance/logs/verify.txt`                 |
 | 对比度（WCAG 2.1）         | 33 项，未通过 0 项                       | `docs/design-system/contrast-report.md`           |
-| 类型检查                   | 54 文件，0 errors / 0 warnings / 0 hints | `docs/acceptance/logs/verify.txt`                 |
+| 类型检查                   | 55 文件，0 errors / 0 warnings / 0 hints | `docs/acceptance/logs/verify.txt`                 |
 | ESLint / Prettier          | 0 问题 / 全部符合                        | 同上                                              |
 | 单元测试                   | 38 passed                                | 同上                                              |
 | 构建                       | 4 页 + sitemap/manifest                  | 同上                                              |

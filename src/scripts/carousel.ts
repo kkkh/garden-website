@@ -114,6 +114,7 @@ export class ScreenshotCarousel {
     for (const [i, slide] of this.el.slides.entries()) {
       const isActive = i === index;
       slide.dataset.active = String(isActive);
+      slide.dataset.position = isActive ? 'active' : i < index ? 'before' : 'after';
       slide.setAttribute('aria-hidden', String(!isActive));
     }
 
