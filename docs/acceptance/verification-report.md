@@ -243,4 +243,5 @@
 | 产物一致性     | 线上 `index.html` 与仓库根产物 `cmp` 逐字节一致                                                          |
 | 线上浏览器烟测 | Playwright 桌面 + 移动 + 减弱动效 28/28 通过；0 控制台错误、0 未捕获异常、0 第三方请求                   |
 | 视觉证据       | `docs/acceptance/baseline/v2-polish/`                                                                    |
+| 视觉稳定性     | 首屏/全页用例强制显现终态并等待编排完成，双分支 CI 复跑全绿                                              |
 | 证据           | `docs/acceptance/logs/deployment-verification.txt`                                                       |
