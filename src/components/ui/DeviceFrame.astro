@@ -2,8 +2,8 @@
 /**
  * iPhone 13 Pro Max · 苍岭绿设备框。
  *
- * 只承担「物理机身」的装饰：铝合金中框、刘海、侧键与屏幕高光。
- * 截图内容由默认插槽提供；所有装饰元素 aria-hidden，读屏只读取截图 alt。
+ * 极简“边到边”方案：截图完整铺满屏幕区域，仅保留窄苍岭绿金属边框与圆角。
+ * 不叠加黑色面板、刘海或侧键，避免任何黑边与图片遮挡。
  */
 interface Props {
   class?: string;
@@ -17,17 +17,7 @@ const { class: className } = Astro.props;
   data-device-model="iphone-13-pro-max"
   data-device-finish="alpine-green"
 >
-  <span class="device-frame__button device-frame__button--mute" aria-hidden="true"></span>
-  <span class="device-frame__button device-frame__button--volume-up" aria-hidden="true"></span>
-  <span class="device-frame__button device-frame__button--volume-down" aria-hidden="true"></span>
-  <span class="device-frame__button device-frame__button--power" aria-hidden="true"></span>
-
   <div class="device-frame__screen">
     <slot />
-    <span class="device-frame__notch" aria-hidden="true">
-      <span class="device-frame__camera"></span>
-      <span class="device-frame__speaker"></span>
-    </span>
-    <span class="device-frame__glint" aria-hidden="true"></span>
   </div>
 </div>

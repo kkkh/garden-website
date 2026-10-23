@@ -102,13 +102,12 @@ export const lightColors = {
   'hero-glow': 'rgba(210, 178, 104, 0.17)',
   'hero-glow-soft': 'rgba(210, 178, 104, 0.06)',
 
-  /* 设备框：苍岭绿铝合金中框 + 屏幕/刘海。物理外观不随页面主题改变 */
+  /* 设备框：苍岭绿铝合金中框 + 屏幕底。物理外观不随页面主题改变 */
   'device-frame': 'var(--color-alpine-600)',
   'device-frame-deep': 'var(--color-alpine-800)',
   'device-frame-edge': 'var(--color-alpine-300)',
   'device-frame-shadow': 'var(--color-alpine-900)',
   'device-screen': 'var(--color-ink-950)',
-  'device-notch': 'var(--color-black)',
 
   overlay: 'rgba(7, 12, 20, 0.72)',
   'overlay-soft': 'rgba(251, 249, 243, 0.82)',
@@ -161,7 +160,6 @@ export const darkColors = {
   'device-frame-edge': 'var(--color-alpine-300)',
   'device-frame-shadow': 'var(--color-alpine-900)',
   'device-screen': 'var(--color-ink-950)',
-  'device-notch': 'var(--color-black)',
 
   overlay: 'rgba(3, 7, 12, 0.84)',
   'overlay-soft': 'rgba(7, 12, 20, 0.82)',

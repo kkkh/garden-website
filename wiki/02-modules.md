@@ -106,7 +106,7 @@ tests/              单元与端到端测试
 | -------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | `Icon.astro`         | 24×24 线性 SVG 图标库，按 `name` 查表输出路径                                                  | 覆盖功能/系统图标与箭头、展开、关闭、信息、菜单；`aria-hidden`          |
 | `ThemeToggle.astro`  | 三态主题按钮组（浅色/深色/跟随系统），`role="group"` + `aria-pressed`                          | 初始 `aria-pressed` 以 system 为 true，脚本加载后按实际偏好同步          |
-| `DeviceFrame.astro`  | iPhone 13 Pro Max 苍岭绿机身框：铝合金中框、刘海、侧键、屏幕高光                              | `data-device-model="iphone-13-pro-max"`；Hero 与轮播共用；装饰元素 aria-hidden |
+| `DeviceFrame.astro`  | iPhone 13 Pro Max 苍岭绿边到边机身框：窄金属边框 + 圆角屏幕，截图完整贴合                    | `data-device-model="iphone-13-pro-max"`；Hero 与轮播共用；无黑色面板/刘海叠层 |
 | `Lightbox.astro`     | 全局 `<dialog>` 灯箱骨架：标题、计数、图片区、说明、前后按钮、关闭按钮                          | `data-lightbox`、`data-lightbox-image`、`data-lightbox-count` 等          |
 
 `Icon` 的图标表是纯数据映射；新增图标需要同时改 `name` 类型与 `PATHS`。

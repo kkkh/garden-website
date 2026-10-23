@@ -95,13 +95,11 @@
 | `--color-device-frame-deep` | `var(--color-alpine-800)` | 设备框暗面     |
 | `--color-device-frame-edge` | `var(--color-alpine-300)` | 设备框高光边缘 |
 | `--color-device-screen`     | `var(--color-ink-950)`    | 屏幕底色       |
-| `--color-device-notch`      | `var(--color-black)`      | 刘海底色       |
 
 规则：
 
 - 设备框是**物理外观**，浅色与深色主题使用同一苍岭绿，不随主题换色；
-- 正面为黑色玻璃边框，苍岭绿仅保留外侧窄金属边；刘海与黑边同色融合，避免悬浮胶囊观感；
-- 刘海、侧键、镜面高光全部 `aria-hidden`，读屏只读截图 `alt`；
+- **边到边贴合**：截图完整铺满屏幕，仅保留 2–3px 苍岭绿金属边框与圆角，不叠加黑色面板、刘海或侧键；
 - 22 张截图均为 1284×2778，与 iPhone 13 Pro Max 原生分辨率一致；
 - 设备框不得使用品牌金或强调色，避免与 CTA、装饰线混淆。
 
