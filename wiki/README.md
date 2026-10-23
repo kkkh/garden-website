@@ -24,7 +24,7 @@
 | 图片资源           | 22 张真机截图、10 张平台架构图、1 个应用图标，位于 `src/assets/`，构建期转为 AVIF/WebP 多尺寸                              |
 | 构建产物           | `dist/` 371 个文件；同时由 [scripts/sync-root.mjs](../scripts/sync-root.mjs) 同步到仓库根目录，兼容两种平台配置               |
 | 质量门禁           | 令牌一致性、硬编码颜色扫描、33 项对比度、类型检查、ESLint、Prettier、37 个单元测试、E2E / axe / 视觉回归、发布一致性 |
-| 线上域名           | <https://jl.43322.cn>                                                                                                             |
+| 线上域名           | <https://jl.43322.cn>（2026-10-23 已上线 v2，commit `033f444`）                                                                     |
 | 部署方式           | 腾讯云 EdgeOne Makers 静态托管；推送 `main` 即上线（详见 [05](05-run-and-deploy.md)）                                         |
 | 运行环境           | Node.js ≥ 22；本地开发默认端口 `4321`                                                                                            |
 

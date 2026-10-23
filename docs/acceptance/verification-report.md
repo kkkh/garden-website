@@ -1,7 +1,7 @@
 # 验收报告
 
-- 验收对象：`refactor/v2-astro`，验收时 commit `379279b` + 文档提交
-- 验收时间：2026-10-23
+- 验收对象：`main`，发布 commit `033f444`（v2 Astro 重构）
+- 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
 
@@ -11,18 +11,18 @@
 
 命令：`npm run verify`（等价于下表顺序执行）
 
-| #   | 门禁命令                       | 结果      | 关键输出                                                    | 日志                                           |
-| --- | ------------------------------ | --------- | ----------------------------------------------------------- | ---------------------------------------------- |
-| 1   | `npm run check:tokens`         | ✅        | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色 | `docs/acceptance/logs/verify.txt`              |
-| 2   | `npm run check:contrast`       | ✅        | 检查 33 项，未通过 0 项                                     | `docs/design-system/contrast-report.md`        |
-| 3   | `npm run typecheck`            | ✅        | Result (53 files): 0 errors / 0 warnings / 0 hints          | 同上日志                                       |
-| 4   | `npm run lint`                 | ✅        | 无输出（0 problems）                                        | 同上日志                                       |
-| 5   | `npm run format:check`         | ✅        | All matched files use Prettier code style                   | 同上日志                                       |
-| 6   | `npm run test:unit`            | ✅        | Test Files 3 passed；Tests 37 passed                        | 同上日志                                       |
-| 7   | `npm run build`                | ✅        | 4 page(s) built；`[build] Complete!`                        | 同上日志                                       |
-| 8   | `npx playwright test`          | ✅        | **100 passed**                                              | `docs/acceptance/logs/playwright-results.json` |
-| 9   | `npm audit --audit-level=high` | ✅        | found 0 vulnerabilities                                     | 见第 4 节                                      |
-| 10  | 生产部署与线上验证             | ⛔ 未执行 | 缺少平台凭据（协议允许暂停项）                              | —                                              |
+| #   | 门禁命令                       | 结果 | 关键输出                                                                                     | 日志                                               |
+| --- | ------------------------------ | ---- | -------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 1   | `npm run check:tokens`         | ✅   | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色                                  | `docs/acceptance/logs/verify.txt`                  |
+| 2   | `npm run check:contrast`       | ✅   | 检查 33 项，未通过 0 项                                                                      | `docs/design-system/contrast-report.md`            |
+| 3   | `npm run typecheck`            | ✅   | Result (53 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
+| 4   | `npm run lint`                 | ✅   | 无输出（0 problems）                                                                         | 同上日志                                           |
+| 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
+| 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 37 passed                                                         | 同上日志                                           |
+| 7   | `npm run build`                | ✅   | 4 page(s) built；`[build] Complete!`                                                         | 同上日志                                           |
+| 8   | `npx playwright test`          | ✅   | **100 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
+| 9   | `npm audit --audit-level=high` | ✅   | found 0 vulnerabilities                                                                      | 见第 4 节                                          |
+| 10  | 生产部署与线上验证             | ✅   | 推送 `main` 后线上切换 v2；4 页 200、资源 200、未知路径 404、`index.html` 与根产物逐字节一致 | `docs/acceptance/logs/deployment-verification.txt` |
 
 `npm run verify` 退出码：**0**（日志：`docs/acceptance/logs/verify.txt`）。
 
@@ -155,8 +155,10 @@
 
 1. 真机（iPhone Safari / iPad / Android Chrome）走查首屏、轮播、灯箱、主题与移动导航；
 2. VoiceOver 完整朗读首页与法律页，检查读屏顺序与说明更新；
-3. 打印法律页为 PDF，检查分页与标题断裂；
-4. 在 EdgeOne Makers 完成 `dist` 发布并执行 `docs/operations/deployment.md` 第 4 节验证。
+3. 打印法律页为 PDF，检查分页与标题断裂。
+
+> EdgeOne Makers 发布已于 2026-10-23 通过 `git push origin main` 完成，发布后验证见第 8 节与
+> `docs/acceptance/logs/deployment-verification.txt`；不再需要手动修改平台输出目录。
 
 ---
 
@@ -167,10 +169,28 @@
 
 ---
 
-## 7. 剩余工作（不阻塞本地验收，但阻塞上线）
+## 7. 剩余人工验收（不阻塞线上运行）
 
-1. 在 EdgeOne Makers 将输出目录改为 `dist` 并发布（`docs/operations/deployment.md`）；
-2. 发布后执行第 4 节的发布后验证清单；
-3. 人工真机走查（iPhone Safari + 桌面 Safari/Chrome）；
-4. 用 VoiceOver 做一次完整朗读走查；
-5. 本报告在人工验收完成后追加「人工验收记录」章节。
+1. 真机走查（iPhone Safari + 桌面 Safari/Chrome）；
+2. 用 VoiceOver 做一次完整朗读走查；
+3. 打印法律页为 PDF 并复核分页；
+4. 本报告在人工验收完成后追加「人工验收记录」章节。
+
+---
+
+## 8. 生产发布记录（2026-10-23）
+
+| 项             | 值                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------- |
+| 发布提交       | `033f444`（`main`，同时推送 `refactor/v2-astro` 留档）                                |
+| 发布方式       | `git push origin main`，EdgeOne Makers 自动更新                                       |
+| 生效时间       | 推送后轮询 23 次（5s 间隔）观察到 v1 → v2，约 110 秒                                  |
+| 线上首页       | 119 KB v2 页面，`data-carousel`、3 段 JSON-LD、manifest 均存在                        |
+| 页面状态       | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 均 200；未知路径 404 + `noindex` |
+| 资源状态       | manifest、robots、sitemap、OG、图标、备案图、AASA、CSS 全部 200                       |
+| 产物一致性     | 线上 `index.html` 与仓库根发布产物 `cmp` 逐字节一致                                   |
+| 线上浏览器烟测 | Playwright 桌面 + 移动 21 项断言全部通过，0 控制台错误、0 第三方请求                  |
+| 证据           | `docs/acceptance/logs/deployment-verification.txt`                                    |
+
+发布后结论：**在本地门禁、独立巡检与线上验证证据下达到发布验收标准**；仍保留第 5.2 节的
+真机、VoiceOver 与打印人工验收项，以及 `docs/operations/known-issues.md` 中的 P1/P2 残余项。

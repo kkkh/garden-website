@@ -142,3 +142,23 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 [ ] 浏览器端人工确认 6 项
 [ ] 记录本次发布的 commit hash 与时间，保留上一版以便回滚
 ```
+
+---
+
+## 8. 发布记录
+
+### 2026-10-23 · v2 上线（commit `033f444`）
+
+| 项             | 结果                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------- |
+| 推送分支       | `main`（`refactor/v2-astro` 同步留档），来源提交 `26a3c68` → `033f444`（8 个提交，620 个文件）              |
+| 生效观察       | 推送后轮询 23 次（间隔 5s）由 v1 切到 v2，约 110 秒                                                         |
+| 页面（4.1）    | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 全部 200；未知路径 404                                 |
+| v2 判据（4.2） | `data-carousel` 存在、`application/ld+json` × 3、`site.webmanifest` × 1、v1 `cvr-stage` × 0                 |
+| 资源（4.3）    | manifest、robots、两个 sitemap、OG、192/512 图标、Apple Touch Icon、favicon.svg、备案图、AASA、CSS 全部 200 |
+| 发布后来源     | 线上 `index.html` 与仓库根产物 `cmp` 逐字节一致 → 确认为「根目录同步产物」直接服务                          |
+| 浏览器烟测     | Playwright 桌面 + 移动 21 项断言全部通过；0 控制台错误、0 未捕获异常、0 第三方请求                          |
+| 证据           | `docs/acceptance/logs/deployment-verification.txt`                                                          |
+
+结论：**在本地门禁、独立巡检（19/19）与上述线上验证证据下达到发布验收标准**。仍待人工完成的
+项目见 [验收报告第 5.2 节](../acceptance/verification-report.md)（真机走查、VoiceOver 朗读、打印复核）。

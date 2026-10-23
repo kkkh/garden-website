@@ -1,0 +1,70 @@
+# 发布后线上验证
+- 时间：2026-10-23T08:36:07Z
+- 目标：https://jl.43322.cn
+- Commit：033f444ecfce112f9c1d493b94b24ad80fec86db
+- 部署观察：main 推送后轮询 23 次（5s 间隔）由 v1 切换为 v2
+
+## 1. 页面与 404
+/                  200
+/privacy.html      200
+/agreement.html    200
+/404.html          200
+/not-exist-page    404
+unknown-robots: <meta name="robots" content="noindex, follow"
+
+## 2. v2 判据
+data-carousel matching lines: 2 (预期 2，按 grep -c 行计数)
+data-carousel occurrences: 53
+application/ld+json blocks: 3 (预期 3)
+site.webmanifest references: 1 (预期 1)
+v1 cvr-stage markers: 0 (预期 0)
+title: <title>园枢 · 山西晋中理工学院校园信息聚合应用</title>
+
+## 3. 静态资源
+/site.webmanifest                              200
+/robots.txt                                    200
+/sitemap-index.xml                             200
+/sitemap-0.xml                                 200
+/og/og-default.png                             200
+/icons/icon-192.png                            200
+/icons/icon-512.png                            200
+/icons/apple-touch-icon.png                    200
+/icons/favicon.svg                             200
+/beian/beian.png                               200
+/.well-known/apple-app-site-association        200
+/_astro/BaseLayout.D0zrcb9f.css 200
+
+## 4. 响应头
+HTTP/1.1 200 OK
+Last-Modified: Fri, 23 Oct 2026 08:32:56 GMT
+Etag: "7853b70d69c23da62b69ae67fe8a19b2"
+Content-Type: text/html
+Cache-Control: public,max-age=0,must-revalidate
+Server: edgeone makers
+
+## 5. 与本地发布产物对比
+index.html: identical to local root artifact
+
+## 6. 线上浏览器烟测（Playwright，桌面 + 移动）
+PASS  首页标题与品牌 — 园枢 · 山西晋中理工学院校园信息聚合应用
+PASS  v2 轮播根节点
+PASS  首屏序号 01
+PASS  缩略图 22 张
+PASS  箭头切换到 02
+PASS  灯箱打开
+PASS  灯箱计数 02 / 22
+PASS  Esc 关闭灯箱
+PASS  切换深色主题
+PASS  刷新保持深色
+PASS  语言 zh-CN — zh-CN
+PASS  三类 JSON-LD
+PASS  无控制台错误 — []
+PASS  无未捕获异常 — []
+PASS  无第三方请求 — []
+PASS  移动端无横向溢出 — {"scrollWidth":390,"clientWidth":390}
+PASS  移动端抽屉打开
+PASS  抽屉关闭并跳转 — https://jl.43322.cn/#architecture
+PASS  隐私政策标题
+PASS  隐私目录 9 项
+PASS  用户协议 7 章
+SUMMARY 21/21 passed
