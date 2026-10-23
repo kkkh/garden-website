@@ -1,256 +1,286 @@
 # 06 · 维护指南
 
-## 1. 项目约定
-
-| 约定           | 说明                                                                                         |
-| -------------- | -------------------------------------------------------------------------------------------- |
-| 零第三方依赖   | 不引入 CDN、远程字体、JS/CSS 库、统计脚本；新能力优先用原生 HTML/CSS/JS 实现                 |
-| 无构建         | 仓库文件即线上文件；不要引入需要编译的语法或预处理器（除非同步改造部署流程）                 |
-| 相对路径       | 站内资源一律使用同目录相对路径（`assets/...`、`styles.css`、`privacy.html`）                 |
-| 旧内容注释保留 | 删除大段内容时，按现有做法用 HTML 注释保留备查，并写明原因（如首页旧 11 张截图、旧版权文本） |
-| 中文文案       | 页面语言为简体中文，`lang="zh-CN"`；标题使用宋体栈，正文使用系统无衬线栈                     |
-| 设计令牌优先   | 颜色、圆角、阴影尽量引用 `:root` 变量；新增硬编码颜色需逐处复核                              |
-| 三页同步       | 页头、页脚、备案、联系方式保持一致（版权与欢迎语的已知差异除外）                             |
-| 版本号格式     | `styles.css?v=YYYYMMDD-N`；当前 `20261023-3`                                                 |
-| 图片规格       | 截图 1284×2778 JPG；架构图 1600×1240 PNG；图标 256×256 PNG                                   |
-| 文档同步       | 改动结构、数量、断点、脚本行为后，同步更新本 Wiki 对应页面                                   |
+本文件把常见维护任务拆成可执行步骤，并列出每项改动的连带影响。**任何页面改动都应改 `src/`，再构建与发布；根目录 HTML 是产物，不要手改。**
 
 ---
 
-## 2. 任务：替换现有截图（数量不变）
+## 1. 先定位：内容在哪里
 
-**适用**：用新素材替换 `screenshot-01`–`22`，仍是 22 张。
-
-1. 准备素材：1284×2778（与 iPhone 长截图同比例）、JPG，尽量控制在 300 KB 以内。
-2. 在本地替换 `assets/screenshot-01.jpg` … `screenshot-22.jpg`。
-3. 逐张更新 [index.html](../index.html) 第 171–192 行：
-   - `alt`：描述该界面是什么（供读屏与缩略图标签使用）；
-   - `data-cap`：轮播下方的说明文案；
-   - 保持第一张 `class="cvr-img active"`，其余为 `class="cvr-img"`。
-4. 若新图内容顺序变化，直接调整 `<img>` 节点的先后顺序（DOM 顺序即展示顺序），或重命名文件并同步 `src`。
-5. 启动本地服务器，按 [05 · 验收清单](05-run-and-deploy.md#3-本地验收清单) 的「轮播」部分检查。
-6. 若要打破线上缓存，改用新文件名（如 `screenshot-01-v2.jpg`）并同步 `src`；若沿用同名，必须强刷确认线上已更新。
-
-**不要改**：脚本、缩略图结构、`#cvrTotal`（数量未变）。
-
----
-
-## 3. 任务：增删截图（数量变化）
-
-除第 2 节步骤外，还必须同步以下位置：
-
-| #   | 位置                                              | 当前值              | 改法                                            |
-| --- | ------------------------------------------------- | ------------------- | ----------------------------------------------- |
-| 1   | [index.html](../index.html) 第 153 行文案         | 「22 张运行截图」   | 改为新数量                                      |
-| 2   | [index.html](../index.html) 第 202 行 `#cvrTotal` | `22`                | 改为新数量（脚本也会覆盖，但保留静态兜底）      |
-| 3   | [styles.css](../styles.css) 第 594–610 行         | `repeat(11, 44px)`  | 若仍希望桌面两行铺满，列数改为 `ceil(总数 / 2)` |
-| 4   | 本 Wiki 与 README                                 | 「22 张」           | 同步更新                                        |
-| 5   | 缩略图总数                                        | 脚本按 DOM 自动计算 | 无需改脚本                                      |
-
-**新增截图**：在 `.cvr-phone` 内追加 `<img class="cvr-img" src="assets/screenshot-23.jpg" alt="…" data-cap="…" loading="lazy" decoding="async">`；不要给新图加 `active`。
-
-**删除截图**：删除对应 `<img>` 节点；确保仍有且仅有一个 `active`。
-
-**数量边界**：
-
-- 总数变为 1 时，`go()` 仍能正常取模，但轮播意义不大；
-- 总数超过 99 时，`padStart(2, '0')` 会显示 3 位，需要同步调整序号胶囊宽度；
-- 总数不要为 0，`go()` 未处理 `total === 0`（当前 HTML 恒有图，属隐含不变量）。
+| 想改的内容                       | 事实源                                                                 | 备注                                       |
+| -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ |
+| 品牌名、域名、简介、平台、联系方式、备案 | `src/data/site.ts`                                                     | 页头、页脚、关于、SEO、manifest、schema 共用 |
+| 首页概览数据 / 介绍卡 / 功能卡 / 系统卡 | `src/data/home.ts`                                                     | 数量由测试约束（4 / 4 / 6 / 4）            |
+| 截图序号、alt、说明               | `src/data/screenshots.ts`                                              | 图片本体在 `src/assets/screenshots/`       |
+| 架构图标题与说明                 | `src/data/architecture.ts`                                             | 图片本体在 `src/assets/architecture/`      |
+| FAQ                              | `src/data/faq.ts`                                                      | 同时驱动页面与 FAQPage JSON-LD             |
+| 隐私政策 / 用户协议              | `src/content/legal/privacy.md` / `agreement.md`                        | frontmatter + Markdown                     |
+| 颜色、字号、间距、圆角、阴影、动效 | `src/design/tokens.ts`                                                 | 生成 `tokens.generated.css`，禁止手改生成物 |
+| 组件结构与样式                   | `src/components/**`、`src/styles/**`                                   | 样式只使用令牌                             |
+| 交互行为                         | `src/scripts/**`、`src/lib/**`                                         | 通过 `data-*` 契约连接                     |
+| 元信息 / 社交分享                | `src/components/seo/Seo.astro`、`src/lib/schema.ts`                    | 图标路径来自 `data/site.ts`                |
+| 发布白名单 / 同步逻辑            | `scripts/sync-root.mjs`                                                | 改动后要重新 `release`                     |
+| 构建与测试                       | `astro.config.mjs`、`playwright.config.ts`、`vitest.config.ts`、`.github/workflows/ci.yml` | 改动后跑 `verify`                    |
+| 设计规范 / 决策记录              | `docs/design-system/`、`docs/adr/`                                      | 架构或规范变化时同步新增/修订 ADR          |
 
 ---
 
-## 4. 任务：替换或新增架构图
+## 2. 替换或新增应用截图
 
-**替换（数量不变）**：
+### 2.1 只替换现有截图（保持 22 张）
 
-1. 素材规格 1600×1240 PNG，覆盖 `assets/flow-01.png` … `flow-10.png`。
-2. 更新对应 `alt` 与 `.flow-cap` 中的标题/说明（[index.html](../index.html) 第 220–301 行）。
-3. 确认 `FIG n/10` 编号与实际图一致。
-
-**新增**：
-
-1. 新增 `assets/flow-11.png`（保持 1600×1240）。
-2. 复制一个 `<figure class="flow-card">`，更新 `src`、`alt`、`fig-no`、`h3`、`p`。
-3. 更新第 217 行「十张图」文案。
-4. 所有 `FIG n/10` 的 `10` 改为新总数。
-5. 新增图默认进入两列网格；移动端自动单列。
-
----
-
-## 5. 任务：新增页面区块与导航
-
-1. 在首页选择位置插入 section，遵循交替底色：
-
-```html
-<section class="section section-alt" id="新锚点id">
-  <div class="container">
-    <div class="section-head">
-      <span class="kicker">ENGLISH KICKER</span>
-      <h2>中文标题</h2>
-      <p>一句说明。</p>
-    </div>
-    <!-- 内容网格 -->
-  </div>
-</section>
-```
-
-2. 在 `styles.css` 增加该区块的组件样式，优先复用 `--radius`、`--shadow`、`--gold`、`--line` 等令牌。
-3. 在三个 HTML 的页头加入导航：
-   - 首页：`<a href="#新锚点id">名称</a>`
-   - 文档页：`<a href="index.html#新锚点id">名称</a>`
-4. 检查 `[id] { scroll-margin-top }` 是否仍能抵消页头高度；若页头高度变化，调整 86/150/180px。
-5. 检查 960/720/640px 断点下的换行与溢出。
-6. 如内容较多，考虑拆成两列或卡片网格，保持与现有 `.intro-grid` / `.feature-grid` 节奏一致。
-
----
-
-## 6. 任务：修改主题配色
-
-主题令牌集中在 [styles.css](../styles.css) 第 7–35 行。但**仅改令牌不够**：渐变、光晕、描边中存在硬编码色值。
-
-### 6.1 修改步骤
-
-1. 修改 `:root` 中的主色令牌（`--gold`、`--gold-bright`、`--gold-pale`、`--gold-soft`、`--navy`、`--paper` 等）。
-2. 全文件扫描硬编码颜色：
+1. 用同名文件覆盖 `src/assets/screenshots/screenshot-XX.jpg`（建议 1284×2778，JPG）；
+2. 若画面内容变化，更新 `src/data/screenshots.ts` 中对应的 `alt` 与 `caption`；
+3. 构建并检查：
 
 ```bash
-grep -nE '#[0-9A-Fa-f]{3,8}|rgba?\(' styles.css
+npm run build
+npm run test:unit          # 数据契约
+npm run test:visual:update # 截图变化会影响视觉基线
 ```
 
-3. 逐处判断：
-   - 属于主色体系的，改为 `var(--token)` 或与新色一致的 `rgba`；
-   - 属于局部渐变高光的（如 Hero 标题的 5 段金、`#1B2F57`、`#0A1220`），按新配色重算；
-   - 阴影中的 `rgba(216, 185, 106, …)` 是金色光晕，必须同步。
-4. 检查 HTML 是否有内联颜色（当前没有；箭头 SVG 使用 `stroke="currentColor"`，无需改）。
-5. 检查三页所有 hover / active / focus 状态。
-6. 按 [05](05-run-and-deploy.md#3-本地验收清单) 做全尺寸视觉回归，特别关注：按钮、卡片边框、缩略图激活态、备案链接、页脚渐变线。
-7. 改完提升 CSS 版本号，并在三个页面统一引用（建议顺带补齐文档页版本参数）。
+### 2.2 新增截图（数量变化）
 
-### 6.2 零残留检查
+1. 新增 `screenshot-23.jpg`；
+2. 在 `src/data/screenshots.ts` 顶部 `import`，并在 `items` 数组追加 `{ image, alt, caption }`；
+3. 同步修改数量断言：
+   - `tests/unit/data.test.ts` 的 `toHaveLength(22)` 与序号数组；
+   - `tests/e2e/home.spec.ts` 的 `共 22 张` 与缩略图 `toHaveCount(22)`；
+4. 检查依赖「第 1 张」的逻辑：Hero 使用 `screenshots[0]`，如需更换首图请调整数组顺序；
+5. 更新 OG 图文案：`scripts/generate-icons.mjs` 中 `22 张真机界面 · 10 张平台架构图`；
+6. 更新 `README.md` 与 `docs/` 中的数量描述；
+7. 重新生成图标并更新视觉基线：
 
 ```bash
-# 旧色值是否仍有残留（示例：金色系）
-grep -nE '176, 138, 62|216, 185, 106|B08A3E|D8B96A|EBD9A8|F4ECD8' styles.css index.html privacy.html agreement.html
+npm run icons:build
+npm run test:visual:update
 ```
 
-预期：命中的每一处都应是你有意保留或已替换后的新值；逐行确认，不依赖肉眼扫版。
-
-> 当前未使用的保留令牌：`--blue-deep`、`--paper-deep`。若不做蓝色系扩展，可保留或清理。
+> 功能卡的 `targetShot` 是 1-based，数据测试会校验其不超过截图总数。新增截图后如有新的关联入口，记得同步。
 
 ---
 
-## 7. 任务：更新法律文本
+## 3. 新增或替换平台架构图
 
-**隐私政策** [privacy.html](../privacy.html)：
-
-1. 正文位于第 31–102 行，章节用 `<h2>`，列表用 `<ul>`；
-2. 修改实质条款时同步更新第 34 行的「生效日期 / 最近更新」；
-3. 必须与应用实际行为一致（不注册、不收集、仅本地存储、权限用途）；
-4. 联系方式与页脚保持一致。
-
-**用户协议** [agreement.html](../agreement.html)：
-
-1. 正文位于第 31–87 行；
-2. 同步第 34 行日期；
-3. 服务内容、知识产权、免责条款如随产品变化，需同步首页功能描述。
-
-**注意**：
-
-- 法律页面的样式全部来自 `.doc-wrap`，不要新增独立样式；
-- 若增加章节，`h2` 编号（一、二、三……）要连续；
-- 首页 `#system` 的权限与数据描述也必须与隐私政策一致；
-- 不要把应用内功能描述成网站功能（本站不收集、不登录、不支付）。
+1. 新增 `src/assets/architecture/flow-11.png`（建议 1600×1240）；
+2. 在 `src/data/architecture.ts` 中 `import` 并追加 `{ image, title, description }`；
+3. 更新数量断言：
+   - `tests/unit/data.test.ts` 的 `toHaveLength(10)`；
+   - `tests/e2e/home.spec.ts` 灯箱计数 `01 / 10`；
+4. 更新 `scripts/generate-icons.mjs` 的 OG 文案与 `README` / `docs` 中的数量；
+5. 架构图卡片标题、FIG 序号由组件自动计算，无需手改；
+6. 重新构建并更新视觉基线。
 
 ---
 
-## 8. 任务：更新备案与联系方式
+## 4. 修改首页文案与卡片
 
-涉及三个 HTML 的页脚（首页 378–413 行、隐私 104–138 行、协议 89–123 行）：
+| 任务                 | 操作                                                                                   | 连带检查                                   |
+| -------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------ |
+| 改概览数据           | `src/data/home.ts` 的 `facts`                                                          | 数字需与截图/架构图数量一致（如 22）       |
+| 改介绍卡             | `introCards`；数量保持 4 或同步数据测试                                                | 卡片索引 `01–04` 自动生成                  |
+| 改功能卡             | `features`；`icon` 必须是 `FeatureIcon`；`targetShot` 在 `1..截图总数`                  | 功能卡链接会切到对应截图                   |
+| 改系统与隐私         | `systemGroups`；`icon` 必须是 `SystemIcon`                                             | 文案涉及权限时必须与隐私政策一致           |
+| 改 FAQ               | `src/data/faq.ts`                                                                      | 页面与 JSON-LD 同源；E2E 断言 6 项         |
+| 改区块标题 / 眉题    | 对应 `src/components/home/*.astro`                                                     | 维持 `aria-labelledby` 与标题层级          |
+| 改页头/页脚标签      | `src/data/site.ts`、`BaseLayout` 的 `headerLabels`、`SiteFooter.astro`                  | 同步 E2E 导航名称                          |
 
-| 内容       | 位置                             | 注意                                                           |
-| ---------- | -------------------------------- | -------------------------------------------------------------- |
-| ICP 备案号 | `.beian-link` 文本与 `href`      | 链接固定为 `https://beian.miit.gov.cn/`                        |
-| 公安备案号 | 文本 + `beian.png` + 查询 `code` | 链接参数 `code=14010602111139`，徽标路径 `beian/beian.png`     |
-| 版权行     | `.copyright-meta` 首个 `<span>`  | 首页为「© 2026 园枢」，文档页为「© 2026 秦超（个人）版权所有」 |
-| 域名       | `.copyright-line`                | `https://jl.43322.cn`                                          |
-| 联系邮箱   | 页脚与关于我们                   | `56967916@qq.com`；关于我们另列 `uull@aliyun.com`              |
-
-**同步要求**：三页页脚的备案号、域名、邮箱必须一致。已知差异：首页版权为「© 2026 园枢」且联系区多一行「欢迎您的使用！」，文档页版权为「© 2026 秦超（个人）版权所有」且保留联系电话注释；修改时按现有差异保留或统一。更新后逐一打开备案链接验证。
-
----
-
-## 9. 任务：修改轮播行为
-
-脚本位于 [index.html](../index.html) 第 415–503 行。常见改动：
-
-| 需求             | 改哪里                           | 注意                                                   |
-| ---------------- | -------------------------------- | ------------------------------------------------------ |
-| 调整滑动灵敏度   | 第 489 行 `42` 与 `1.35`         | 太小会误触，太大会难触发                               |
-| 改为自动播放     | 新增 `setInterval` + 暂停策略    | 必须尊重 `prefers-reduced-motion`，并在悬停/聚焦时暂停 |
-| 增加循环切换动画 | `.cvr-img` 过渡或新增 class      | 不要破坏 `active` 唯一性                               |
-| 支持上下方向键   | 第 495 行条件                    | 避免与页面滚动冲突                                     |
-| 同步 URL hash    | `go()` 内 `history.replaceState` | 需要处理初始 hash 与返回键                             |
-| 缩略图改为分页   | 重写缩略图工厂                   | 同步 `thumbs` 与 `aria-selected`                       |
-
-**硬约束**：`.cvr-img` 的 DOM 顺序、`data-cap`、`#cvrCount/#cvrTotal/#cvrCaption/#cvrRail`、`.cvr-arrow.prev/.next`、`.cvr-thumb[data-i]` 是 CSS/JS 共同契约，改名必须两处同步。
+**文案一致性**：Hero 的「即将上架」、FAQ 的上架时间、`site.availability` 必须一致；`site.platform` 同时用于 Hero 标签、FAQ 与关于区块。
 
 ---
 
-## 10. 改动后的回归清单（精简版）
+## 5. 修改导航
+
+1. 页内导航改 `src/data/site.ts` 的 `navigation`（`href` 必须是 `#id`，`id` 与区块一致）；
+2. 法律页入口改 `legalNavigation`；
+3. 移动抽屉、页脚、页头会自动跟随；
+4. 检查：
+   - 目标区块存在同名 `id`；
+   - `tests/e2e/home.spec.ts` 中导航名称断言；
+   - `tests/unit/data.test.ts` 的锚点唯一性；
+   - 新增项可能需要调整移动抽屉的序号显示（自动计算）。
+
+---
+
+## 6. 修改品牌、联系方式与备案
+
+1. 改 `src/data/site.ts` 中对应字段；
+2. 页头、页脚、关于区块、Seo、manifest、schema 自动同步；
+3. 数据测试会校验 ICP 格式（`晋ICP备…号`）、公安备案码为纯数字、邮箱含 `@`；
+4. 若域名变化，必须同步：
+   - `astro.config.mjs` 的 `site`；
+   - `public/robots.txt` 的 Sitemap；
+   - `scripts/generate-icons.mjs` 的 OG 域名；
+   - `docs/` 中部署与验收记录；
+5. 若应用图标变化，替换 `src/assets/brand/app-icon.png` 后执行 `npm run icons:build`，并检查 OG 图。
+
+---
+
+## 7. 修改设计令牌与主题
+
+### 7.1 标准流程
+
+```bash
+# 1. 编辑 src/design/tokens.ts（唯一事实源）
+# 2. 生成 CSS
+npm run tokens:build
+# 3. 一致性与硬编码检查
+npm run check:tokens
+# 4. 对比度检查（33 项）
+npm run check:contrast
+# 5. 类型/构建
+npm run typecheck && npm run build
+# 6. 视觉基线更新（确认差异符合预期）
+npm run test:visual:update
+```
+
+### 7.2 规则
+
+- **禁止**编辑 `src/styles/tokens.generated.css`，它由脚本逐字符生成并参与一致性校验；
+- 组件中禁止十六进制、`rgb()`、`hsl()`，统一 `var(--color-...)`；
+- 新增语义色时，浅色与深色都要给出取值，并在 `check-contrast.mjs` 中补充对应检查项；
+- 深色主题不是简单反色：需单独校准表面层级、文字、边框与金色亮度；
+- `metaColors` 是给浏览器 chrome / manifest 的固定值，改动后同步检查 `theme-init` 与 `applyTheme`；
+- 对比度豁免仅限纯装饰发丝线，正文与交互边界不可豁免。
+
+### 7.3 断点与布局
+
+断点常量在 `tokens.ts` 的 `breakpoints`，但 CSS 媒体查询是手写数值（`640px`、`768px`、`1024px` 等）。修改响应式行为时需同时搜索 `src/styles/**` 与 `src/styles/showcase.css` 中的媒体查询，保持与断点定义一致。
+
+---
+
+## 8. 修改法律文本
+
+1. 编辑 `src/content/legal/*.md`；
+2. frontmatter 必须包含：
+   - `title`、`description`、`summary`（非空）；
+   - `effectiveDate`、`updatedDate`（`YYYY-MM-DD`，会被 `z.coerce.date()` 解析）；
+   - `order`（正整数，决定集合顺序）；
+3. 正文用 `##` 表示章节，目录会自动生成；不要手写锚点 id；
+4. 更新日期后，法律页头部、目录元信息与 `article:published_time` / `modified_time` 自动变化；
+5. 检查：
+   - `tests/e2e/home.spec.ts` 的隐私政策目录数（当前 9）与用户协议章节数（当前 7）；
+   - `docs/design-system` 无关，但 `docs/adr/0009-legal-content.md` 如涉及事实变更需同步；
+6. URL 固定为 `/privacy.html`、`/agreement.html`，不要改文件名，否则旧链接失效。
+
+---
+
+## 9. 依赖升级
+
+项目采用精确版本（`--save-exact`）与 lockfile：
+
+```bash
+# 示例：升级 astro
+npm install --save-exact astro@7.x.y
+npm run verify
+
+# 如果是视觉相关依赖（Chromium/字体/渲染）
+npm run test:visual:update
+
+# 升级后确认 lockfile 一并提交
+git add package.json package-lock.json
+```
+
+升级注意事项：
+
+- `astro`、`@astrojs/*`、`rehype-*`、`github-slugger` 属于高风险组合，尽量同步升级；
+- `sharp` 是原生依赖，跨平台安装需重新 `npm ci`；
+- `@playwright/test` 升级后可能需要重新下载浏览器并重建基线；
+- 升级后必须跑 `npm run verify`，并人工查看视觉差异；
+- 不要使用 `npm update` 批量漂移版本。
+
+---
+
+## 10. 更新视觉基线
+
+```bash
+npm run test:visual:update
+git add tests/e2e/visual.spec.ts-snapshots
+```
+
+- 基线文件名包含项目、主题与平台后缀，**只在 macOS 更新**；
+- 更新后查看 `reports/playwright-html` 或差异图，确认变化是预期设计调整，而不是布局破坏；
+- 若只是本地字体差异，不要在非 macOS 环境提交基线；
+- 基线共 64 张 PNG（12 个用例的 16 组快照 × 4 个项目），体积较大，谨慎提交无关变化。
+
+---
+
+## 11. 发布相关维护
+
+| 任务                     | 操作                                                                                     |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| 新增根目录发布文件       | 把相对路径加入 `scripts/sync-root.mjs` 的 `SYNC_TARGETS`，重新 `release`                 |
+| 停止同步某类产物         | 从 `SYNC_TARGETS` 移除，执行 `release` 会清理清单中的旧文件                              |
+| 更换托管平台             | 确认平台输出目录；若为构建型可评估移除根目录同步，需新增 ADR 并更新部署文档               |
+| 检查发布一致性           | `npm run check:release`                                                                  |
+| 发布前完整检查           | `npm run verify` + `npm run review:independent`（需 preview）                             |
+| 发布后验证               | 按 [05 · 运行与部署](05-run-and-deploy.md#7-线上部署与验证) 的 curl 与人工清单执行         |
+| 回滚                     | 见 [docs/operations/rollback.md](../docs/operations/rollback.md)                          |
+
+---
+
+## 12. 文档同步责任
+
+以下改动必须同步文档：
+
+| 改动                       | 需更新                                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------------------------- |
+| 架构、构建栈、运行时决策   | 新增/修订 `docs/adr/*`；更新 [01](01-architecture.md)、[04](04-dependencies.md)                   |
+| 令牌、配色、组件规范       | `docs/design-system/tokens.md`、`docs/design-system/contrast-report.md`（自动生成）              |
+| 模块、文件、脚本           | [02](02-modules.md)、[03](03-key-code.md)                                                       |
+| 命令、门禁、发布流程       | [05](05-run-and-deploy.md)、`README.md`、`docs/operations/deployment.md`                         |
+| 内容数量、截图/架构图      | [README](README.md)、[02](02-modules.md)、`README.md`、`docs/acceptance/*`                      |
+| 已知缺陷与限制             | `docs/operations/known-issues.md`、`docs/adr/0010-known-limitations.md`                         |
+
+文档原则：**能指到源码就指源码**；数量、版本、命令必须与当前仓库一致；不复制会过期的实现细节。
+
+---
+
+## 13. 发布前检查清单
 
 ```text
-[ ] 三页均可打开，无 404、无控制台报错
-[ ] 导航锚点全部可达，标题不被页头遮挡
-[ ] 轮播：截图数量与文案一致（当前 22）、计数、说明、箭头、缩略图、滑动、方向键
-[ ] 10 张架构图与 FIG 编号连续
-[ ] 1440 / 960 / 720 / 640 / 380 五档无溢出
-[ ] 页脚备案、域名、邮箱三页一致
-[ ] 图片 alt、轮播说明与新素材一致
-[ ] 修改 CSS 后版本号已更新并强刷验证
-[ ] 线上（https://jl.43322.cn）复验
+[ ] 只改了 src/、public/、scripts/、tests/、docs/，没有手改根目录 HTML
+[ ] npm run verify 通过（令牌、对比度、类型、Lint、格式、单测、构建、发布一致性、Playwright）
+[ ] 如改视觉：npm run test:visual:update 并人工审查差异
+[ ] 如改截图/架构图数量：单测、E2E、OG 文案、README/wiki 数量全部同步
+[ ] 如改法律文本：日期与章节数断言同步
+[ ] 如改令牌：tokens.generated.css 已由脚本生成，未手改
+[ ] npm run release 已执行，根产物与 dist/ 一致（371 个文件，随内容变化）
+[ ] git status 中产物变更已一并提交
+[ ] 推送 main 后按 05 的 7.1–7.5 验证线上
 ```
 
-完整清单见 [05 · 本地验收清单](05-run-and-deploy.md#3-本地验收清单)。
+---
+
+## 14. 常见误区
+
+| 误区                                   | 后果 / 纠正                                                                 |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| 直接编辑根目录 `index.html`            | 下次 `release` 会被覆盖；必须改 `src/pages/index.astro` 或组件               |
+| 手改 `tokens.generated.css`            | `check:tokens` 失败；应改 `tokens.ts` 后重新生成                            |
+| 组件里写 `#fff` / `rgba()`             | `check-tokens` 失败；改用语义令牌                                          |
+| 新增截图只改数据、不改测试             | 单元/E2E 数量断言失败                                                       |
+| 改了法律标题但没更新目录断言           | E2E 目录数量失败；同时 TOC 可能失配                                          |
+| 在 Linux 更新视觉基线                  | 跨平台字体差异导致 CI 假失败；基线只在 macOS 更新                            |
+| 忘记 `npm run release`                | 线上仍是旧版；`check:release` 与 CI 会失败                                   |
+| 认为站点会请求后端                     | 站点无 API；所有内容构建期生成                                              |
+| 把 `wiki/` 当运行时页面                | `wiki/` 只是文档，不参与站点构建（`.prettierignore` 也忽略该目录）            |
 
 ---
 
-## 11. 已知技术债与可选优化
+## 15. 快速命令参考
 
-以下不属于当前缺陷，而是维护时值得顺手处理的方向：
-
-| 项                        | 现状                           | 可选做法                                           |
-| ------------------------- | ------------------------------ | -------------------------------------------------- |
-| 三页公共头尾复制          | 改一处需改三处                 | 引入极轻量的构建期 include，或接受重复并用清单保障 |
-| CSS 版本不一致            | 仅首页带 `?v=`                 | 三页统一版本参数                                   |
-| 图片体积                  | 8.9 MB 原图直出                | 生成 WebP/AVIF 与 `srcset`；架构图压缩             |
-| 隐藏幻灯片可被读屏遍历    | 仅 `opacity: 0`                | `go()` 内同步 `aria-hidden` 与 `inert`             |
-| 方向键未 `preventDefault` | 可能与页面滚动叠加             | 明确调用并测试                                     |
-| 减弱动效不覆盖全部过渡    | 箭头/缩略图/下划线仍有过渡     | 扩展 `prefers-reduced-motion` 规则                 |
-| 首页缺少 `<main>`         | 地标不完整                     | 用 `<main>` 包裹主要 sections                      |
-| SEO 元信息有限            | 只有 title/description/favicon | 补 canonical、OG/Twitter、结构化数据               |
-| 图片无尺寸属性            | 可能产生布局偏移               | 补 `width`/`height` 或 `srcset`                    |
-| 数量文案硬编码            | 22 / 10 分散多处               | 若引入构建，改为模板变量                           |
-| 分享 ZIP 入库             | 约 49 MB                       | 移出版本库，用发布附件分发                         |
-| 无自动化校验              | 全靠人工                       | 加静态检查：资源存在性、锚点存在性、HTML 校验      |
-| 无 CSP                    | 首页有内联脚本                 | 如需 CSP，使用脚本 hash 或 nonce                   |
-| 轮播样式二次覆盖          | 416–573 与 575–610 两段        | 合并规则，减少维护歧义                             |
-| 未使用令牌                | `--blue-deep`、`--paper-deep`  | 清理或用于后续扩展                                 |
-
----
-
-## 12. 文档维护
-
-本 Wiki 与代码同仓库、同版本管理。以下改动需要同步文档：
-
-| 代码变化               | 需更新的文档                                                                                       |
-| ---------------------- | -------------------------------------------------------------------------------------------------- |
-| 新增/删除页面          | [README](README.md) 速览与目录、[01](01-architecture.md) 信息架构、[04](04-dependencies.md) 依赖图 |
-| 新增/删除 section      | [02](02-modules.md) 区块表、[03](03-key-code.md) 位置索引                                          |
-| 修改 class/id/`data-*` | [03](03-key-code.md) DOM 契约、[02](02-modules.md) 模块依赖                                        |
-| 修改断点/令牌          | [03](03-key-code.md) CSS 章节                                                                      |
-| 修改脚本函数           | [03](03-key-code.md) 函数表与状态表                                                                |
-| 修改资源数量/规格      | [04](04-dependencies.md) 资源矩阵、[README](README.md) 速览                                        |
-| 修改部署方式           | [05](05-run-and-deploy.md) 部署章节、[README](README.md) 速览                                      |
-| 修改维护约定           | 本文第 1 节                                                                                        |
-
-写作约定：使用中文、相对链接、准确行号；不复制大段源码，只保留理解所需的片段；所有结论以仓库当前文件为准，不臆测应用内部实现。
+```bash
+npm ci                      # 安装
+npm run dev                 # 开发
+npm run build               # 构建
+npm run preview             # 预览
+npm run verify              # 全量门禁
+npm run test:unit           # 单元测试
+npm run test:e2e            # E2E（含视觉）
+npm run test:visual:update  # 重建视觉基线
+npm run check:tokens        # 令牌门禁
+npm run check:contrast      # 对比度门禁
+npm run check:release       # 发布一致性
+npm run release             # 构建 + 同步根目录
+npm run review:independent  # 独立巡检（需 preview）
+```

@@ -1,387 +1,497 @@
 # 03 · 关键代码说明
 
-## 0. 阅读前提
-
-本项目是**无类、无框架、无模块系统**的静态站点。所谓「关键类与函数」在本仓库中对应：
-
-- **组件契约**：HTML 的 class / id / `data-*` 与 CSS、JS 之间的约定；
-- **样式模块**：设计令牌、组件规则、响应式覆盖；
-- **函数**：首页内联 IIFE 中的闭包函数与事件处理器。
-
-仓库没有 `.js` 独立文件，脚本全部位于 [index.html](../index.html) 第 415–503 行，运行在 IIFE 的闭包作用域中。
+本文件聚焦「改代码前必须知道」的实现细节：DOM 契约、关键组件与函数、轮播/灯箱状态机、主题与埋点、构建脚本算法。所有行号基于 commit `3c9d801`。
 
 ---
 
-## 1. HTML 关键结构
+## 1. DOM 契约总表
 
-### 1.1 轮播 DOM 契约
+组件只负责输出结构，行为脚本只按 `data-*` 查找节点。**改属性名等于改 API**。
 
-```text
-#appCarousel [role=region]
-├── .cvr-stage
-│   ├── .cvr-phone
-│   │   ├── img.cvr-img.active[src][alt][data-cap][fetchpriority=high]
-│   │   ├── img.cvr-img[src][alt][data-cap][loading=lazy]   × 21
-│   │   └── …
-│   ├── button.cvr-arrow.prev[aria-label=上一张截图]
-│   └── button.cvr-arrow.next[aria-label=下一张截图]
-├── .cvr-meta
-│   ├── .cvr-chip[aria-hidden=true] > #cvrCount / #cvrTotal
-│   └── p#cvrCaption[aria-live=polite]
-└── #cvrRail[role=tablist]        ← 初始为空，由脚本生成 22 个 button
-```
+| 契约                                   | 定义位置                            | 消费脚本                          | 作用                                              |
+| -------------------------------------- | ----------------------------------- | --------------------------------- | ------------------------------------------------- |
+| `data-site-header`                     | `SiteHeader.astro`                  | `header.ts`                       | 页头滚动状态容器                                  |
+| `data-nav-link` / `data-nav-section`   | `SiteHeader.astro`                  | `header.ts`                       | 桌面导航项与对应区块 id                           |
+| `data-nav-toggle`                      | `SiteHeader.astro`                  | `mobile-nav.ts`                   | 打开移动抽屉                                      |
+| `data-mobile-nav` / `data-nav-close`   | `MobileNav.astro`                   | `mobile-nav.ts`                   | 抽屉 `<dialog>` 与关闭按钮                        |
+| `data-to-top`                          | `ToTop.astro`                       | `header.ts`                       | 回到顶部按钮                                      |
+| `data-theme-toggle`                    | `ThemeToggle.astro`                 | `theme.ts`                        | 三态主题按钮组                                    |
+| `data-theme-value`                     | `ThemeToggle.astro`                 | `theme.ts`                        | `light` / `dark` / `system`                       |
+| `data-carousel`                        | `ShowcaseSection.astro`             | `app.ts`                          | 轮播根容器                                        |
+| `data-carousel-stage`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 键盘与指针区域（`tabindex="0"`）                  |
+| `data-carousel-slide`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 每张幻灯片，携带 caption 与灯箱数据               |
+| `data-carousel-thumb`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 缩略图按钮（roving tabindex）                     |
+| `data-carousel-prev` / `-next`         | `ShowcaseSection.astro`             | `carousel.ts`                     | 前后箭头                                          |
+| `data-carousel-current`                | `ShowcaseSection.astro`             | `carousel.ts`                     | 当前序号文本                                      |
+| `data-carousel-caption-title` / `-body`| `ShowcaseSection.astro`             | `carousel.ts`                     | 说明标题与正文                                    |
+| `data-carousel-live`                   | `ShowcaseSection.astro`             | `carousel.ts`                     | `role="status"` 读屏播报                          |
+| `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 会刷新其灯箱数据集               |
+| `data-shot-target`                     | `IntroSection.astro`                | `app.ts`                          | 功能卡跳转到指定截图（1-based）                    |
+| `data-lightbox`                        | `Lightbox.astro`                    | `lightbox.ts`                     | 全局灯箱 `<dialog>`                               |
+| `data-lightbox-trigger`                | Showcase / Architecture             | `lightbox.ts`                     | 打开灯箱的触发元素                                |
+| `data-lightbox-item`                   | Showcase / Architecture             | `lightbox.ts`                     | 灯箱组内的数据项（可同时是触发器）                |
+| `data-lightbox-group`                  | 同上                                | `lightbox.ts`                     | 分组：`screenshots` / `architecture`              |
+| `data-lightbox-index`                  | 同上                                | `lightbox.ts`                     | 组内序号（0-based）                               |
+| `data-lightbox-full` / `-alt` / `-caption` | 同上                             | `lightbox.ts`                     | 大图地址、替代文本、说明                          |
+| `data-lightbox-group-title`            | 同上                                | `lightbox.ts`                     | 灯箱标题                                          |
+| `data-lightbox-image` / `-figure` / `-caption` / `-count` / `-title` | `Lightbox.astro` | `lightbox.ts`       | 灯箱内部节点                                      |
+| `data-lightbox-prev` / `-next` / `-close` | `Lightbox.astro`                 | `lightbox.ts`                     | 灯箱控制按钮                                      |
+| `data-reveal`                          | 各区块                              | `reveal.ts`                       | 滚动显现元素                                      |
+| `data-legal-toc` / `data-legal-article`| `LegalLayout.astro`                 | `legal-toc.ts`                    | 目录与文章容器                                    |
+| `data-track` / `data-track-*`           | 各组件                              | `analytics.ts`                    | 声明式埋点                                        |
 
-**脚本与 CSS 依赖的硬契约**（改名即断）：
-
-| 契约                           | 被谁使用                     | 用途                                       |
-| ------------------------------ | ---------------------------- | ------------------------------------------ |
-| `#appCarousel .cvr-stage`      | JS 第 417 行                 | 脚本入口守卫；触摸监听目标                 |
-| `#appCarousel .cvr-img`        | JS 第 419 行；CSS `.cvr-img` | DOM 顺序即展示顺序；数量即总数             |
-| `.cvr-img.active`              | JS 第 452 行；CSS 第 472 行  | 唯一可见幻灯片（`opacity: 1; z-index: 2`） |
-| `data-cap`                     | JS 第 459 行                 | 当前图说明文案                             |
-| `alt`                          | JS 第 433 行                 | 缩略图 `aria-label` 与 `title`             |
-| `#cvrCount` / `#cvrTotal`      | JS 第 421–422、458、465 行   | 序号 / 总数                                |
-| `#cvrCaption`                  | JS 第 423、459 行            | 说明区                                     |
-| `#cvrRail`                     | JS 第 423、432、470 行       | 缩略图容器与事件委托                       |
-| `.cvr-thumb[data-i]`           | JS 第 432–436、470–473 行    | 缩略图索引                                 |
-| `.cvr-arrow.prev` / `.next`    | JS 第 424–425、468–469 行    | 前后切换                                   |
-| `.cvr-phone` 的 `aspect-ratio` | CSS 第 448 行                | 锁定 1284:2778，与截图一致                 |
-
-### 1.2 语义与无障碍属性
-
-| 位置       | 属性                                                         | 作用                         |
-| ---------- | ------------------------------------------------------------ | ---------------------------- |
-| `<html>`   | `lang="zh-CN"`                                               | 中文页面语言                 |
-| 轮播容器   | `role="region"`、`aria-roledescription="轮播"`、`aria-label` | 告知辅助技术这是一个轮播区域 |
-| 缩略图容器 | `role="tablist"`、`aria-label`                               | 缩略图组                     |
-| 缩略图按钮 | `role="tab"`、`aria-selected`、`aria-label`、`title`         | 当前项状态与完整描述         |
-| 说明文字   | `aria-live="polite"`                                         | 切换后温和播报新说明         |
-| 序号胶囊   | `aria-hidden="true"`                                         | 视觉装饰，避免重复播报       |
-| 箭头       | `aria-label`                                                 | 图标按钮的可读名称           |
-| 图片       | `alt` 描述具体界面；缩略图 `alt=""`                          | 避免同一内容被读两次         |
-| 外链       | `target="_blank"` + `rel="noopener noreferrer"`              | 新窗口安全打开               |
-
-**已知缺口**：非当前幻灯片仅通过 `opacity: 0` 隐藏，未加 `aria-hidden`，读屏仍可能遍历；首页没有 `<main>` 地标；方向键处理未 `preventDefault`。这些不影响视觉功能，但属于可继续完善的无障碍项。
-
-### 1.3 文档页结构
-
-```text
-<body>
-├── header.site-header（与首页同构，链接为跨页形式）
-├── main.container
-│   └── div.doc-wrap
-│       ├── h1（页面标题）
-│       ├── p.doc-meta（生效 / 更新日期）
-│       └── h2 + p + ul/ol（章节正文）
-└── footer.site-footer（与首页同构）
-```
-
-文档页不使用 `<article>`，章节直接以 `h2` 平铺；样式全部来自 `.doc-wrap` 作用域。
+> 行为脚本从不依赖 `.showcase__rail` 以外的视觉 class；轮播用该类定位横向滚动容器（`carousel.ts:48`）。
 
 ---
 
-## 2. CSS 设计系统
+## 2. 布局与页面
 
-### 2.1 设计令牌（[styles.css](../styles.css) 第 7–35 行）
+### 2.1 `BaseLayout.astro`
 
-| 令牌             | 值                                 | 用途                         | 引用次数 |
-| ---------------- | ---------------------------------- | ---------------------------- | -------: |
-| `--ink`          | `#121B2E`                          | 标题与深色文字               |       14 |
-| `--navy`         | `#0B1322`                          | 深色背景（Hero、页脚、舞台） |        7 |
-| `--navy-2`       | `#14223E`                          | 深色渐变中点                 |        2 |
-| `--blue`         | `#2C4E8C`                          | 正文链接                     |        1 |
-| `--blue-deep`    | `#1F3A68`                          | 保留未使用                   |        0 |
-| `--gold`         | `#B08A3E`                          | 主强调色、边框、图标         |       23 |
-| `--gold-bright`  | `#D8B96A`                          | 高亮金、悬停                 |        6 |
-| `--gold-pale`    | `#EBD9A8`                          | 浅金、描边                   |       15 |
-| `--gold-soft`    | `#F4ECD8`                          | 金色浅底                     |        3 |
-| `--paper`        | `#F7F4EC`                          | 页面暖白底                   |        1 |
-| `--paper-deep`   | `#EFEAE0`                          | 保留未使用                   |        0 |
-| `--card`         | `#FFFFFF`                          | 卡片白底                     |        7 |
-| `--text`         | `#252D3D`                          | 正文                         |        3 |
-| `--muted`        | `#6D7585`                          | 次要文字                     |        9 |
-| `--line`         | `#E4DDCC`                          | 暖色发丝线                   |       14 |
-| `--serif`        | 宋体栈                             | 标题、品牌、编号             |       16 |
-| `--sans`         | 系统无衬线栈                       | 正文                         |        1 |
-| `--radius`       | `18px`                             | 卡片圆角                     |        8 |
-| `--shadow`       | `0 10px 32px rgba(18,27,46,.07)`   | 常态阴影                     |        6 |
-| `--shadow-hover` | `0 20px 48px rgba(18,27,46,.13)`   | 悬停阴影                     |        4 |
-| `--shadow-gold`  | `0 12px 34px rgba(176,138,62,.32)` | 金色按钮阴影                 |        2 |
-
-另设 `color-scheme: light`，本站没有深色模式；页面文案中提到的深色模式属于 iOS 应用能力。
-
-### 2.2 布局系统
-
-| 机制       | 规则                                                                      | 效果             |
-| ---------- | ------------------------------------------------------------------------- | ---------------- |
-| 限宽容器   | `.container { max-width: 1120px; padding: 0 28px; }`                      | 全站内容对齐     |
-| 纵向节奏   | `.section { padding: 96px 0; }`；窄屏 68px                                | 区块留白         |
-| 交替底色   | `.section-alt` 的 `background: var(--card)` + 上下 1px `var(--line)` 边框 | 白/暖白节奏      |
-| 居中标题组 | `.section-head { max-width: 780px; margin: 0 auto 56px; }`                | 统一版式         |
-| 网格       | intro 2 列、features 3 列、flow 2 列、sys 2 列                            | 内容密度         |
-| 卡片       | 白底 + 1px 暖线 + 18px 圆角 + 常态阴影                                    | 统一组件语言     |
-| 锚点偏移   | `[id] { scroll-margin-top: 86px; }`                                       | 吸顶导航不遮标题 |
-
-### 2.3 组件目录
-
-| 组件       | 选择器根                   | 关键实现                                                                               |
-| ---------- | -------------------------- | -------------------------------------------------------------------------------------- |
-| 吸顶导航   | `.site-header`             | `position: sticky` + `backdrop-filter: blur(16px) saturate(1.4)` + 顶部 3px 金蓝渐变线 |
-| 品牌       | `.brand`                   | 图标悬停 `rotate(-6deg) scale(1.05)`                                                   |
-| 导航下划线 | `.nav-links a::after`      | 宽度 0 → 100% 的金色渐变线                                                             |
-| Hero       | `.hero`                    | 三层背景（两径向 + 一线性）、`::after` 26px 内画框                                     |
-| 渐变标题   | `.hero h1`                 | 多段金色 `linear-gradient` + `background-clip: text`                                   |
-| 按钮       | `.btn-gold` / `.btn-ghost` | 胶囊、悬停上移 2px                                                                     |
-| 浮动图标   | `.hero-icon img`           | `floaty` 6s 上下 10px                                                                  |
-| 介绍卡     | `.intro-card`              | 左侧 3px 金线由 0 → 100% 高度                                                          |
-| 功能卡     | `.feature-card`            | 悬停上移 6px；右上角装饰在悬停时显现                                                   |
-| 轮播舞台   | `.cvr-stage`               | 固定高度 + 深色渐变 + 内画框 `::after`                                                 |
-| 手机框     | `.cvr-phone`               | `aspect-ratio: 1284/2778`、7px 深色边框、40px 圆角、多层阴影                           |
-| 幻灯片     | `.cvr-img`                 | 绝对定位叠放；`opacity 0 → 1` + `scale(1.03) → 1`                                      |
-| 箭头       | `.cvr-arrow`               | 圆形毛玻璃、金色描边、悬停变金底                                                       |
-| 序号胶囊   | `.cvr-chip`                | 金色渐变胶囊、宽字距                                                                   |
-| 缩略图     | `.cvr-thumb`               | 非激活约 58% 透明度（基础层 42%，被 22 张适配层覆盖）、金色激活边框、激活放大 1.07     |
-| 架构图卡   | `.flow-card`               | 图悬停 `scale(1.015)`、说明区上边框                                                    |
-| 系统卡     | `.sys-card`                | 标题下金色 44px 短线、菱形项目符                                                       |
-| 关于卡     | `.about-card`              | `::before` 内缩 16px 双层边框                                                          |
-| 页脚       | `.site-footer`             | 墨蓝底、顶部金色渐变线、三列 flex                                                      |
-| 文档卡     | `.doc-wrap`                | 白卡 + 顶部墨蓝—鎏金装饰条 + 左右 62px、上下 56px 内边距                               |
-| 备案行     | `.copyright-meta`          | flex 居中、1px 金色分隔线、徽标 20px 圆形                                              |
-
-### 2.4 层叠上下文（z-index）
-
-| 元素                | z-index | 说明                     |
-| ------------------- | ------: | ------------------------ |
-| `.site-header`      |     100 | 始终压住页面内容         |
-| `.cvr-arrow`        |       5 | 压住舞台内所有内容       |
-| `.cvr-stage::after` |       3 | 内画框覆盖图片但不挡箭头 |
-| `.cvr-img.active`   |       2 | 当前幻灯片               |
-| `.hero-inner`       |       1 | 高于 Hero 背景装饰       |
-| 其余默认            |    auto | 常规文档流               |
-
-### 2.5 响应式断点
-
-| 断点               |    行号 | 主要变化                                                                                                                       |
-| ------------------ | ------: | ------------------------------------------------------------------------------------------------------------------------------ |
-| `min-width: 641px` | 594–610 | 缩略图改为 `repeat(11, 44px)` 网格，两行全显                                                                                   |
-| `max-width: 960px` | 868–878 | Hero 纵向反转居中；intro/sys/flow 单列；features 两列；舞台 640px；文档卡内边距缩小                                            |
-| `max-width: 720px` | 881–885 | 导航改纵向、链接换行居中；锚点偏移 150px                                                                                       |
-| `max-width: 640px` | 887–906 | 锚点 180px；Hero 与区块留白缩小；features 单列；舞台 520px；手机框 30px 圆角/5px 边框；箭头 42px；缩略图 44px；关于表键宽 92px |
-| `max-width: 560px` | 962–966 | 备案行紧凑、隐藏分隔线                                                                                                         |
-| `max-width: 380px` | 954–960 | 舞台 470px；箭头 34px 贴近边缘                                                                                                 |
-
-> 两个断点顺序为 380 在 560 之前，但作用属性不重叠，当前无覆盖冲突。
-
-### 2.6 动效清单
-
-| 动效                   | 触发           | 时长 / 曲线                                                                  |
-| ---------------------- | -------------- | ---------------------------------------------------------------------------- |
-| Hero 图标浮动          | 自动循环       | 6s ease-in-out，±10px                                                        |
-| 导航下划线展开         | hover          | 0.28s ease                                                                   |
-| 按钮上移 / 阴影        | hover          | 0.25s ease                                                                   |
-| 卡片上移 / 阴影 / 边框 | hover          | 0.3s ease                                                                    |
-| 幻灯片淡入缩放         | 切换           | opacity 0.65s；transform 0.9s cubic-bezier(.22,.61,.36,1)                    |
-| 缩略图状态             | hover / active | 0.25s ease                                                                   |
-| 锚点滚动               | 点击导航       | 原生 smooth                                                                  |
-| 减弱动效               | 系统设置       | 关闭主要动画/过渡、取消平滑滚动（[styles.css](../styles.css) 第 860–865 行） |
-
-减弱动效规则覆盖：Hero 浮动、平滑滚动，以及 `.cvr-img`、`.intro-card`、`.feature-card`、`.flow-card`、`.btn`、`.brand img` 的过渡；箭头、缩略图、导航下划线等过渡仍会保留。
-
----
-
-## 3. JavaScript 关键函数
-
-### 3.1 执行模型
-
-- 位置：`</body>` 之前（第 415–503 行），DOM 已解析完毕，因此无需 `DOMContentLoaded`。
-- 形态：`(function () { … })();`，所有变量处于闭包内，不污染全局。
-- 守卫：`if (!stage) return;`，没有轮播舞台的页面不受影响。
-- 无自动播放：只有用户操作才会切换。
-
-### 3.2 状态变量
-
-| 变量                  | 类型      | 初值                        | 含义                      |
-| --------------------- | --------- | --------------------------- | ------------------------- |
-| `stage`               | Element   | `#appCarousel .cvr-stage`   | 舞台，事件与可见性判断    |
-| `imgs`                | Element[] | 全部 `.cvr-img`             | 按 DOM 顺序的幻灯片       |
-| `countEl` / `totalEl` | Element   | `#cvrCount` / `#cvrTotal`   | 序号显示                  |
-| `capEl`               | Element   | `#cvrCaption`               | 说明文字                  |
-| `rail`                | Element   | `#cvrRail`                  | 缩略图容器                |
-| `prevBtn` / `nextBtn` | Element   | `.cvr-arrow.prev` / `.next` | 前后按钮                  |
-| `total`               | number    | `imgs.length`               | 幻灯片总数（当前 22）     |
-| `cur`                 | number    | `0`                         | 当前索引                  |
-| `thumbs`              | Element[] | 生成后的按钮列表            | 缩略图状态同步            |
-| `preloaded`           | object    | `{}`                        | 已预取 URL 集合，避免重复 |
-| `startX` / `startY`   | number    | `0`                         | 触摸起点                  |
-| `tracking`            | boolean   | `false`                     | 是否正在跟踪单指滑动      |
-
-### 3.3 函数与处理器
-
-| 名称               | 位置    | 签名               | 职责                                            | 副作用                               |
-| ------------------ | ------- | ------------------ | ----------------------------------------------- | ------------------------------------ |
-| 缩略图构建（匿名） | 432–436 | `imgs.map(...)`    | 用 `src` + `alt` 生成按钮 HTML                  | 写入 `rail.innerHTML`；建立 `thumbs` |
-| `preloadAround(i)` | 439–448 | `(number) => void` | 预取 `i-1 / i / i+1`（环形）                    | 创建 `Image` 对象；写 `preloaded`    |
-| `go(i)`            | 450–463 | `(number) => void` | 统一渲染当前帧                                  | 改 class、ARIA、文本、滚动位置       |
-| 上一张处理器       | 468     | `click`            | `go(cur - 1)`                                   | 同 `go`                              |
-| 下一张处理器       | 469     | `click`            | `go(cur + 1)`                                   | 同 `go`                              |
-| 缩略图委托         | 470–473 | `click`            | `e.target.closest('.cvr-thumb')` → `go(data-i)` | 同 `go`                              |
-| 触摸开始           | 477–482 | `touchstart`       | 单指时记录起点；多指取消跟踪                    | 写 `tracking/startX/startY`          |
-| 触摸结束           | 483–492 | `touchend`         | 判断横向位移并切换                              | 同 `go`                              |
-| 键盘               | 494–501 | `keydown`          | 舞台可见时，左右方向键触发箭头点击              | 同 `go`                              |
-
-### 3.4 `go(i)` 的执行步骤
-
-> 下面的行内编号注释是文档标注，源码中没有这些注释。
-
-```js
-function go(i) {
-  cur = (i + total) % total; // 1. 环形归一化，处理越界
-  imgs.forEach(function (el, j) {
-    // 2. 只给当前图加 active
-    el.classList.toggle('active', j === cur);
-  });
-  thumbs.forEach(function (el, j) {
-    // 3. 同步缩略图视觉与 ARIA
-    var on = j === cur;
-    el.classList.toggle('active', on);
-    el.setAttribute('aria-selected', on ? 'true' : 'false');
-  });
-  countEl.textContent = String(cur + 1).padStart(2, '0'); // 4. 01…22
-  capEl.textContent = imgs[cur].getAttribute('data-cap') || ''; // 5. 说明
-  preloadAround(cur); // 6. 预取相邻
-  var t = thumbs[cur]; // 7. 当前缩略图滚入视口
-  if (t && t.scrollIntoView) {
-    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  }
+```ts
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  jsonLd?: readonly Record<string, unknown>[];
+  lightboxTitle?: string;
+  bodyClass?: string;
 }
 ```
 
-要点：
+职责（[BaseLayout.astro](../src/layouts/BaseLayout.astro)）：
 
-- 取模保证 `-1 → 最后一张`、`total → 第一张`；不使用 `if` 分支。
-- `active` 同时决定 CSS 可见性与缩略图高亮，是唯一的状态类。
-- 计数用 `padStart(2, '0')`，与 CSS 的宽字距一起形成「01 / 22」的版式。
-- 说明缺失时写入空字符串，不会残留上一张文案。
-- `scrollIntoView` 在窄屏单行缩略图中把当前项滚到中间；桌面两行网格下也安全。
-- `go()` 不检查 `total === 0`。当前 HTML 恒有 22 张图，这是隐含不变量；若未来动态生成，需要补守卫。
+1. `isHome = path === '/'`，`homeHref` 首页为 `''`、其他页为 `'/'`；
+2. 向 `SiteHeader` 传 `navigation`、`legalNavigation` 与全部中文标签（菜单、主题、CTA 等）；
+3. 在 `<head>` 以 `is:inline` 注入 `themeInitScript`，先于样式设置主题；
+4. `<body id="top">`，提供 `a.skip-link[href="#main"]`、`main#main[tabindex="-1"]`；
+5. 挂载 `SiteFooter`、`ToTop`、`Lightbox` 与 `app.ts` 脚本；
+6. 通过默认插槽承载页面内容。
 
-### 3.5 `preloadAround(i)` 的算法
+### 2.2 `Seo.astro`
 
-```js
-[-1, 0, 1].forEach(function (offset) {
-  var img = imgs[(i + offset + total) % total];
-  var src = img && img.getAttribute('src');
-  if (!src || preloaded[src]) return;
-  preloaded[src] = true;
-  var pre = new Image();
-  pre.src = src;
-});
+核心计算（[Seo.astro:31-33](../src/components/seo/Seo.astro#L31-L33)）：
+
+```ts
+const canonical = new URL(path, site.domain).href;
+const ogImage = new URL(image, site.domain).href;
+const fullTitle = path === '/' ? title : `${title} · ${site.name}`;
 ```
 
-- **环形**：首张会预取最后一张，反之亦然。
-- **去重**：以 URL 为键，22 张图最多各预取一次，内存开销有界。
-- **时机**：初始化预取第 1 张及左右；每次 `go()` 后预取新的左右邻。
-- **目的**：切换时图片已在缓存，避免白屏；不提前下载全部 22 张，节省流量。
+输出顺序：title → description → canonical → robots（可选）→ author/keywords/theme-color → 图标与 manifest → OG → Twitter → JSON-LD。`theme-color` 输出两条 `media` 查询，分别对应浅色与深色。
 
-### 3.6 手势判定
+### 2.3 `index.astro`
 
-```js
-if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.35) {
-  go(cur + (dx < 0 ? 1 : -1));
+```ts
+const jsonLd = [websiteSchema(), mobileApplicationSchema(), faqSchema(faqItems)];
+```
+
+组件顺序固定为 `Hero → FactBand → Intro → Showcase → Architecture → System → Faq → About`。新增/调整首页顺序只需改此文件，但需同步导航与测试。
+
+### 2.4 `[slug].astro`：静态路径与目录锚点
+
+```ts
+export async function getStaticPaths() {
+  const entries = await getCollection('legal');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
 }
 ```
 
-| 条件                                 | 作用                             |
-| ------------------------------------ | -------------------------------- |
-| `touches.length !== 1`               | 多指（缩放等）不触发轮播         |
-| `Math.abs(dx) > 42`                  | 最小横向位移，过滤轻触抖动       |
-| `Math.abs(dx) > Math.abs(dy) * 1.35` | 横向占优，避免与页面纵向滚动冲突 |
-| `dx < 0` → `+1`                      | 左滑看下一张                     |
+关键点（[[slug].astro](../src/pages/[slug].astro)）：
 
-监听使用 `{ passive: true }`，不阻塞滚动；没有 `touchmove` 跟随动画，切换是「松手后一次完成」。
+- `entry.id` 是文件名（`privacy` / `agreement`），路径固定为 `/${entry.id}.html`，保留 `.html` 后缀兼容旧链接；
+- 目录标题从 `entry.body` 用 `/^##\s+(.+)$/gm` 提取，跳过 `###`；
+- 用 `new GithubSlugger()` 逐个生成 id，**必须与 `rehype-slug` 的处理顺序一致**，否则 TOC 链接会指向不存在的锚点；
+- `render(entry)` 返回构建期渲染的 `<Content />`。
 
-### 3.7 键盘处理
+### 2.5 `LegalLayout.astro`
+
+- 生成 `websiteSchema()` + `breadcrumbSchema([首页, 当前文档])`；
+- 日期以中文格式展示（`formatDate`），同时以 ISO 日期写入 `article:published_time` / `modified_time`；
+- 目录在左、文章在右；文章底部提供「另一份法律文档」与「返回首页」；
+- 联系文案根据标题是否包含「隐私」自动选择「政策 / 协议」。
+
+### 2.6 `404.astro` 与 manifest
+
+- 404 使用 `BaseLayout` 且 `noindex`，出口为 `/`、`/#screenshots`、`/#architecture`、`/privacy.html`；
+- `site.webmanifest.ts` 导出 `GET: APIRoute`，`display: standalone`，主题色取 `site.themeColor` / `metaColors`，图标路径直接引用 `assets` 常量，避免与 `generate-icons.mjs` 产物脱节。
+
+---
+
+## 3. 主题系统
+
+### 3.1 模块与存储
+
+| 名称                | 值 / 类型                                                |
+| ------------------- | -------------------------------------------------------- |
+| 存储键              | `garden:theme`（`THEME_STORAGE_KEY`）                     |
+| 偏好                | `'light' \| 'dark' \| 'system'`                          |
+| 解析结果            | `'light' \| 'dark'`                                      |
+| 根节点属性          | `html[data-theme]`、`html[data-theme-preference]`         |
+| 同步写入            | `html.style.colorScheme`、`meta[name="theme-color"]`      |
+
+### 3.2 函数（[theme.ts](../src/lib/theme.ts)）
+
+| 函数                                            | 行为                                                                                                   |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `isThemePreference(value)`                      | 类型守卫，仅接受三个合法值                                                                             |
+| `readThemePreference()`                         | 读 localStorage；无 `localStorage`、非法值或异常时返回 `'system'`                                      |
+| `resolveTheme(preference)`                      | `system` 时读 `matchMedia('(prefers-color-scheme: dark)')`；无 `matchMedia` 时按浅色                    |
+| `applyTheme(preference)`                        | 写 `data-theme` / `data-theme-preference` / `colorScheme`，更新 meta 主题色，返回解析后的主题           |
+| `writeThemePreference(preference)`              | `system` 删除键，其余写入；存储异常静默                                               |
+| `initThemeToggle(onChange)`                     | 绑定 `[data-theme-toggle]` 的点击与系统主题变化；同步 `aria-pressed`；返回解绑函数                     |
+
+`initThemeToggle` 使用事件委托：点击后从 `closest('button[data-theme-value]')` 取偏好，避免为每个按钮单独绑定。系统主题变化只有在偏好为 `system` 时才重新应用。
+
+### 3.3 首屏内联脚本（[theme-init.ts](../src/lib/theme-init.ts)）
+
+`themeInitScript` 是一段自执行字符串，逻辑等价于：
 
 ```js
-document.addEventListener('keydown', function (e) {
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  var r = stage.getBoundingClientRect();
-  var visible = r.top < window.innerHeight && r.bottom > 0;
-  if (!visible) return;
-  if (e.key === 'ArrowLeft') {
-    prevBtn.click();
-  }
-  if (e.key === 'ArrowRight') {
-    nextBtn.click();
-  }
-});
+var stored = localStorage.getItem('garden:theme');
+var prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+var resolved = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+root.dataset.theme = resolved;
+root.dataset.themePreference = stored === 'light' || stored === 'dark' ? stored : 'system';
+root.style.colorScheme = resolved;
+document.documentElement.classList.add('js');
 ```
 
-- 只响应左右方向键，不劫持上下键。
-- 仅当舞台与视口有交集时生效，避免用户在页面上方阅读时误切换。
-- 通过按钮的 `click()` 复用逻辑，不直接调 `go()`，保证行为一致。
-- 未调用 `preventDefault()`；页面无输入框，实际冲突很低。
-
-### 3.8 初始化顺序
-
-```text
-脚本执行
-→ 取 DOM（stage / imgs / count / total / caption / rail / prev / next）
-→ stage 不存在则 return
-→ 生成缩略图，缓存 thumbs
-→ 定义 preloadAround / go
-→ 写入 totalEl（补零）
-→ preloadAround(0)
-→ 绑定箭头、缩略图、触摸、键盘
-→ 等待用户输入
-```
-
-初始化不调用 `go(0)`：HTML 已把第一张标为 `active`，说明与计数也已写好，避免首屏闪烁。
+它必须用 `is:inline` 注入（不能被打包延迟执行），否则会先渲染浅色再切深色。任何异常都被捕获，回退到 CSS 的 `prefers-color-scheme` 媒体查询（生成物中对 `:root:not([data-theme])` 有独立深色块）。
 
 ---
 
-## 4. 改动影响面速查
+## 4. 本地埋点
 
-| 改动            | 必须同步修改                                                       | 容易漏掉                                 |
-| --------------- | ------------------------------------------------------------------ | ---------------------------------------- |
-| 换某张截图      | 同名文件替换或新文件名 + `src`；`alt`/`data-cap`                   | 缩略图自动跟随；CDN 缓存可能仍旧图       |
-| 增删截图        | `img` 节点；第 153 行「22 张」；`#cvrTotal` 静态值；桌面网格 11 列 | 文档中的数量描述                         |
-| 调整图片顺序    | 移动 `<img>` 节点顺序                                              | 第一个 `active` 应保持在首项             |
-| 改舞台比例      | `.cvr-phone` 的 `aspect-ratio`；截图素材比例                       | 各断点的舞台高度                         |
-| 改轮播 class/id | JS 第 417–425 行、CSS `.cvr-*`、ARIA                               | `#cvrRail` 生成逻辑                      |
-| 改主题色        | `:root` 令牌                                                       | 硬编码的 `rgba(216,185,106,…)` 光晕/描边 |
-| 改导航          | 三个 HTML 的页头；目标 section id                                  | 文档页的 `index.html#...` 前缀           |
-| 改页脚          | 三个 HTML 的页脚                                                   | 备案徽标路径与尺寸                       |
-| 改断点          | `styles.css` 第 594、868、881、887、954、962 行                    | `scroll-margin-top` 的 86/150/180        |
-| 改文案长度      | 对应卡片高度与网格                                                 | Hero 在 960px 下的换行                   |
+### 4.1 `track(name, payload)`
+
+（[analytics.ts:32-44](../src/lib/analytics.ts#L32-L44)）
+
+```ts
+export function track(name: AnalyticsEventName, payload: AnalyticsPayload = {}): void {
+  if (typeof document === 'undefined') return;
+  const detail = { name, payload, time: Date.now() };
+  if (typeof window !== 'undefined') {
+    const buffer = (window.__gardenEvents ??= []);
+    buffer.push(detail);
+    if (buffer.length > MAX_BUFFER) buffer.shift();
+  }
+  document.dispatchEvent(new CustomEvent('garden:event', { detail }));
+}
+```
+
+- `MAX_BUFFER = 200`，超出后丢弃最早一条；
+- 不发送网络请求，仅内存与 DOM 事件；
+- 测试可直接读取 `window.__gardenEvents` 或监听 `garden:event`。
+
+### 4.2 `initAnalytics()`
+
+在 `document` 上以捕获阶段监听点击：
+
+1. `closest('[data-track]')` 找到声明元素；
+2. 读取 `data-track` 作为事件名；
+3. 遍历 `dataset`，把 `trackXxx` 转为 `xxx` 小写键（如 `data-track-label` → `label`）；
+4. 若目标是 `target="_blank"` 的锚点，附加 `href`；
+5. 调用 `track(name, payload)`。
+
+### 4.3 当前事件清单
+
+| 事件名               | 触发位置                                                                 | 状态     |
+| -------------------- | ------------------------------------------------------------------------ | -------- |
+| `nav:click`          | 页头、抽屉、页脚、法律页导航、404 出口                                   | 已接入   |
+| `cta:click`          | Hero 两个 CTA、页头「查看界面」、功能卡「查看相关界面」                   | 已接入   |
+| `showcase:change`    | 轮播切换（箭头/缩略图/键盘/滑动/程序）                                   | 已接入   |
+| `showcase:expand`    | 架构图卡片「查看大图」                                                   | 已接入   |
+| `lightbox:navigate`  | 灯箱左右切换                                                             | 已接入   |
+| `outbound:click`     | 邮件、ICP、公安备案外链                                                  | 已接入   |
+| `theme:change`       | 类型已声明，当前主题切换通过 `garden:theme-change` 自定义事件通知，未调用 `track` | 保留 |
+| `legal:toc-click`    | 类型已声明，当前目录点击未埋点                                           | 保留     |
+
+> 主题切换在 `app.ts` 中派发 `garden:theme-change`（`detail: { preference, resolved }`），不是 `garden:event`。
 
 ---
 
-## 5. 关键代码位置索引
+## 5. 结构化数据（[schema.ts](../src/lib/schema.ts)）
 
-| 内容                    | 文件                                |    行号 |
-| ----------------------- | ----------------------------------- | ------: |
-| 首页 head 与 CSS 版本号 | [index.html](../index.html)         |    1–10 |
-| 吸顶导航                | [index.html](../index.html)         |   13–30 |
-| Hero                    | [index.html](../index.html)         |   32–53 |
-| 应用介绍                | [index.html](../index.html)         |   55–90 |
-| 功能特性                | [index.html](../index.html)         |  92–145 |
-| 截图轮播区块            | [index.html](../index.html)         | 147–208 |
-| 旧 11 张截图注释        | [index.html](../index.html)         | 158–170 |
-| 22 张 `cvr-img`         | [index.html](../index.html)         | 171–192 |
-| 架构图网格              | [index.html](../index.html)         | 210–303 |
-| 系统与隐私              | [index.html](../index.html)         | 305–349 |
-| 关于我们                | [index.html](../index.html)         | 351–376 |
-| 页脚与备案              | [index.html](../index.html)         | 378–413 |
-| 轮播 IIFE               | [index.html](../index.html)         | 415–503 |
-| 设计令牌                | [styles.css](../styles.css)         |    7–35 |
-| 页头样式                | [styles.css](../styles.css)         |  62–133 |
-| Hero 样式               | [styles.css](../styles.css)         | 135–269 |
-| 轮播基础样式            | [styles.css](../styles.css)         | 416–573 |
-| 22 张缩略图适配         | [styles.css](../styles.css)         | 575–610 |
-| 减弱动效                | [styles.css](../styles.css)         | 860–865 |
-| 响应式                  | [styles.css](../styles.css)         | 867–906 |
-| 超窄屏断点              | [styles.css](../styles.css)         | 953–966 |
-| 备案样式                | [styles.css](../styles.css)         | 908–951 |
-| 隐私政策正文            | [privacy.html](../privacy.html)     |  31–102 |
-| 用户协议正文            | [agreement.html](../agreement.html) |   31–87 |
+| 函数                                | 输出类型            | 关键字段                                                                                     |
+| ----------------------------------- | ------------------- | -------------------------------------------------------------------------------------------- |
+| `websiteSchema()`                   | `WebSite`           | `name`、`alternateName`、`url`、`inLanguage`、`description`、`publisher`（Person + email）    |
+| `mobileApplicationSchema()`         | `MobileApplication` | `applicationCategory: EducationApplication`、`operatingSystem: iOS 26.0+`、免费、`PreOrder`、6 项 `featureList` |
+| `breadcrumbSchema(items)`           | `BreadcrumbList`    | `position` 从 1 递增，`item` 为绝对 URL                                                       |
+| `faqSchema(items)`                  | `FAQPage`           | 每项 `Question` + `acceptedAnswer`，与页面 FAQ 同源                                           |
+
+所有 URL 通过 `new URL(path, site.domain)` 生成绝对地址，避免结构化数据校验失败。
+
+---
+
+## 6. 截图轮播
+
+### 6.1 纯函数（[carousel.ts:10-24](../src/scripts/carousel.ts#L10-L24)）
+
+```ts
+export function wrapIndex(index: number, total: number): number {
+  if (!Number.isFinite(index) || total <= 0) return 0;
+  return ((Math.trunc(index) % total) + total) % total;
+}
+
+export function formatIndex(index: number): string {
+  return String(index + 1).padStart(2, '0');
+}
+
+export function isHorizontalSwipe({ dx, dy, threshold = 48, ratio = 1.2 }: SwipeGesture): boolean {
+  return Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy) * ratio;
+}
+```
+
+- `wrapIndex` 处理负数与越界，非法输入回退 0；
+- `formatIndex` 输出 `01`…`22`，超过 99 自然变三位；
+- `isHorizontalSwipe` 同时要求「超过 48px」与「横向位移大于纵向 1.2 倍」，避免斜向误触。
+
+### 6.2 `ScreenshotCarousel`
+
+```ts
+export class ScreenshotCarousel {
+  constructor(root: HTMLElement);
+  init(): void;
+  go(index: number, source: 'arrow' | 'thumbnail' | 'keyboard' | 'swipe' | 'init' | 'programmatic'): void;
+  next(): void;
+  prev(): void;
+  private sync(index: number, source: string): void;
+  private preloadAround(index: number): void;
+  private scrollThumbIntoView(index: number): void;
+  private bind(): void;
+}
+```
+
+**构造**（`carousel.ts:69-78`）：
+
+- `collect(root)` 一次性缓存舞台、幻灯片、缩略图、计数、说明、读屏区、箭头、展开按钮；
+- 缺 `[data-carousel-stage]` 或幻灯片为 0 时抛错，由 `app.ts` 捕获兜底；
+- 记录 `prefers-reduced-motion`，决定缩略图滚动是否平滑。
+
+**`init()`**：绑定事件 → `sync(current, 'init')` → 预加载当前左右各一张。
+
+**`go(index, source)`**：
+
+1. `wrapIndex` 归一化；
+2. `sync` 更新所有视觉与 ARIA 状态；
+3. `preloadAround`；
+4. `track('showcase:change', { index, total, source })`。
+
+**`sync`**（`carousel.ts:110-153`）负责：
+
+- 幻灯片 `data-active` 与 `aria-hidden`；
+- 缩略图 `aria-current` 与 `tabIndex`（当前项 0，其余 -1）；
+- 计数 `01`；
+- 说明标题/正文；
+- 读屏播报 `第 n 张，共 22 张：…`；
+- 把当前幻灯片的灯箱数据同步到「查看大图」按钮；
+- 非初始化时调用 `scrollThumbIntoView`。
+
+**预加载**：对 `index - 1 / index / index + 1` 的图片 `currentSrc || src` 建立 `Image`，用 `Set` 去重。
+
+**缩略图居中**：计算缩略图相对轨道的偏移，减去可视宽度的一半，再夹在 `[0, scrollWidth - clientWidth]`；减弱动效时 `behavior: 'auto'`。
+
+**事件绑定**：
+
+| 事件                              | 行为                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| 箭头 click                        | `prev()` / `next()`，来源 `arrow`                                       |
+| 缩略图 click                      | `go(i, 'thumbnail')`                                                    |
+| 缩略图 keydown                    | ←/→/Home/End 切换并把焦点移到目标缩略图                                 |
+| 舞台 keydown                      | ←/→/Home/End 切换；若事件来自按钮/链接则忽略                            |
+| 舞台 pointerdown                  | 记录起点并尝试 `setPointerCapture`                                      |
+| 舞台 pointerup                    | 释放捕获；`isHorizontalSwipe` 通过则按方向切换，来源 `swipe`            |
+| 舞台 dragstart                    | `preventDefault()`，防止原生拖拽中断 pointer 序列                       |
+| 舞台 pointercancel               | 清空起点                                                                |
+
+### 6.3 与功能卡的联动（[app.ts:30-40](../src/scripts/app.ts#L30-L40)）
+
+```ts
+function bindShotTargets(): void {
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as Element | null)?.closest<HTMLElement>('[data-shot-target]');
+    if (!trigger) return;
+    const target = Number(trigger.dataset.shotTarget ?? '');
+    if (!Number.isFinite(target) || target < 1) return;
+    carousel?.go(target - 1, 'programmatic');
+  });
+}
+```
+
+功能卡链接同时是 `#screenshots` 锚点：浏览器先滚动，委托监听再切换幻灯片；目标为 1-based，内部转 0-based。
+
+---
+
+## 7. 灯箱
+
+### 7.1 数据读取
+
+`readItems(group)`（[lightbox.ts:10-22](../src/scripts/lightbox.ts#L10-L22)）查询：
+
+```ts
+[data-lightbox-item][data-lightbox-group="${group}"]
+```
+
+映射为 `{ index, full, alt, caption }`，过滤空 `full`，按 `index` 升序。截图组包含舞台幻灯片（`data-lightbox-full` 等）与一组隐藏的 `span[data-lightbox-item]`；架构图组的每个卡片按钮同时是触发器与数据项。
+
+### 7.2 类行为
+
+| 方法                 | 行为                                                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `init()`             | 全局点击委托打开；绑定关闭/前后/键盘/背景点击；`close` 清理 `src`、`alt`、焦点与 `body.is-locked`；监听图片 load/error |
+| `open(trigger)`      | 读取组、定位起始索引、设置组标题、`showModal()`、锁定 body、渲染                                                  |
+| `navigate(delta)`    | 环形移动索引、渲染、`track('lightbox:navigate')`                                                                  |
+| `render()`           | 设置 loading 态、`src/alt/caption`、`NN / MM` 计数、预加载下一张、`decode()` 失败转错误态                          |
+
+**焦点管理**：打开时记录触发元素，关闭时 `trigger.focus()`；原生 `<dialog>` 负责 Esc 关闭与焦点陷阱。
+
+**滚动锁定**：打开添加 `body.is-locked`，`close` 事件移除。
+
+**索引越界**：`open` 用 `Math.max(0, Math.min(items.length - 1, findIndex))`；若找不到触发索引，回退 0。
+
+### 7.3 与轮播的关系
+
+轮播的「查看大图」按钮不是固定的数据项，而是每次 `sync` 时把当前幻灯片的 `data-lightbox-*` 复制到自身；因此打开灯箱时总能从当前截图开始。灯箱与轮播互不持有引用，仅通过 DOM 数据解耦。
+
+---
+
+## 8. 页头、抽屉、显现与目录
+
+### 8.1 `initHeader()`（[header.ts](../src/scripts/header.ts)）
+
+- 由 `[data-nav-link]` 的 `data-nav-section` 找到对应区块；
+- `scroll` / `resize` 用 `requestAnimationFrame` 合并为一次更新；
+- `window.scrollY > 8` 时设置 `header.dataset.scrolled`；`> 640` 时给回到顶部按钮加 `is-visible`；
+- 活跃区块判定：区块 `getBoundingClientRect().top <= 页头高度 + 96` 的最后一个；
+- 变化时只更新 `aria-current="location"`；
+- 回到顶部根据 `prefers-reduced-motion` 选择 `smooth` / `auto`。
+
+### 8.2 `initMobileNav()`（[mobile-nav.ts](../src/scripts/mobile-nav.ts)）
+
+- `dialog.showModal()` 打开，按钮 `aria-expanded="true"`，`body.is-locked`；
+- 关闭按钮与链接点击触发关闭；链接关闭延迟 0ms，让锚点先完成；
+- `close` 事件恢复 `aria-expanded`、移除锁、把焦点还给触发器；
+- `matchMedia('(min-width: 1024px)')` 变化时，进入桌面宽度自动关闭。
+
+### 8.3 `initReveal()`（[reveal.ts](../src/scripts/reveal.ts)）
+
+- 收集 `[data-reveal]`；
+- 无元素、无 `IntersectionObserver` 或减弱动效时，直接加 `is-visible`；
+- 正常情况创建 Observer（`rootMargin: '0px 0px -8% 0px'`、`threshold: 0.08`），进入视口后加类并 `unobserve`；
+- 完成后设置 `window.__gardenRevealReady = true`，供测试等待。
+
+### 8.4 `initLegalToc()`（[legal-toc.ts](../src/scripts/legal-toc.ts)）
+
+- 读取文章内 `h2[id]`，重建目录 `<ol>`（内容来自构建期 Markdown，属于可信输入）；
+- `IntersectionObserver`（`rootMargin: '-96px 0px -70% 0px'`）选取当前可见标题，按 `top` 排序后设置 `aria-current`；
+- 无 Observer 时目录仍可点击，只是不滚动高亮。
+
+---
+
+## 9. 启动入口（[app.ts](../src/scripts/app.ts)）
+
+```ts
+function boot(): void {
+  initAnalytics();
+  initThemeToggle((preference, resolved) => {
+    document.dispatchEvent(new CustomEvent('garden:theme-change', { detail: { preference, resolved } }));
+  });
+  initMobileNav();
+  initHeader();
+  initLightbox();
+  initCarousel();
+  initLegalToc();
+  initReveal();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot, { once: true });
+} else {
+  boot();
+}
+```
+
+- `initCarousel` 内部 `try/catch`：失败时把第一张设为 `data-active="true"`，并输出错误日志；
+- 成功后设置 `window.__gardenCarouselReady = true`，再绑定功能卡目标；
+- 初始化顺序固定：埋点最先，保证后续模块触发的 `track` 能被记录；其余模块通过 DOM 契约彼此解耦，顺序不影响功能；
+- `BaseLayout` 与 `SiteHeader` 都声明了 `import '@/scripts/app'`：构建后各自生成一个只含 `import` 的包装脚本，二者指向同一个 app 模块，浏览器 ESM 只执行一次。
+
+---
+
+## 10. 构建与门禁脚本
+
+### 10.1 `generate-tokens.mjs`
+
+- 直接 `import` 同仓库的 `.ts`，依赖 Node 22+ 的原生 TypeScript 支持；
+- `build()` 输出三段：`:root`（原始色 + 浅色语义色 + 字体/间距/圆角/阴影/动效/布局/焦点/层级/打印）、`[data-theme='dark']`（深色语义色 + 深色阴影）、`@media (prefers-color-scheme: dark)` 下的 `:root:not([data-theme])` 兜底；
+- 键名转 kebab-case（`surfaceMuted` → `--color-surface-muted`）；
+- `--check` 用整份字符串比对，任何手改生成物都会失败。
+
+### 10.2 `generate-icons.mjs`
+
+- 用 `sharp` 从 `src/assets/brand/app-icon.png` 生成 32/180/192/512 PNG；
+- `favicon.svg` 内嵌 64×64 PNG 的 base64，保证与位图一致并带圆角裁切；
+- OG 图以 SVG overlay + sharp 合成 1200×630：墨蓝渐变、网格、金色描边、图标、站名、副标题、`iOS 26.0+` 胶囊与域名；
+- 产物入库到 `public/`，路径固定，供 manifest / `<link>` / schema 引用。
+
+### 10.3 `sync-root.mjs`
+
+- `SYNC_TARGETS` 白名单：4 个 HTML、`robots.txt`、`site.webmanifest`、两个 sitemap、`_astro`、`icons`、`og`、`beian`、`.well-known`；
+- 同步前检查白名单条目是否都在 `dist/`；
+- `--check` 逐文件比较体积、清理名单中的残留旧产物、核对 manifest 清单是否过期；
+- 同步模式复制新文件、删除上次清单中已不存在的文件、写入 `{ generatedAt, count, files }`。
+
+### 10.4 `check-tokens.mjs`
+
+- 遍历 `src/` 下 `.css`、`.astro`、`.ts`、`.tsx`、`.js`、`.mjs`；
+- 允许 `src/design/tokens.ts` 与 `src/styles/tokens.generated.css`；
+- 三类正则：`#RGB`–`#RRGGBBAA`、`rgb()/rgba()`、`hsl()/hsla()`；
+- 跳过整行注释（`//`、`*`、`/*`），但行尾注释中的颜色仍会被检查；
+- 违规输出 `文件:行号 [类型] 值` 并退出 1。
+
+### 10.5 `check-contrast.mjs`
+
+- `resolveColor` 递归解析 `var(--color-x)`，循环引用或缺失原始色直接抛错；
+- 33 项检查：`text` 要求 4.5:1，`large` / `nontext` 要求 3:1，`decorative` 仅记录；
+- 结果写入 `docs/design-system/contrast-report.md`，同时打印未通过项；不达标退出 1。
+
+### 10.6 `independent-review.mjs`
+
+- 不复用 `tests/e2e` 代码，独立实现 A–K 共 11 组检查：首页结构、轮播、灯箱、主题、导航与 FAQ、法律页、404、资源、移动端、axe、隐私与网络；
+- 监听控制台错误、页面异常与第三方请求；
+- 输出 `docs/acceptance/independent-review.json`、同名 `.md` 与截图目录；
+- 任一失败退出 1，需先 `build` 并启动 `astro preview`。
+
+---
+
+## 11. 测试中的关键断言
+
+| 文件                        | 断言重点                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/carousel.test.ts` | `wrapIndex` 的越界/负数/NaN/小数；`formatIndex` 补零；滑动阈值与方向判定                                      |
+| `tests/unit/theme.test.ts`    | 非法偏好拒绝；`system` 跟随系统；`applyTheme` 写 DOM 与 meta；存储异常不抛错                                   |
+| `tests/unit/data.test.ts`     | 导航 id 唯一、备案格式、22 张截图序号连续且 alt/caption 不重复、10 张架构图、4/6/4 数量、功能卡目标范围、schema 类型 |
+| `tests/e2e/home.spec.ts`      | 标题/语言/地标唯一、canonical/OG/manifest、三类 JSON-LD、轮播 4 种操作、灯箱焦点恢复、主题持久化、首屏无闪烁、FAQ、法律页、外链安全、404 |
+| `tests/e2e/a11y.spec.ts`      | 四页 + 深色 axe 扫描无 serious/critical、Tab 顺序、键盘操作、触控目标 ≥ 40px、正文对比度 ≥ 4.5                    |
+| `tests/e2e/mobile.spec.ts`    | 无横向溢出、<1024px 抽屉 / ≥1024px 桌面导航、缩略图滚入视野、Hero 可读                                 |
+| `tests/e2e/reduced-motion.spec.ts` | `[data-reveal]` 全部可见、无循环动画、过渡 ≤ 0.0001s、`scroll-behavior: auto`                                |
+| `tests/e2e/visual.spec.ts`    | 12 个页面/组件状态用例，16 组快照 × 4 个项目共 64 张基线，`maxDiffPixelRatio: 0.02`                            |
+
+---
+
+## 12. 修改代码时的最小检查清单
+
+1. 新增/改名 `data-*`：同步组件、脚本、本文件契约表与 E2E；
+2. 新增颜色：只改 `tokens.ts` → `npm run tokens:build` → `check:tokens` / `check:contrast`；
+3. 新增交互：尊重 `prefers-reduced-motion`，补键盘路径与 ARIA 状态；
+4. 新增页面：必须走 `BaseLayout`，补 SEO、JSON-LD（如适用）与 sitemap 过滤规则；
+5. 改法律文本：确认 H2 数量与 TOC 断言；日期字段用 `YYYY-MM-DD`；
+6. 改发布产物：同步 `sync-root.mjs` 白名单、`.release-manifest.json` 与部署文档。

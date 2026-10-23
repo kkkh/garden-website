@@ -1,222 +1,254 @@
 # 04 · 依赖关系
 
-## 1. 依赖总览
-
-| 依赖类型             |           数量 | 说明                                           |
-| -------------------- | -------------: | ---------------------------------------------- |
-| 第三方运行时依赖     |          **0** | 无 CDN、无远程字体、无 JS/CSS 库、无统计/广告  |
-| 构建依赖             |          **0** | 无 `package.json`、无打包、无预处理器          |
-| 服务端依赖           |          **0** | 无 API、无数据库、无 SSR                       |
-| 站点运行所需本地文件 |             38 | 3 个 HTML + 1 个 CSS + 34 个资源               |
-| 浏览器能力依赖       |       约 20 项 | 现代 CSS 布局、Web API（见第 6 节）            |
-| 交付依赖             | Git + 静态托管 | GitHub 远程仓库、GitHub Pages、自定义域、HTTPS |
-
-**依赖原则**：能用平台原生能力解决，就不引入库；能本地自托管，就不引用远程资源。这使得站点没有安装步骤、没有版本升级、没有供应链风险，也不会向第三方泄露访客 IP/UA。
+本文件区分三类依赖：**运行时依赖**（进入浏览器）、**构建/开发依赖**（只在 Node 侧执行）、**内部模块依赖**（仓库内文件之间）。理解这三层可以快速判断「改一个包会不会影响线上」。
 
 ---
 
-## 2. 文件级直接依赖
+## 1. 运行时依赖
+
+站点运行期只有仓库自身打出的 HTML/CSS/JS 与图片；**没有第三方运行时库、没有远程字体、没有统计或客服脚本**。
+
+| 运行期资源           | 来源                                          | 加载方式                                       |
+| -------------------- | --------------------------------------------- | ---------------------------------------------- |
+| 页面 HTML            | Astro 构建期生成                              | 直接请求                                       |
+| 样式                 | `src/styles/*` 经 Vite 打包                   | `/_astro/*.css`，`inlineStylesheets: 'auto'`    |
+| 交互脚本             | `src/scripts/app.ts` 及其导入模块             | `/_astro/*.js`，`type="module"`                |
+| 字体                 | `@fontsource-variable/fraunces` npm 包        | CSS `@import` 后被 Vite 打包为本地字体文件      |
+| 图片                 | `src/assets/**` 经 sharp 派生                  | `dist/_astro/*.avif`、`*.webp`、原格式多尺寸     |
+| 图标 / OG / 备案徽标 | `public/**` 与 `generate-icons.mjs` 产物       | 固定路径直接请求                               |
+
+> 「0 第三方运行时依赖」指的是**不向第三方域名发请求**；字体包本身是 npm 构建依赖，但产物本地化。
+
+---
+
+## 2. 生产依赖（`dependencies`）
+
+| 包                          | 版本    | 用途                                                                 | 影响范围                                       |
+| --------------------------- | ------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| `astro`                     | 7.4.2   | 静态站点生成、路由、组件、内容集合、图片管线                         | 全站构建；升级需全量回归                       |
+| `@astrojs/sitemap`          | 3.7.4   | 生成 `sitemap-index.xml` / `sitemap-0.xml`，过滤 404                  | 路由与 SEO                                     |
+| `@astrojs/markdown-remark`  | 7.3.4   | 提供 unified 处理器，挂载 `rehype-slug` / `rehype-autolink-headings` | 法律页标题 id 与锚点                           |
+| `rehype-slug`               | 6.0.0   | 给 Markdown 标题加 `id`                                              | 法律页目录锚点                                 |
+| `rehype-autolink-headings`  | 7.1.0   | 标题末尾追加 `#` 锚点链接                                            | 法律页阅读体验                                 |
+| `github-slugger`            | 2.0.0   | 在 `[slug].astro` 中生成与 rehype 一致的 slug                        | 目录锚点；与 rehype-slug 版本必须协同          |
+| `sharp`                     | 0.35.5  | Astro 图片服务、图标与 OG 图生成                                     | 构建期原生二进制；跨平台安装需匹配             |
+| `@fontsource-variable/fraunces` | 5.3.0 | 可变衬线字体（OFL-1.1），本地打包                                     | 展示标题字体；无远程请求                       |
+
+---
+
+## 3. 开发依赖（`devDependencies`）
+
+| 包                       | 版本    | 用途                                                     |
+| ------------------------ | ------- | -------------------------------------------------------- |
+| `@astrojs/check`         | 0.9.12  | `astro check` 类型检查                                   |
+| `typescript`             | 6.0.3   | 类型系统与 `tsc` 行为                                    |
+| `vitest`                 | 5.0.5   | 单元测试                                                 |
+| `@playwright/test`       | 1.64.1  | E2E、响应式、视觉回归                                    |
+| `@axe-core/playwright`   | 4.14.0  | 可访问性扫描                                             |
+| `eslint`                 | 10.13.0 | JS/TS/Astro 静态检查                                     |
+| `typescript-eslint`      | 8.72.0  | TypeScript 规则                                          |
+| `eslint-plugin-astro`    | 3.2.1   | `.astro` 文件规则                                        |
+| `@eslint/js`             | 10.0.1  | ESLint 推荐规则集                                        |
+| `globals`                | 17.13.0 | 浏览器 / Node 全局变量声明                               |
+| `prettier`               | 3.9.10  | 格式化                                                   |
+| `prettier-plugin-astro`  | 1.1.1   | `.astro` 格式化                                          |
+| `culori`                 | 4.0.2   | `check-contrast.mjs` 的 WCAG 对比度计算                   |
+| `@types/node`            | 26.6.5  | Node API 类型（脚本、配置）                              |
+
+依赖全部以精确版本写入 `package.json`（无 `^` / `~`），并由 `package-lock.json` 锁定传递依赖。升级策略见 [06 · 维护指南](06-maintenance.md#9-依赖升级)。
+
+---
+
+## 4. 内部依赖图
 
 ```mermaid
 flowchart TD
-    I["index.html<br/>首页"]
-    P["privacy.html<br/>隐私政策"]
-    A["agreement.html<br/>用户协议"]
-    CSS["styles.css<br/>全站样式"]
-    ICON["assets/icon.png<br/>256×256"]
-    SS["assets/screenshot-01..22.jpg<br/>1284×2778"]
-    FLOW["assets/flow-01..10.png<br/>1600×1240"]
-    BEIAN["beian/beian.png<br/>20×20"]
-    JS["内联 IIFE<br/>index.html 415–503"]
+    subgraph Content["数据与内容"]
+        SITE["data/site.ts"]
+        HOME["data/home.ts"]
+        SHOTS["data/screenshots.ts"]
+        ARCH["data/architecture.ts"]
+        FAQ["data/faq.ts"]
+        TYPES["data/types.ts"]
+        LEGAL["content/legal/*.md"]
+    end
 
-    I --> CSS
-    P --> CSS
-    A --> CSS
-    I --> ICON
-    P --> ICON
-    A --> ICON
-    I --> SS
-    I --> FLOW
-    I --> BEIAN
-    P --> BEIAN
-    A --> BEIAN
-    I --> JS
-    JS -.->|"依赖 class / id / data-cap 契约"| I
-    P -->|"链接"| I
-    A -->|"链接"| I
-    I -->|"链接"| P
-    I -->|"链接"| A
-    P -->|"链接"| A
-    A -->|"链接"| P
+    subgraph Design["设计系统"]
+        TOKENS["design/tokens.ts"]
+        CSS["styles/*"]
+    end
+
+    subgraph Logic["布局与库"]
+        SEO["components/seo/Seo.astro"]
+        SCHEMA["lib/schema.ts"]
+        THEME["lib/theme.ts"]
+        ANALYTICS["lib/analytics.ts"]
+        FORMAT["lib/format.ts"]
+        BASE["layouts/BaseLayout.astro"]
+        LEGALLAYOUT["layouts/LegalLayout.astro"]
+    end
+
+    subgraph UI["组件"]
+        CHROME["components/chrome/*"]
+        HOMEC["components/home/*"]
+        UIC["components/ui/*"]
+    end
+
+    subgraph Pages["页面"]
+        INDEX["pages/index.astro"]
+        SLUG["pages/[slug].astro"]
+        P404["pages/404.astro"]
+        MANIFEST["pages/site.webmanifest.ts"]
+    end
+
+    subgraph Runtime["运行时脚本"]
+        APP["scripts/app.ts"]
+        CAROUSEL["scripts/carousel.ts"]
+        LIGHTBOX["scripts/lightbox.ts"]
+        HEADER["scripts/header.ts"]
+        NAV["scripts/mobile-nav.ts"]
+        REVEAL["scripts/reveal.ts"]
+        TOC["scripts/legal-toc.ts"]
+    end
+
+    TOKENS --> SITE
+    TOKENS --> THEME
+    TOKENS --> MANIFEST
+    SITE --> SEO
+    SITE --> SCHEMA
+    SITE --> CHROME
+    SITE --> MANIFEST
+    TYPES --> HOME
+    TYPES --> SHOTS
+    TYPES --> ARCH
+    HOME --> HOMEC
+    SHOTS --> HOMEC
+    ARCH --> HOMEC
+    FAQ --> INDEX
+    SCHEMA --> INDEX
+    SCHEMA --> LEGALLAYOUT
+    FORMAT --> LEGALLAYOUT
+    SEO --> BASE
+    CHROME --> BASE
+    UIC --> BASE
+    BASE --> INDEX
+    BASE --> P404
+    BASE --> LEGALLAYOUT
+    LEGAL --> SLUG
+    SLUG --> LEGALLAYOUT
+    ANALYTICS --> CAROUSEL
+    ANALYTICS --> LIGHTBOX
+    THEME --> APP
+    APP --> CAROUSEL
+    APP --> LIGHTBOX
+    APP --> HEADER
+    APP --> NAV
+    APP --> REVEAL
+    APP --> TOC
+    BASE --> CSS
 ```
 
-### 2.1 HTML 对资源的精确依赖
+补充说明：
 
-| 页面           | CSS                        |                              图标 |  截图 | 架构图 | 备案图 | 脚本 |
-| -------------- | -------------------------- | --------------------------------: | ----: | -----: | -----: | ---- |
-| index.html     | `styles.css?v=20261023-3`  | 4 次（favicon、页头、Hero、页脚） | 22 次 |  10 次 |   1 次 | 1 段 |
-| privacy.html   | `styles.css`（无版本参数） |       3 次（favicon、页头、页脚） |     — |      — |   1 次 | —    |
-| agreement.html | `styles.css`（无版本参数） |                              3 次 |     — |      — |   1 次 | —    |
-
-> 图标在首页实际引用 4 次（`<link rel=icon>`、页头 `.brand img`、Hero、页脚 `.footer-brand img`），浏览器会复用同一缓存。
-
-### 2.2 CSS 对资源的依赖
-
-[styles.css](../styles.css) 内部：
-
-- 无 `@import`；
-- 无 `url(...)`（没有任何背景图、字体文件或图片引用）；
-- 无远程 `@font-face`，字体全部来自系统字体栈。
-
-因此 CSS 可以独立加载，不存在样式层面的级联外部依赖。
+- `data/site.ts` 只依赖 `design/tokens.ts` 的 `metaColors`，是唯一被「数据 → 设计」反向引用的点；
+- `lib/schema.ts` 依赖 `data/site.ts`，被首页与法律布局共同使用；
+- `scripts/*` 不相互导入，统一由 `app.ts` 组合，便于单独测试纯函数；
+- 组件不直接导入具体交互模块（仅 `SiteHeader` 与 `BaseLayout` 声明入口 `app.ts`），行为与结构通过 DOM 契约解耦。
 
 ---
 
-## 3. 资源依赖矩阵
+## 5. 路径别名
 
-| 资源       | 具体文件                              | 规格          |      体积 | 引用方                                    | 替换影响                   |
-| ---------- | ------------------------------------- | ------------- | --------: | ----------------------------------------- | -------------------------- |
-| 品牌图标   | `assets/icon.png`                     | 256×256 PNG   |     39 KB | 三页 favicon / 页头 / 页脚；首页另有 Hero | 品牌视觉、浏览器标签       |
-| 应用截图   | `assets/screenshot-01.jpg` … `22.jpg` | 1284×2778 JPG | 约 5.9 MB | 首页轮播舞台 + 缩略图                     | 首屏与轮播、说明文字需同步 |
-| 平台架构图 | `assets/flow-01.png` … `flow-10.png`  | 1600×1240 PNG |    3.0 MB | 首页架构区 10 张卡片                      | 架构说明与 `FIG n/10` 编号 |
-| 备案徽标   | `beian/beian.png`                     | 20×20 PNG     |      4 KB | 三页页脚公安备案链接                      | 合规展示                   |
-| 分享压缩包 | `.trae-html-share-packages/*.zip`     | 3 个 ZIP      |  约 49 MB | **无**                                    | 仅仓库体积，不影响站点     |
+`tsconfig.json`、`vitest.config.ts` 与 Astro/Vite 共同使用 `@` 前缀：
 
-**资源命名耦合**：
+| 别名            | 映射               | 典型使用                                   |
+| --------------- | ------------------ | ------------------------------------------ |
+| `@/*`           | `src/*`            | 通用导入                                   |
+| `@components/*` | `src/components/*` | 模板中可选（多数使用 `@/components`）      |
+| `@lib/*`        | `src/lib/*`        | 可选                                       |
+| `@data/*`       | `src/data/*`       | 可选                                       |
+| `@design/*`     | `src/design/*`     | 可选                                       |
 
-- 截图编号 `01`–`22` 被 HTML 的 `src` 直接引用，且顺序即展示顺序；文件名本身不含语义。
-- 架构图编号 `01`–`10` 与 `FIG n/10` 的文案对应，但 JS 不读取编号。
-- 图标与备案图路径固定，被三页重复引用。
+`vitest.config.ts` 单独声明了 `@` → `src`，因此单元测试可以导入 `@/scripts/carousel` 与 `@/data/*`，但不会加载 `.astro` 文件。
 
 ---
 
-## 4. 页面跳转依赖图
+## 6. 资源与产物依赖
 
-```mermaid
-flowchart LR
-    IDX["index.html"]
-    PRV["privacy.html"]
-    AGR["agreement.html"]
-    ICP["工信部备案系统<br/>beian.miit.gov.cn"]
-    MPS["公安备案查询<br/>beian.mps.gov.cn"]
-
-    IDX -->|"导航 / 页脚"| PRV
-    IDX -->|"导航 / 页脚"| AGR
-    PRV -->|"导航 / 页脚"| AGR
-    PRV -->|"导航 / 品牌"| IDX
-    AGR -->|"导航 / 页脚"| PRV
-    AGR -->|"导航 / 品牌"| IDX
-    IDX -->|"页脚外链"| ICP
-    IDX -->|"页脚外链"| MPS
-    PRV -->|"页脚外链"| ICP
-    PRV -->|"页脚外链"| MPS
-    AGR -->|"页脚外链"| ICP
-    AGR -->|"页脚外链"| MPS
-    IDX -.->|"页内锚点 #top #features #screenshots #architecture #about"| IDX
-    PRV -.->|"自链接"| PRV
-    AGR -.->|"自链接"| AGR
-```
-
-**内部链接约束**：
-
-| 来源         | 链接形式                                                   | 解析结果     |
-| ------------ | ---------------------------------------------------------- | ------------ |
-| 首页页内     | `#top` `#features` `#screenshots` `#architecture` `#about` | 当前页锚点   |
-| 文档页到首页 | `index.html#top` 等                                        | 首页对应锚点 |
-| 文档页之间   | `privacy.html` / `agreement.html`                          | 同目录文件   |
-| 品牌         | `index.html`                                               | 首页顶部     |
-
-锚点目标全部存在于首页：`#top`（body）、`#intro`、`#features`、`#screenshots`、`#architecture`、`#system`、`#about`。注意 `#intro` 与 `#system` 未出现在导航中，但仍是有效锚点。
+| 产物                                   | 由谁生成                     | 被谁消费                                                       |
+| -------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| `src/styles/tokens.generated.css`      | `generate-tokens.mjs`        | `src/styles/global.css` 第一层导入                              |
+| `public/icons/favicon-32.png`          | `generate-icons.mjs`         | `Seo.astro` 的 `<link rel="icon">`                              |
+| `public/icons/favicon.svg`              | `generate-icons.mjs`         | `Seo.astro` 的 SVG favicon                                     |
+| `public/icons/apple-touch-icon.png`    | `generate-icons.mjs`         | `Seo.astro` 与 manifest                                        |
+| `public/icons/icon-192.png` / `512`    | `generate-icons.mjs`         | `site.webmanifest`、页头与页脚的品牌图                          |
+| `public/og/og-default.png`             | `generate-icons.mjs`         | OG / Twitter / `assets.ogImage` / schema 的 `image`             |
+| `public/beian/beian.png`               | 手工提供                     | 页脚公安备案徽标                                               |
+| `dist/_astro/*`                        | Astro + sharp                | HTML 中的 CSS/JS/图片引用                                      |
+| `sitemap-index.xml` / `sitemap-0.xml`  | `@astrojs/sitemap`           | 搜索引擎；`robots.txt` 指向 index                              |
+| 仓库根同名产物                         | `sync-root.mjs`              | 静态托管平台                                                   |
+| `.release-manifest.json`               | `sync-root.mjs`              | `sync-root --check`、CI、发布审计                              |
 
 ---
 
-## 5. 外部依赖（仅用户主动触发）
+## 7. 外部链接与网络边界
 
-| 外部地址                                                         | 位置                     | 用途                 | 打开方式 | 安全属性                    |
-| ---------------------------------------------------------------- | ------------------------ | -------------------- | -------- | --------------------------- |
-| `https://beian.miit.gov.cn/`                                     | 三页页脚                 | ICP 备案查询         | 新窗口   | `rel="noopener noreferrer"` |
-| `https://beian.mps.gov.cn/#/query/webSearch?code=14010602111139` | 三页页脚                 | 公安联网备案查询     | 新窗口   | 同上                        |
-| `https://jl.43322.cn`                                            | 正文 / 页脚              | 官网域名，纯文本展示 | 不可点击 | —                           |
-| `56967916@qq.com` / `uull@aliyun.com`                            | 关于我们 / 页脚 / 法律页 | 联系方式，纯文本     | 不可点击 | —                           |
+| 类型         | 目标                                                                 | 出现位置                          | 安全属性                     |
+| ------------ | -------------------------------------------------------------------- | --------------------------------- | ---------------------------- |
+| ICP 备案     | `https://beian.miit.gov.cn/`                                         | 页脚、关于区块                    | `target="_blank"` + `noopener noreferrer` |
+| 公安备案查询 | `https://beian.mps.gov.cn/#/query/webSearch?code=14010602111139`     | 页脚、关于区块                    | 同上                         |
+| 邮件         | `mailto:56967916@qq.com` / `mailto:uull@aliyun.com`                  | 页脚、关于区块、法律页联系声明    | 无                           |
+| 结构化数据   | `https://jl.43322.cn/...`                                            | JSON-LD 的 `url` / `item` / `image` | 仅数据，不发请求             |
+| Universal Links | `public/.well-known/apple-app-site-association` 中的 `appID`     | 静态文件                          | 由系统处理                   |
 
-**没有**：App Store 链接（页面写明「即将上架」）、社交媒体、统计脚本、字体 CDN、图片 CDN、客服 SDK。页面加载阶段的外部请求数为 **0**。
-
----
-
-## 6. 浏览器能力依赖
-
-| 能力                                        | 使用位置               | 不支持时的表现     | 备注                                                       |
-| ------------------------------------------- | ---------------------- | ------------------ | ---------------------------------------------------------- |
-| CSS 自定义属性                              | 全站令牌               | 颜色/圆角/阴影失效 | 现代浏览器均支持                                           |
-| CSS Grid                                    | 各网格容器             | 卡片堆叠           | intro/sys/flow 在 960px 以下单列；features 到 640px 才单列 |
-| Flexbox                                     | 导航、Hero、卡片、页脚 | 布局错位           | 基础能力                                                   |
-| `aspect-ratio`                              | `.cvr-phone`           | 手机框高度异常     | 与截图画幅绑定                                             |
-| `backdrop-filter`                           | 页头、箭头             | 毛玻璃变半透明底色 | 已带 `-webkit-` 前缀                                       |
-| `background-clip: text`                     | Hero 渐变标题          | 标题不可见或纯色   | 已带 `-webkit-` 前缀；有 `color: transparent` 兜底风险     |
-| `scroll-behavior: smooth`                   | 锚点跳转               | 直接跳转           | 减弱动效时关闭                                             |
-| `scroll-margin-top`                         | `[id]`                 | 锚点被页头遮挡     | 一个基础值 + 两个断点覆盖（86/150/180px）                  |
-| `object-fit` / `object-position`            | 截图舞台/缩略图        | 图片拉伸           | 舞台用 `cover` + `top center`                              |
-| `prefers-reduced-motion`                    | 动效降级               | 动画照常           | 渐进增强                                                   |
-| `loading="lazy"`                            | 截图、架构图           | 一次性加载全部图   | 首图显式 `fetchpriority="high"`                            |
-| `decoding="async"`                          | 截图                   | 同步解码           | 性能提示                                                   |
-| `fetchpriority`                             | 首张截图               | 忽略提示           | 仍可正常加载                                               |
-| `classList.toggle`                          | 轮播                   | 脚本报错           | 基础 DOM API                                               |
-| `Element.closest`                           | 缩略图委托             | 点击缩略图无效     | 现代浏览器支持                                             |
-| `String.padStart`                           | 计数                   | 脚本报错           | ES2017                                                     |
-| `scrollIntoView({behavior, block, inline})` | 缩略图定位             | 可能整页滚动       | 参数对象在旧 Safari 可能被忽略                             |
-| Touch Events                                | 手势切换               | 只能点按钮         | `passive: true`                                            |
-| `getBoundingClientRect`                     | 键盘可见性判断         | 键盘无效           | 基础 API                                                   |
-| `Image` 预加载                              | 相邻图预取             | 切换稍慢           | 无回调，不阻塞                                             |
-
-**目标环境**：桌面 Chrome/Safari/Edge/Firefox 与 iOS Safari 的近期版本。页面自身声明应用支持 iOS 26.0+，但官网未对旧浏览器做 polyfill 或降级提示。
+**运行时无其他外部请求**：E2E 的「页面加载阶段不请求第三方域名」用例会拦截并断言除 `127.0.0.1` / `localhost` 外无请求。
 
 ---
 
-## 7. 工具链与部署依赖
+## 8. 浏览器 API 依赖
 
-| 环节     | 依赖                          | 是否在仓库内声明 | 说明                                         |
-| -------- | ----------------------------- | ---------------- | -------------------------------------------- |
-| 本地预览 | Python 3 或 Node.js（二选一） | 否               | 任意静态服务器即可                           |
-| 版本管理 | Git + GitHub 远程 `origin`    | `.git/`          | `https://github.com/kkkh/garden-website.git` |
-| 发布     | GitHub Pages                  | 否（平台设置）   | 仓库内无 `CNAME`、无 Actions 工作流          |
-| 域名     | `jl.43322.cn`                 | 否               | 需在域名服务商与 Pages 设置中配置            |
-| HTTPS    | GitHub Pages 自动证书         | 否               | 平台能力                                     |
-| 构建     | 无                            | —                | 推送 `main` 即发布源文件                     |
+| API                                  | 使用位置                       | 缺失时的降级                                     |
+| ------------------------------------ | ------------------------------ | ------------------------------------------------ |
+| `localStorage`                       | 主题偏好                       | try/catch，仅在当前会话生效                      |
+| `matchMedia`                         | 主题、减弱动效、桌面断点       | 主题按浅色；显现直接显示；抽屉断点监听不生效     |
+| `IntersectionObserver`               | 显现动画、法律页目录           | 内容直接显示；目录仍可点击但不滚动高亮           |
+| `<dialog>` + `showModal`             | 移动导航、灯箱                 | 原生焦点陷阱与 Esc；脚本仅在支持时初始化          |
+| `CustomEvent`                        | 埋点与主题事件                 | 无替代；不影响页面内容                           |
+| `requestAnimationFrame`              | 滚动节流                       | 现代浏览器均支持                                 |
+| Pointer Events / `setPointerCapture` | 轮播滑动                       | 捕获失败时仍可在 `pointerup` 判定                |
+| `HTMLImageElement.decode()`          | 灯箱                           | 可选链调用；失败转入错误态                       |
+| `window.scrollTo` / `scrollIntoView` | 回到顶部、缩略图居中           | 立即跳转仍可用                                   |
+| `Intl.DateTimeFormat`                | 构建期日期格式化               | 构建环境需完整 ICU（Node 官方构建满足）          |
 
-因为**没有构建步骤**，本地看到的文件与线上文件完全一致；不存在「本地正常、构建后异常」这一类问题，问题通常来自缓存或路径大小写。
-
----
-
-## 8. 版本与内容耦合清单
-
-这些内容不是代码依赖，但改一处必须同步另一处：
-
-| 耦合项                       | 出现位置                                                            |             数量 |
-| ---------------------------- | ------------------------------------------------------------------- | ---------------: |
-| 截图总数「22」               | 首页第 153 行文案、第 202 行 `#cvrTotal`、本 Wiki、桌面缩略图 11 列 |             4 类 |
-| 架构图总数「10」             | 第 217 行文案、10 个 `FIG n/10`、10 个文件                          |             3 类 |
-| CSS 版本 `20261023-3`        | 仅首页 `<link>`                                                     | 1 处，文档页缺失 |
-| 法律生效日期 `2026年9月25日` | 隐私政策、用户协议各第 34 行（每行 2 个日期）                       |             2 页 |
-| ICP 备案号                   | 三页页脚各 1 处有效（另有 3 处旧版权注释）                          |         3 处有效 |
-| 公安备案号                   | 三页页脚各 1 处有效（另有 3 处旧版权注释）                          |         3 处有效 |
-| 联系邮箱                     | 三页共 6 处 `56967916@qq.com`，另 1 处 `uull@aliyun.com`            |             7 处 |
-| 官网域名                     | 三页正文/页脚共 9 处有效（另有 3 处旧版权注释）                     |             9 处 |
-| 品牌图标路径                 | 三页 favicon/页头/页脚 + 首页 Hero                                  |            10 次 |
+站点不依赖 `fetch`、`XMLHttpRequest`、Cookie、IndexedDB 或 Service Worker。
 
 ---
 
-## 9. 依赖风险与处置
+## 9. 构建与 CI 环境依赖
 
-| 风险             | 等级 | 说明                               | 处置建议                                                  |
-| ---------------- | ---- | ---------------------------------- | --------------------------------------------------------- |
-| 资源 404         | 高   | 路径大小写、目录被移动、文件名改名 | 保持 `assets/`、`beian/` 结构与大小写；发布前用服务器验证 |
-| CSS 缓存不一致   | 中   | 文档页未带版本号                   | 改样式后同步给两个文档页加 `?v=`，或统一版本策略          |
-| 图片缓存不更新   | 中   | 同名覆盖后 CDN 仍返回旧图          | 换文件名并更新 `src`，或强制刷新验证                      |
-| 数量文案不一致   | 中   | 增删截图/架构图后文案未改          | 按第 8 节清单逐项核对                                     |
-| 三页公共部分漂移 | 中   | 页头/页脚复制维护                  | 改动时三页同时改，按维护清单复核                          |
-| 仓库体积         | 低   | `assets/` 8.9 MB + ZIP 49 MB       | 分享包移出版本库或历史；图片转 WebP                       |
-| 浏览器兼容       | 低   | 依赖现代 CSS/JS                    | 目标用户以现代移动端为主；如需兼容旧机，增加降级          |
-| 外链失效         | 低   | 备案系统域名或查询参数变化         | 上线前人工点验                                            |
-| 无自动化测试     | 低   | 回归靠人工                         | 使用 [05](05-run-and-deploy.md) 的验收清单                |
+| 项                 | 要求 / 版本                              | 说明                                                         |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------ |
+| Node.js            | ≥ 22（`engines`）                        | `generate-tokens.mjs` 直接导入 `.ts`，依赖原生类型剥离        |
+| npm                | 随 Node 22                               | CI 使用 `npm ci` 严格安装                                     |
+| 操作系统（本地）   | macOS / Linux                            | `sharp` 需对应平台原生二进制                                  |
+| 浏览器（测试）     | Playwright Chromium                      | 视觉基线在 macOS 生成，文件名带 `-darwin`                     |
+| CI 门禁任务        | `ubuntu-latest`，Node 22                 | 令牌、对比度、类型、Lint、格式、单测、构建、E2E（非视觉）      |
+| CI 视觉任务        | `macos-latest`，Node 22                  | 仅跑 `@visual`，避免跨平台字体渲染差异                        |
+| GitHub Actions     | `checkout@v4`、`setup-node@v4`、`upload-artifact@v4` | 见 [.github/workflows/ci.yml](../.github/workflows/ci.yml) |
 
-**依赖变更检查顺序**：先确认资源路径 → 再确认 HTML 引用 → 再确认 CSS 契约 → 最后确认文案数量与三页一致性。
+---
+
+## 10. 依赖风险与缓解
+
+| 风险                                             | 触发条件                          | 缓解                                                                 |
+| ------------------------------------------------ | --------------------------------- | -------------------------------------------------------------------- |
+| Astro / 插件主版本升级破坏构建                   | 手工升级 `astro` / `@astrojs/*`   | 版本精确锁定；升级后跑完整 `verify`；保留 lockfile 回退               |
+| `sharp` 原生二进制与平台不匹配                   | 换机器/换 CI 镜像                 | `npm ci` 重装；CI 与本地均使用受支持平台                              |
+| `github-slugger` 与 `rehype-slug` 算法分叉       | 单独升级其一                      | 两者均锁定版本；法律页 E2E 校验目录锚点                              |
+| 视觉基线跨平台漂移                               | 升级 Chromium、系统字体变化       | 基线文件名带平台后缀；仅在 macOS 生成/更新                           |
+| Node < 22 无法运行脚本                           | 低版本 Node                       | `engines` 声明；README 与 wiki 明确要求                              |
+| 字体许可变化                                     | Fraunces 上游协议调整             | OFL-1.1 允许分发；必要时回退系统衬线栈                               |
+| 仓库体积过大                                     | 根目录产物 + 视觉基线入库         | `.release-manifest.json` 可审计；评估发布分支/外部存储（已知问题 P1-01、P2-04） |
+| 供应链风险                                       | 新增依赖                          | 精确版本 + `npm audit --audit-level=high`（CI 继续执行但不阻塞）      |
+
+依赖漏洞扫描当前记录为 0 个 high 及以上问题（见 `docs/acceptance/verification-report.md`），但该结果只代表扫描时点。

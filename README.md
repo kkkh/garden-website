@@ -88,7 +88,7 @@ npm run test:visual:update
 ├── scripts/                    # 构建与门禁脚本
 ├── tests/                      # unit / e2e / 视觉基线
 ├── docs/                       # ADR、设计系统、验收与回滚文档
-├── wiki/                       # v1 时代的 Code Wiki（历史归档）
+├── wiki/                       # Code Wiki（现行版；archive-v1/ 为重构前归档）
 └── reports/                    # 门禁与测试产物（不入库）
 ```
 
@@ -139,18 +139,18 @@ git push origin main
 
 ## 文档索引
 
-| 文档                                     | 内容                                           |
-| ---------------------------------------- | ---------------------------------------------- |
-| `docs/adr/`                              | 架构决策记录（技术选型、设计系统、测试策略等） |
-| `docs/design-system/tokens.md`           | 令牌清单、使用规则、禁用组合                   |
-| `docs/design-system/contrast-report.md`  | 自动生成的对比度检查结果                       |
-| `docs/acceptance/coverage-matrix.md`     | 覆盖矩阵逐项结论                               |
-| `docs/acceptance/verification-report.md` | 门禁命令、日志与验收结论                       |
-| `docs/acceptance/assumptions.md`         | 假设登记表（含无法获取的信息）                 |
-| `docs/operations/deployment.md`          | 部署与缓存策略                                 |
-| `docs/operations/rollback.md`            | 回滚步骤（含演练记录）                         |
-| `docs/operations/known-issues.md`        | 已知缺陷、未覆盖项与残余风险                   |
-| `wiki/`                                  | v1 代码结构与旧实现说明（历史参考）            |
+| 文档                                     | 内容                                                         |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `docs/adr/`                              | 架构决策记录（技术选型、设计系统、测试策略等）               |
+| `docs/design-system/tokens.md`           | 令牌清单、使用规则、禁用组合                                 |
+| `docs/design-system/contrast-report.md`  | 自动生成的对比度检查结果                                     |
+| `docs/acceptance/coverage-matrix.md`     | 覆盖矩阵逐项结论                                             |
+| `docs/acceptance/verification-report.md` | 门禁命令、日志与验收结论                                     |
+| `docs/acceptance/assumptions.md`         | 假设登记表（含无法获取的信息）                               |
+| `docs/operations/deployment.md`          | 部署与缓存策略                                               |
+| `docs/operations/rollback.md`            | 回滚步骤（含演练记录）                                       |
+| `docs/operations/known-issues.md`        | 已知缺陷、未覆盖项与残余风险                                 |
+| `wiki/`                                  | 现行 Code Wiki（架构、模块、关键代码、依赖、运行部署、维护） |
 
 ---
 

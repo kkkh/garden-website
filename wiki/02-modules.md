@@ -1,199 +1,261 @@
 # 02 · 模块职责
 
-本项目的「模块」不是代码包，而是**按文件与页面区块划分的职责单元**。理解模块边界，就能快速判断一次改动会影响哪些文件。
+本文件回答两个问题：**某段代码属于哪个模块**、**修改它会牵动哪些模块**。所有路径均相对于仓库根目录。
 
 ---
 
-## 1. 文件级职责总表
-
-| 文件                                | 类型     | 行数 | 核心职责                                                     | 是否被三页共享 |
-| ----------------------------------- | -------- | ---: | ------------------------------------------------------------ | -------------- |
-| [index.html](../index.html)         | 页面     |  506 | 产品首页：介绍、功能、轮播、架构图、系统信息、关于、轮播脚本 | 否             |
-| [privacy.html](../privacy.html)     | 页面     |  140 | 隐私政策文本与合规声明                                       | 否             |
-| [agreement.html](../agreement.html) | 页面     |  125 | 用户协议文本                                                 | 否             |
-| [styles.css](../styles.css)         | 样式     |  965 | 全站设计系统、所有组件样式、响应式与无障碍                   | 是             |
-| `assets/icon.png`                   | 资源     |    — | 品牌图标：favicon、页头、Hero、页脚、文档页                  | 是             |
-| `assets/screenshot-01…22.jpg`       | 资源     |    — | 应用截图与缩略图                                             | 仅首页         |
-| `assets/flow-01…10.png`             | 资源     |    — | 平台架构图                                                   | 仅首页         |
-| `beian/beian.png`                   | 资源     |    — | 公安备案徽标                                                 | 三页页脚       |
-| `.trae-html-share-packages/*.zip`   | 工具产物 |    — | 整站分享包，不参与运行                                       | 否             |
-| `wiki/*.md`                         | 文档     |    — | 本 Code Wiki                                                 | 否             |
-
----
-
-## 2. 首页 index.html 的区块模块
-
-首页是「单页多 section」，每个 section 独立负责一类内容，通过 `id` 与导航锚点连接。
-
-| #   | 模块 / section | 行范围  | 主要类名                                                  | 职责                                                          | 依赖                           |
-| --- | -------------- | ------- | --------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------ |
-| 1   | 页头           | 13–30   | `.site-header` `.nav` `.brand` `.nav-links`               | 吸顶导航：品牌回首页、7 个导航项（5 个页内锚点 + 2 个法律页） | `styles.css` 62–133            |
-| 2   | Hero           | 32–53   | `.hero` `.hero-inner` `.hero-text` `.hero-icon` `.status` | 首屏定位：应用名、标语、简介、两个 CTA、图标、系统要求        | icon、按钮样式、`floaty` 动画  |
-| 3   | 应用介绍       | 55–90   | `.intro-grid` `.intro-card` `.num`                        | 4 张卡片回答「是什么 / 解决什么 / 给谁用 / 隐私」             | `styles.css` 314–366           |
-| 4   | 功能特性       | 92–145  | `.feature-grid` `.feature-card` `.feature-ico`            | 6 张编号卡片（01–06）承载核心卖点                             | `styles.css` 368–414           |
-| 5   | 应用截图       | 147–208 | `.carousel` `.cvr-*`                                      | 22 张截图轮播：舞台、左右箭头、序号、说明、缩略图条           | `styles.css` 416–610；内联脚本 |
-| 6   | 平台架构       | 210–303 | `.flow-grid` `.flow-card` `.flow-cap` `.fig-no`           | 10 张 `figure` 架构图 + 标题 + 说明                           | flow PNG                       |
-| 7   | 系统与隐私     | 305–349 | `.sys-grid` `.sys-card`                                   | 4 组清单：运行环境、权限、网络、数据存储                      | `styles.css` 647–698           |
-| 8   | 关于我们       | 351–376 | `.about-card` `.about-table` `.row` `.k` `.v`             | 开发主体、版权说明、联系方式表                                | `styles.css` 700–742           |
-| 9   | 页脚           | 378–413 | `.site-footer` `.footer-grid` `.copyright` `.beian-*`     | 品牌、法律链接、邮箱、域名、ICP/公安备案                      | `styles.css` 744–805、908–951  |
-| 10  | 轮播脚本       | 415–503 | —                                                         | 生成缩略图、切换、预加载、手势、键盘                          | 第 5 模块的 DOM 契约           |
-
-### 2.1 页面内「被注释保留」的旧内容
-
-- 第 158–170 行：原 11 张截图的 HTML，整块被注释，仅供备查。
-- 第 399–402 行：旧版权与备案文本，被注释保留。
-- 这些注释**不会进入 DOM**，脚本查询 `.cvr-img` 时只命中实际存在的 22 张图（HTML 中共出现 33 个该 class，其中 11 个在注释内）。
-- 维护时不要误删注释块以外的分隔说明；项目约定「旧内容以注释保留备查」。
-
-### 2.2 区块与样式的对应关系
-
-每个 section 由「内容类 + 布局类」组成：
+## 1. 模块地图
 
 ```text
-<section class="section section-alt" id="features">
-                   └─ 通用纵向留白    └─ 白底 + 上下分隔线
-  <div class="container">          ← 1120px 限宽 + 左右 28px
-    <div class="section-head">     ← 居中 kicker + h2 + 描述
-    <div class="feature-grid">     ← 三列网格（960px 以下两列，640px 以下单列）
+src/
+├── pages/          路由与页面编排
+├── layouts/        HTML 骨架与两类页面模板
+├── components/
+│   ├── seo/        元信息与结构化数据
+│   ├── chrome/     站点框架（页头、抽屉导航、页脚、回到顶部）
+│   ├── home/       首页八个区块
+│   └── ui/         可复用小部件（图标、主题切换、灯箱）
+├── data/           站点常量与内容索引（构建期只读）
+├── lib/            主题、埋点、日期、结构化数据等纯函数/浏览器服务
+├── scripts/        运行时交互增强（轮播、灯箱、导航、显现、目录）
+├── content/legal/  法律 Markdown（内容集合）
+├── design/         设计令牌唯一事实源
+├── styles/         令牌生成物与七个样式层
+└── content.config.ts  法律内容集合 schema
+
+scripts/            构建与门禁脚本（令牌、图标、对比度、发布同步、独立巡检）
+tests/              单元与端到端测试
+.github/workflows/  CI 两条流水线
 ```
 
-`.section` 与 `.section-alt` 交替使用，形成「暖白 → 白 → 暖白」的节奏；首页奇数/偶数区块的底色由这两个类控制。
+---
+
+## 2. 页面层（`src/pages/`）
+
+| 模块                     | 职责                                                                                                                         | 依赖                                                                                           |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `index.astro`            | 组装首页八个区块；生成 `websiteSchema + mobileApplicationSchema + faqSchema` 数组并传给布局                                   | `BaseLayout`、8 个首页组件、`data/faq`、`data/site`、`lib/schema`                               |
+| `[slug].astro`           | 读取 `legal` 集合生成静态路径；渲染 Markdown；从正文提取 H2 并用 `GithubSlugger` 生成目录锚点；路径强制 `.html`              | `astro:content`、`github-slugger`、`LegalLayout`                                                |
+| `404.astro`              | 品牌化 404，提供首页、截图、架构、隐私政策四个出口；`noindex`                                                                 | `BaseLayout`                                                                                    |
+| `site.webmanifest.ts`    | 静态 `APIRoute`，输出 Web App Manifest（名称、主题色、三个图标）                                                               | `data/site`、`design/tokens` 的 `metaColors`                                                    |
+
+**边界**：页面只做编排与路由，不写可复用业务逻辑；区块内容一律来自 `data/` 或内容集合。
 
 ---
 
-## 3. 公共外壳模块
+## 3. 布局层（`src/layouts/`）
 
-三页各自维护一份页头与页脚，结构一致但链接写法不同。
+| 模块                | 职责                                                                                                                                                         | 关键 Props                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `BaseLayout.astro`  | 输出 `<!doctype>`、`lang="zh-CN"`、内联主题初始化、`Seo`、跳转链接、页头、`<main>`、页脚、回到顶部、全局灯箱和脚本入口；计算首页/非首页的 `homeHref` | `title`、`description`、`path`、`type`、`noindex`、`publishedTime`、`modifiedTime`、`jsonLd`、`lightboxTitle`、`bodyClass` |
+| `LegalLayout.astro` | 法律页双栏布局：目录（含生效/更新日期）+ 文章（标题、摘要、正文、联系声明、跨页导航）；生成 `WebSite + BreadcrumbList` JSON-LD；`article` 类型与发布时间 | `title`、`description`、`summary`、`path`、`effectiveDate`、`updatedDate`、`headings`                                  |
 
-| 区域     | 首页写法                       | 文档页写法                          | 说明                         |
-| -------- | ------------------------------ | ----------------------------------- | ---------------------------- |
-| 品牌     | `href="index.html"`            | `href="index.html"`                 | 一致                         |
-| 首页     | `#top`                         | `index.html#top`                    | 文档页需跨页                 |
-| 功能介绍 | `#features`                    | `index.html#features`               | 同上                         |
-| 应用截图 | `#screenshots`                 | `index.html#screenshots`            | 同上                         |
-| 平台架构 | `#architecture`                | `index.html#architecture`           | 同上                         |
-| 关于我们 | `#about`                       | `index.html#about`                  | 同上                         |
-| 隐私政策 | `privacy.html`                 | `privacy.html`                      | 文档页保留自链接             |
-| 用户协议 | `agreement.html`               | `agreement.html`                    | 文档页保留自链接             |
-| 页脚版权 | `© 2026 园枢`                  | `© 2026 秦超（个人）版权所有`       | 两页文档措辞不同             |
-| 联系我们 | 邮箱 +「欢迎您的使用！」+ 域名 | 邮箱 + 域名（联系电话行以注释保留） | 首页多一行欢迎语，属已知差异 |
-| 备案     | 相同 ICP / 公安备案链接        | 同左                                | 三页均需保留                 |
-
-**模块约束**：
-
-1. 任何导航增删改必须同步 3 个 HTML；
-2. 页脚备案号、域名、邮箱必须三页一致；
-3. 文档页的导航必须保留 `index.html#...` 前缀，否则会跳回文档页自身顶部。
+`BaseLayout` 把 `navigation` / `legalNavigation` 与一组中文标签传给 `SiteHeader`；非首页时把 `#anchor` 解析为 `/#anchor`，这是跨页锚点的唯一实现点。
 
 ---
 
-## 4. 文档页模块（隐私政策 / 用户协议）
+## 4. SEO 模块（`src/components/seo/Seo.astro`）
 
-两页结构完全同构，仅正文内容不同：
+| 职责           | 说明                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| 标题           | 首页直接使用传入标题；其他页面追加 `· 园枢`                                                |
+| 基础元信息     | `description`、`author`、`keywords`、`format-detection`、`theme-color`（浅/深两条 media）   |
+| 规范与索引     | `canonical` 由 `site.domain + path` 生成；`noindex` 可关闭索引                              |
+| 社交分享       | Open Graph（type、locale、title、description、url、image 尺寸与 alt）与 Twitter Card       |
+| 图标与 manifest | favicon PNG/SVG、Apple Touch Icon、`/site.webmanifest`                                     |
+| 结构化数据     | 遍历 `jsonLd` 数组输出 `application/ld+json`                                               |
+| 文章时间       | 可选 `article:published_time` / `article:modified_time`                                    |
 
-| 结构     | 类 / 元素                    | 职责                                            |
-| -------- | ---------------------------- | ----------------------------------------------- |
-| 页头     | `.site-header`               | 与首页同构，链接加跨页前缀                      |
-| 主体容器 | `main.container > .doc-wrap` | 白卡、圆角、顶部墨蓝—鎏金装饰条、56/62px 内边距 |
-| 标题     | `.doc-wrap h1`               | 居中、宋体、宽字距                              |
-| 元信息   | `.doc-meta`                  | 生效日期 / 最近更新，底部细线分隔               |
-| 章节标题 | `.doc-wrap h2`               | 左侧金色竖线、宋体                              |
-| 正文     | `.doc-wrap p / ul / ol / li` | 15px 正文、列表缩进                             |
-| 页脚     | `.site-footer`               | 与首页同构                                      |
-
-**内容职责**：
-
-- `privacy.html`：9 章，覆盖收集范围、使用目的、系统权限、第三方共享、删除方式、未成年人、政策更新、联系方式。
-- `agreement.html`：7 章，覆盖服务内容、行为规范、知识产权、免责、协议变更、争议解决、联系方式。
-- 两页均声明「生效日期 / 最近更新：2026年9月25日」。修改实质条款时应同步更新这两个日期。
+所有图标路径来自 `src/data/site.ts` 的 `assets` 常量，与 `generate-icons.mjs` 的产物路径一一对应。
 
 ---
 
-## 5. styles.css 的样式模块
+## 5. 站点框架组件（`src/components/chrome/`）
 
-| 模块       |  行范围 | 关键选择器                                          | 职责                                              |
-| ---------- | ------: | --------------------------------------------------- | ------------------------------------------------- |
-| 设计令牌   |    7–35 | `:root`                                             | 颜色、字体栈、圆角、三级阴影、`color-scheme`      |
-| 基础与容器 |   37–60 | `*` `body` `img` `a` `.container` `[id]`            | Reset、排版基线、限宽、锚点偏移                   |
-| 页头       |  62–133 | `.site-header` `.nav` `.brand` `.nav-links`         | 吸顶、毛玻璃、金色顶线、下划线动效                |
-| Hero       | 135–269 | `.hero` `.hero-inner` `.hero-*` `.btn-*` `.status`  | 双径向 + 线性渐变背景、画框线、渐变标题、浮动图标 |
-| 通用板块   | 271–312 | `.section` `.section-alt` `.section-head` `.kicker` | 纵向节奏、白底区、居中标题组                      |
-| 应用介绍   | 314–366 | `.intro-grid` `.intro-card`                         | 2×2 卡片、左侧金色生长线                          |
-| 功能特性   | 368–414 | `.feature-grid` `.feature-card` `.feature-ico`      | 3 列卡片、编号圆形、右上角装饰                    |
-| 截图轮播   | 416–610 | `.carousel` `.cvr-*`                                | 舞台、手机框、图层切换、箭头、说明、缩略图        |
-| 平台架构   | 612–645 | `.flow-grid` `.flow-card` `.flow-cap`               | 2 列图卡、悬停轻缩放                              |
-| 系统与隐私 | 647–698 | `.sys-grid` `.sys-card`                             | 2 列清单卡、金色菱形项目符                        |
-| 关于我们   | 700–742 | `.about-card` `.about-table`                        | 内嵌画框、键值行                                  |
-| 页脚       | 744–805 | `.site-footer` `.footer-*` `.copyright`             | 墨蓝底、金色顶线、三列信息                        |
-| 文档页     | 807–858 | `.doc-wrap` `.doc-meta`                             | 法律文本排版                                      |
-| 减弱动效   | 860–865 | `prefers-reduced-motion`                            | 关闭动画与平滑滚动                                |
-| 响应式     | 867–906 | `@media`                                            | 960 / 720 / 640 三档主布局                        |
-| 备案信息   | 908–951 | `.copyright-meta` `.beian-*`                        | 备案行、分隔线、徽标对齐                          |
-| 超窄屏     | 953–966 | `@media`                                            | 380 手机框缩小、560 备案紧凑                      |
+| 组件                | 职责                                                                                                          | 关键 DOM 契约 / 事件                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `SiteHeader.astro`  | 品牌、桌面主导航、主题切换、CTA、移动端菜单按钮；非首页时链接自动带首页前缀                                  | `data-site-header`、`data-nav-link`、`data-nav-section`、`data-nav-toggle`、`data-track`                   |
+| `MobileNav.astro`   | 原生 `<dialog>` 抽屉，包含六个页内导航 + 两个法律页 + 页脚说明                                                | `data-mobile-nav`、`data-nav-close`                                                                        |
+| `SiteFooter.astro`  | 品牌与标语、站点导航、法律与联系、版权、ICP 与公安备案外链、域名说明                                          | `data-track="nav:click"` / `outbound:click`                                                                |
+| `ToTop.astro`       | 回到顶部按钮，复用左箭头并旋转 90°；`print-hidden`                                                             | `data-to-top`                                                                                              |
 
-### 5.1 轮播样式的两层结构
-
-1. **基础层（416–573）**：桌面默认视觉、固定 52×52 缩略图、居中对齐。
-2. **22 张适配层（575–610）**：为了让 22 张缩略图在桌面「两行全显」、窄屏「单行滚动」，覆盖了 `.cvr-rail` 与 `.cvr-thumb` 的尺寸、对齐与透明度，并在 `min-width: 641px` 下改为 `repeat(11, 44px)` 网格。
-
-> 这是全文件唯一的**非媒体查询**同选择器二次定义区域。修改缩略图布局时必须同时看这两段，避免只改到被覆盖的旧规则。缩略图数量若不再是 22，需同步调整 11 列。
+组件本身不绑定事件；行为由 `src/scripts/app.ts` 统一启动的模块按属性查询增强。
 
 ---
 
-## 6. 脚本模块
+## 6. 首页区块（`src/components/home/`）
 
-脚本只有一个 IIFE（[index.html](../index.html) 第 415–503 行），内部可视为五个职责子模块：
+| 组件                      | 内容与数据源                                                                                                   | 关键交互 / 契约                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `HeroSection.astro`       | 品牌、定位、简介、两个 CTA、首张截图（`screenshots[0]`）、平台标签                                             | 首图 `eager` + `fetchpriority="high"`；CTA 埋点                                                        |
+| `FactBand.astro`          | 4 项概览数据（`facts`）                                                                                        | `data-reveal` + `reveal-delay-*`                                                                      |
+| `IntroSection.astro`      | 同时渲染「应用介绍」（4 卡，`introCards`）与「功能特性」（6 卡，`features`）                                   | 功能卡链接带 `data-shot-target`，点击后轮播跳到对应截图                                               |
+| `ShowcaseSection.astro`   | 22 张截图：舞台、前后箭头、查看大图、说明计数、缩略图轨、隐藏灯箱数据源、操作提示                              | `data-carousel-*`、`data-lightbox-*`、`data-shot-target` 的目标                                          |
+| `ArchitectureSection.astro` | 10 张架构图卡片（标题、FIG 序号、说明），点击打开灯箱                                                        | `data-lightbox-trigger` / `data-lightbox-item`，组名 `architecture`                                   |
+| `SystemSection.astro`     | 4 组系统与隐私说明（运行环境、权限、网络、存储）+ 官网隐私声明                                                | 无脚本依赖                                                                                           |
+| `FaqSection.astro`        | 6 项 FAQ，使用原生 `<details>`，首项默认展开                                                                   | 组件内 `<style>` 定义 FAQ 局部样式                                                                    |
+| `AboutSection.astro`      | 开发与运营信息、内容版权说明、联系方式、备案信息                                                              | 邮件与备案外链埋点                                                                                   |
 
-| 子模块     |  行范围 | 职责                                                                     | 输出            |
-| ---------- | ------: | ------------------------------------------------------------------------ | --------------- |
-| 引用与守卫 | 416–429 | 取舞台、图片集合、计数/说明/缩略图容器、箭头；舞台不存在则退出           | 闭包变量        |
-| 缩略图工厂 | 431–436 | 用图片的 `src`/`alt` 生成 `role="tab"` 按钮，首项激活                    | `#cvrRail` 内容 |
-| 预加载器   | 438–448 | 预取当前与左右相邻图，`preloaded` 去重                                   | 浏览器缓存      |
-| 渲染函数   | 450–463 | `go(i)` 统一处理索引取模、active、ARIA、计数、说明、预加载、缩略图入视口 | DOM 状态        |
-| 输入绑定   | 465–501 | 初始化总数与预取；绑定箭头点击、缩略图事件委托、单指横滑、方向键         | 事件监听器      |
-
-脚本不读写 URL、不持久化、不请求接口；所有数据都来自 DOM 自身。
-
----
-
-## 7. 资源模块
-
-| 资源组     | 规格            | 数量 |      体积 | 被谁引用                                  | 约束                                      |
-| ---------- | --------------- | ---: | --------: | ----------------------------------------- | ----------------------------------------- |
-| 应用图标   | PNG 256×256     |    1 |     39 KB | 三页 favicon / 页头 / 页脚；首页另有 Hero | 保持正方形                                |
-| 应用截图   | JPG 1284×2778   |   22 | 约 5.9 MB | 首页轮播（大图 + 缩略图同源）             | 比例须与 `.cvr-phone` 的 `1284/2778` 一致 |
-| 平台架构图 | PNG 1600×1240   |   10 |    3.0 MB | 首页架构区                                | 文字在 2 列卡片中需可读                   |
-| 备案徽标   | PNG 20×20       |    1 |      4 KB | 三页页脚                                  | 显示尺寸由 `width/height` 属性固定        |
-| 分享 ZIP   | ZIP，各约 17 MB |    3 |  约 49 MB | 无（仅工具产物）                          | 不应被页面引用                            |
-
-截图同时用于舞台与缩略图，因此**替换时只需替换文件，无需改两处**；但缩略图会按同源路径重新生成。
+区块文案几乎全部来自 `src/data/home.ts`、`src/data/faq.ts`、`src/data/site.ts`；组件只保留结构性文字（标题、眉题、提示语）。
 
 ---
 
-## 8. 模块依赖矩阵
+## 7. 通用 UI（`src/components/ui/`）
 
-| 模块 ↓ 依赖 →  |     styles.css     | icon |     截图      | 架构图 | 备案图 | 内联脚本 | 其他页面 |
-| -------------- | :----------------: | :--: | :-----------: | :----: | :----: | :------: | :------: |
-| index.html     |         ●          |  ●   |       ●       |   ●    |   ●    |    ●     |    ●     |
-| privacy.html   |         ●          |  ●   |       —       |   —    |   ●    |    —     |    ●     |
-| agreement.html |         ●          |  ●   |       —       |   —    |   ●    |    —     |    ●     |
-| 轮播脚本       | 依赖 class/ID 契约 |  —   | ●（读 `src`） |   —    |   —    |    —     |    —     |
-| styles.css     |         —          |  —   |       —       |   —    |   —    |    —     |    —     |
+| 组件                 | 职责                                                                                          | 说明                                                                     |
+| -------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `Icon.astro`         | 24×24 线性 SVG 图标库，按 `name` 查表输出路径                                                  | 覆盖功能/系统图标与箭头、展开、关闭、信息、菜单；`aria-hidden`          |
+| `ThemeToggle.astro`  | 三态主题按钮组（浅色/深色/跟随系统），`role="group"` + `aria-pressed`                          | 初始 `aria-pressed` 以 system 为 true，脚本加载后按实际偏好同步          |
+| `Lightbox.astro`     | 全局 `<dialog>` 灯箱骨架：标题、计数、图片区、说明、前后按钮、关闭按钮                          | `data-lightbox`、`data-lightbox-image`、`data-lightbox-count` 等          |
 
-图例：● 直接依赖；— 无依赖。`styles.css` 无 `@import`、无 `url()`、无外部字体，是纯自包含样式。
+`Icon` 的图标表是纯数据映射；新增图标需要同时改 `name` 类型与 `PATHS`。
 
 ---
 
-## 9. 模块边界与扩展点
+## 8. 数据模块（`src/data/`）
 
-| 想做什么       | 应改的模块                                   | 不应改的模块             |
-| -------------- | -------------------------------------------- | ------------------------ |
-| 改产品文案     | 对应 section 的 HTML                         | `styles.css` 的结构层    |
-| 换截图         | `assets/screenshot-*.jpg` + `alt`/`data-cap` | 脚本                     |
-| 加一个内容板块 | 新 section + 导航 + `styles.css` 新组件类    | 轮播脚本                 |
-| 改主题色       | `styles.css` `:root` 令牌                    | HTML 内联颜色（不存在）  |
-| 改法律条款     | `privacy.html` / `agreement.html` + 更新日期 | 首页文案（除非业务变化） |
-| 改导航         | 三个 HTML 的页头 + 相关 section id           | 页脚                     |
-| 改备案信息     | 三个 HTML 的页脚                             | 其他                     |
+| 模块               | 导出                                                                                                                                             | 被谁消费                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `site.ts`          | `site`（品牌、域名、描述、关键词、平台、开发者、联系方式、备案、主题色）、`assets`（图标/OG 路径）、`navigation`、`legalNavigation`、两个类型 | 布局、页头、页脚、关于、Seo、manifest、schema、测试             |
+| `home.ts`          | `facts`、`introCards`、`features`、`systemGroups`                                                                                                | Hero 之外的首页区块、数据测试                                  |
+| `screenshots.ts`   | `screenshots`：22 项 `{ index, image, alt, caption }`                                                                                            | Hero、Showcase、功能卡（`targetShot`）、数据测试、灯箱          |
+| `architecture.ts`  | `architectureFigures`：10 项 `{ index, image, title, description }`                                                                              | Architecture、数据测试、灯箱                                    |
+| `faq.ts`           | `faqItems`：6 项问答                                                                                                                             | FaqSection、`faqSchema`、数据测试                               |
+| `types.ts`         | `Screenshot`、`ArchitectureFigure`、`Feature`、`IntroCard`、`SystemGroup`、`Fact` 等接口                                                          | 数据模块与组件 Props                                            |
 
-**扩展原则**：新增组件优先复用现有令牌与 `.section` / `.container` 节奏；不要引入外部库；不要破坏轮播的 class/`data-cap` 契约。
+**单一事实源规则**：同一文案只允许存在一处。例如备案号只在 `site.filing` 定义，三处页面引用；FAQ 同源驱动可见列表与 JSON-LD。
+
+---
+
+## 9. 库层（`src/lib/`）
+
+| 模块                   | 职责                                                                                                         | 运行期 / 构建期        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| `theme.ts`             | 主题偏好的读、写、解析、应用；绑定三态按钮与系统主题变化                                                     | 运行期                 |
+| `theme-init.ts`        | 导出内联脚本字符串，在 `<head>` 中提前设置 `data-theme`、`color-scheme` 并添加 `.js` 类                       | 构建期注入 / 运行期执行 |
+| `analytics.ts`         | `track()` 本地事件缓冲（上限 200）+ `CustomEvent`；`initAnalytics()` 通过 `data-track` 统一委托               | 运行期                 |
+| `format.ts`            | 中文日期格式化（固定 `Asia/Shanghai`）与 ISO 日期切片                                                        | 构建期                 |
+| `schema.ts`            | `websiteSchema`、`mobileApplicationSchema`、`breadcrumbSchema`、`faqSchema`                                    | 构建期                 |
+
+`lib/` 不依赖任何组件；其中 `theme.ts` 与 `analytics.ts` 有单元测试覆盖。
+
+### 9.1 类型声明
+
+| 文件                     | 职责                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `src/env.d.ts`           | 引入 `astro/client` 类型，提供 `ImageMetadata` 等 Astro 客户端类型                           |
+| `src/types/global.d.ts`  | 扩展 `Window`：`__gardenRevealReady`、`__gardenCarouselReady`，供 E2E 等待初始化完成           |
+
+`Window.__gardenEvents` 的类型在 `src/lib/analytics.ts` 内部通过 `declare global` 声明，不放在全局类型文件中。
+
+---
+
+## 10. 运行时脚本（`src/scripts/`）
+
+| 模块              | 职责                                                                                                       | 对外 API / 契约                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `app.ts`          | 唯一启动入口：按顺序初始化各模块；轮播失败兜底；绑定 `data-shot-target` 点击                        | 无导出，导入即执行                                                                |
+| `carousel.ts`     | 截图轮播类与纯函数；箭头/缩略图/键盘/滑动切换、相邻预加载、缩略图居中、ARIA 同步、埋点                    | `ScreenshotCarousel`、`wrapIndex`、`formatIndex`、`isHorizontalSwipe`             |
+| `lightbox.ts`     | 灯箱类；按组读取 `data-lightbox-item`、打开/切换/关闭、焦点恢复、滚动锁定、相邻预加载、加载错误态         | `Lightbox`、`initLightbox`                                                        |
+| `header.ts`       | 滚动状态（`data-scrolled`）、当前区块 `aria-current`、回到顶部按钮显隐与滚动                                  | `initHeader`                                                                      |
+| `mobile-nav.ts`   | 原生 `<dialog>` 打开/关闭、`aria-expanded`、`body.is-locked`、关闭恢复焦点、桌面断点自动关闭                 | `initMobileNav`                                                                   |
+| `reveal.ts`       | IntersectionObserver 显现；无 IO 或减弱动效时全部直接显示；暴露 `revealAll`                                 | `initReveal`、`revealAll`                                                         |
+| `legal-toc.ts`    | 重建法律页目录、Observer 高亮当前章节                                                                       | `initLegalToc`                                                                    |
+
+所有模块都通过 `data-*` 查询 DOM，不依赖组件内部 class；样式类只用于视觉，不作为行为选择器（轮播的缩略图轨 `.showcase__rail` 是唯一例外，用于滚动容器定位）。
+
+---
+
+## 11. 样式模块（`src/styles/`）
+
+| 文件                    | 层         | 职责                                                                          | 是否手写           |
+| ----------------------- | ---------- | ----------------------------------------------------------------------------- | ------------------ |
+| `tokens.generated.css`  | 令牌       | 原始色、语义色（浅/深）、字体、间距、圆角、阴影、动效、布局、层级、打印色      | 否，脚本生成       |
+| `base.css`              | 基础       | 重置、排版基线、链接/表单/图片默认、焦点、跳转链接、打印、对比度与减弱动效媒体查询 | 是                 |
+| `utilities.css`         | 工具       | 容器、区块、网格、标题组、眉题、标签、通知、显现动画、`sr-only`、`js-only`     | 是                 |
+| `components.css`        | 组件       | 按钮、Tag/Chip、卡片、功能卡、系统卡、统计条、设备框                           | 是                 |
+| `chrome.css`            | 框架       | 页头、桌面导航、主题切换、移动导航、页脚、回到顶部                              | 是                 |
+| `showcase.css`          | 展示       | Hero、概览数据带、截图轮播、灯箱、架构图卡片、时间线                            | 是                 |
+| `editorial.css`         | 编辑       | 法律页双栏、目录、长文排版、关于我们、错误页、通知                              | 是                 |
+
+`global.css` 只按顺序 `@import` 以上文件；Fontsource 字体也在此导入。样式文件之间不互相 `@import`。
+
+---
+
+## 12. 内容集合（`src/content/legal/`）
+
+| 文件             | 章节数（H2） | 关键 frontmatter                                                              |
+| ---------------- | ------------ | ----------------------------------------------------------------------------- |
+| `privacy.md`     | 9            | `title`、`description`、`summary`、`effectiveDate: 2026-09-25`、`updatedDate: 2026-10-23`、`order: 1` |
+| `agreement.md`   | 7            | 同上，`updatedDate: 2026-09-25`、`order: 2`                                    |
+
+`src/content.config.ts` 使用 `glob({ pattern: '**/*.md', base: './src/content/legal' })` 与 zod schema：标题/描述/摘要非空、日期可解析、`order` 为正整数。
+
+---
+
+## 13. 构建与门禁脚本（`scripts/`）
+
+| 脚本                       | 职责                                                                                           | 产物 / 退出行为                                                   |
+| -------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `generate-tokens.mjs`      | 由 `tokens.ts` 生成完整 CSS；`--check` 做逐字符比对                                             | `src/styles/tokens.generated.css`；不一致退出 1                   |
+| `generate-icons.mjs`       | 由应用图标生成 4 个 PNG、内嵌位图 SVG 与 1200×630 OG 图                                          | `public/icons/*`、`public/og/og-default.png`                      |
+| `check-tokens.mjs`         | 扫描 `src/` 的颜色字面量；允许令牌源与生成物                                                    | 违规列出文件与行号，退出 1                                        |
+| `check-contrast.mjs`       | 解析令牌引用并计算 33 项 WCAG 对比度；正文 4.5、大文本/非文本 3                                 | `docs/design-system/contrast-report.md`；不达标退出 1              |
+| `sync-root.mjs`            | 把 `dist/` 白名单产物同步到仓库根；`--check` 比对体积、残留与清单                              | 371 个文件 + `.release-manifest.json`                             |
+| `capture-baseline.mjs`     | 抓取线上 v1 与本地 v2 的桌面/移动截图，用于 before/after 证据                                    | `docs/acceptance/baseline/**`（按需运行，不入 CI）                |
+| `independent-review.mjs`   | 不复用 E2E 代码的独立巡检（A–K 11 组），含 axe 与截图                                            | `docs/acceptance/independent-review.json` 与截图                   |
+
+---
+
+## 14. 测试与配置模块
+
+| 模块                         | 职责                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/carousel.test.ts` | 环形索引、两位序号、滑动判定（阈值/比例/斜向）                                                                    |
+| `tests/unit/theme.test.ts`    | 偏好校验、系统解析、DOM/meta 应用、存储读写与异常降级                                                             |
+| `tests/unit/data.test.ts`     | 导航、备案、22 张截图、10 张架构图、4/6/4 内容数量、功能卡目标范围、四类 schema 契约                              |
+| `tests/e2e/home.spec.ts`      | 结构、SEO、导航、轮播、灯箱、主题、FAQ、法律页、外链安全、404                                                     |
+| `tests/e2e/a11y.spec.ts`      | axe 扫描四个页面 + 深色主题、键盘路径、触控目标、正文对比度抽样                                                    |
+| `tests/e2e/mobile.spec.ts`    | 无横向溢出、抽屉/桌面导航切换、缩略图滚动、Hero 可读性                                                            |
+| `tests/e2e/reduced-motion.spec.ts` | 内容直接可见、无持续动画、过渡近似 0、锚点非平滑滚动                                                         |
+| `tests/e2e/visual.spec.ts`    | 页面与组件状态视觉基线（12 个用例产生 16 组快照，4 个项目共 64 张 PNG）                                          |
+| `playwright.config.ts`       | 5 个项目、`astro preview` webServer、报告输出、1% 像素容差                                                         |
+| `vitest.config.ts`           | Node 环境、`@` 别名、覆盖率范围                                                                                   |
+| `eslint.config.mjs`          | JS/TS/Astro 规则、禁 `any`、console 限制、忽略发布产物                                                             |
+| `.prettierrc.json`           | 100 列、单引号、尾逗号、Astro 插件                                                                                 |
+| `.github/workflows/ci.yml`   | Ubuntu 门禁 + macOS 视觉回归 + 报告/产物上传                                                                       |
+
+---
+
+## 15. 模块依赖矩阵
+
+| 模块          | 依赖                                                                                                                   | 被谁依赖                                             |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `data/site.ts` | `design/tokens.ts`（`metaColors`）                                                                                     | 布局、页头、页脚、关于、Seo、manifest、schema、测试   |
+| `data/home.ts` | `data/types.ts`                                                                                                        | Intro、System、FactBand、测试                         |
+| `data/screenshots.ts` | `assets/screenshots/*`、`data/types.ts`                                                                          | Hero、Showcase、测试                                  |
+| `data/architecture.ts` | `assets/architecture/*`、`data/types.ts`                                                                         | Architecture、测试                                    |
+| `data/faq.ts` | `data/site.ts`、`lib/schema.ts`（类型）                                                                                | FaqSection、schema、测试                              |
+| `lib/schema.ts` | `data/site.ts`                                                                                                        | 首页、法律页、测试                                    |
+| `lib/theme.ts` | `design/tokens.ts`（`metaColors`）                                                                                     | `app.ts`、单元测试                                     |
+| `lib/analytics.ts` | 无                                                                                                                  | 轮播、灯箱、`app.ts`、各组件埋点属性                   |
+| `scripts/*`   | `lib/analytics`、`lib/theme`、各 `data-*` 契约                                                                          | `app.ts`（通过组件内的 `<script>` 引入）               |
+| `components/**` | `data/*`、`lib/schema`、`assets/*`                                                                                    | 页面与布局                                            |
+| `layouts/*`   | `components/*`、`data/site`、`lib/*`、`styles/global.css`                                                               | 页面                                                  |
+| `pages/*`     | `layouts/*`、`components/*`、`data/*`、`lib/schema`                                                                    | Astro 路由                                            |
+
+---
+
+## 16. 改动影响速查
+
+| 改动                         | 必须同步                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| 截图数量                     | `data/screenshots.ts`、`tests/unit/data.test.ts`（22）、`tests/e2e/home.spec.ts`（22）、OG 文案、视觉基线 |
+| 功能卡文案或目标截图         | `data/home.ts`、`targetShot` 范围测试、FAQ/文案一致性                                             |
+| 导航项                       | `data/site.ts`、页头/抽屉/页脚、E2E 导航断言、区块锚点                                             |
+| 备案号 / 联系方式            | `data/site.ts`、数据测试、页脚与关于区块（自动同步）                                               |
+| 法律文本章节                 | `content/legal/*.md`、E2E 目录/章节数断言、日期                                                 |
+| 设计令牌                     | `design/tokens.ts` → `tokens:build` → 对比度门禁 → 视觉基线                                       |
+| 交互脚本 DOM 契约            | 对应组件属性、`03-key-code.md`、E2E                                                              |
+| 发布白名单                   | `sync-root.mjs`、`.release-manifest.json`、部署文档                                                |
+| 依赖版本                     | `package.json` / lockfile、`verify`、视觉基线、CI Node 版本                                        |
