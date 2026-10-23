@@ -428,7 +428,8 @@
    铝合金中框、刘海、侧键与屏幕高光均为装饰，截图由 DeviceFrame 插槽提供。
    -------------------------------------------------------------------------- */
 .device-frame {
-  --device-bezel: clamp(4px, 1.5%, 7px);
+  --device-rail: clamp(2px, 0.7vw, 3px);
+  --device-bezel: clamp(5px, 1.1vw, 8px);
   --device-radius: clamp(2rem, 12.6%, 3.25rem);
 
   position: relative;
@@ -477,11 +478,11 @@
 
 .device-frame__screen {
   position: absolute;
-  inset: var(--device-bezel);
+  inset: var(--device-rail);
   overflow: hidden;
-  border-radius: calc(var(--device-radius) - var(--device-bezel));
+  border-radius: calc(var(--device-radius) - var(--device-rail));
   background: var(--color-device-screen);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-device-frame-shadow) 78%, transparent);
+  box-shadow: inset 0 0 0 var(--device-bezel) var(--color-device-screen);
 }
 
 .device-frame__screen img {
