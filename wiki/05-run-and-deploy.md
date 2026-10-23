@@ -102,7 +102,7 @@ check:tokens → check:contrast → typecheck → lint → format:check
 | `review:independent`    | 独立实现的 A–K 巡检（不包含在 verify 内）                                 | 交叉验证失败，建议在发布前执行             |
 | `audit`                 | high 及以上漏洞（CI 中 `continue-on-error`）                              | 依赖风险，需人工评估                       |
 
-最近一次验收记录：38 个单元测试、111 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
+最近一次验收记录：38 个单元测试、105 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
 
 ---
 
@@ -198,7 +198,7 @@ node scripts/sync-root.mjs
 node scripts/sync-root.mjs --check
 ```
 
-发布产物（共 436 个文件，随内容变化）：
+发布产物（共 437 个文件，随内容变化）：
 
 ```text
 index.html  privacy.html  agreement.html  404.html
@@ -230,7 +230,7 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 
 | 项       | 值                                                                 |
 | -------- | ------------------------------------------------------------------ |
-| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，交互增强 commit `a1e91dc`）      |
+| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，交互增强 commit `78b9fcd`）      |
 | 仓库     | `https://github.com/kkkh/garden-website`                            |
 | 分支     | `main`                                                              |
 | 托管     | 腾讯云 EdgeOne Makers（静态，从仓库根目录服务）                     |

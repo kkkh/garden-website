@@ -21,7 +21,13 @@ const { title, groupLabel } = Astro.props;
   </div>
 
   <div class="lightbox__figure" data-lightbox-figure>
-    <img data-lightbox-image alt="" decoding="async" />
+    <!-- 1×1 透明占位：满足 img 必须有 src 的规范要求，避免打开前发起额外请求；真实地址由 lightbox.ts 在打开时写入 -->
+    <img
+      data-lightbox-image
+      alt=""
+      decoding="async"
+      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+    />
   </div>
 
   <div class="lightbox__controls">
