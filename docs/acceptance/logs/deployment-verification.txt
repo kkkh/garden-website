@@ -1,8 +1,8 @@
 # 发布后线上验证
-- 时间：2026-10-23T11:25:10Z
+- 时间：2026-10-23T12:00:46Z
 - 目标：https://jl.43322.cn
-- 发布提交：21d319d11e9ea344f5f12e78855642ef6274aab5（设备框正面黑边与刘海融合修正）
-- 部署观察：main 推送后轮询 11 次（5s 间隔）切换完成，约 55 秒
+- 发布提交：252136a（设备框改为边到边贴合）
+- 部署观察：main 推送后轮询 19 次（5s 间隔）切换完成，约 95 秒
 
 ## 1. 页面与 404
 /                  200
@@ -12,10 +12,12 @@
 /not-exist-page    404
 
 ## 2. 判据
-CSS: /_astro/BaseLayout.BpS4LfeV.css
+CSS: /_astro/BaseLayout.CoUDVcAa.css
 data-device-model occurrences: 23
 data-scroll-progress: 1
 JSON-LD blocks: 3
+.device-frame padding: clamp(2px, .5vw, 3px)
+device-notch occurrences: 0
 
 ## 3. 静态资源
 /site.webmanifest                              200
@@ -32,10 +34,9 @@ index.html: identical to local root artifact
 PASS  标题 — 园枢 · 山西晋中理工学院校园信息聚合应用
 PASS  设备框机型
 PASS  设备框配色
-PASS  阅读进度线
-PASS  进度线随滚动变化
+PASS  无黑色刘海/侧键叠层
+PASS  窄边框贴合 — 3px
 PASS  缩略图 22 张
-PASS  机型标注
 PASS  切换到 02
 PASS  灯箱打开
 PASS  灯箱关闭
@@ -43,8 +44,8 @@ PASS  无控制台错误 — []
 PASS  无第三方请求 — []
 PASS  移动端无横向溢出 — {"s":390,"c":390}
 PASS  移动抽屉
-SUMMARY 14/14 passed
+SUMMARY 13/13 passed
 
 ## 6. 视觉证据
-docs/acceptance/baseline/v2-device/hero-live-fixed.png
-docs/acceptance/baseline/v2-device/showcase-live-fixed.png
+docs/acceptance/baseline/v2-device/hero-live-clean.png
+docs/acceptance/baseline/v2-device/showcase-live-clean.png
