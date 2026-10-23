@@ -40,7 +40,11 @@ export default defineConfig({
     timeout: 120_000,
   },
   projects: [
-    { name: 'desktop-light', use: { ...devices['Desktop Chrome'], colorScheme: 'light' } },
+    {
+      name: 'desktop-light',
+      use: { ...devices['Desktop Chrome'], colorScheme: 'light' },
+      testIgnore: /visual-webkit\.spec\.ts/,
+    },
     {
       name: 'desktop-dark',
       use: { ...devices['Desktop Chrome'], colorScheme: 'dark' },
@@ -62,6 +66,13 @@ export default defineConfig({
       name: 'reduced-motion',
       use: { ...devices['Desktop Chrome'], reducedMotion: 'reduce' },
       testMatch: /reduced-motion\.spec\.ts/,
+    },
+    {
+      // WebKit 关键界面基线：守护 Safari 在 aspect-ratio、clamp()、可变字体与图片解码上的渲染差异。
+      // 仅覆盖 6 个关键界面（见 visual-webkit.spec.ts），全页截图仍由 Chromium 基线负责。
+      name: 'webkit-visual',
+      use: { ...devices['Desktop Safari'] },
+      testMatch: /visual-webkit\.spec\.ts/,
     },
   ],
 });

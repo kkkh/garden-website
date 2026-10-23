@@ -13,6 +13,8 @@ export interface ArchitectureFigure {
   readonly image: ImageMetadata;
   readonly title: string;
   readonly description: string;
+  /** 供读屏使用的长文本替代描述，补充图中分层与流程细节。 */
+  readonly longDescription: string;
 }
 
 export type FeatureIcon =

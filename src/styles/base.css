@@ -32,6 +32,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* 可变字体按字号自动选择视觉尺寸（Fraunces 的 opsz 轴），并启用标准连字与字距调整 */
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures contextual;
   accent-color: var(--color-accent);
   caret-color: var(--color-accent);
 }

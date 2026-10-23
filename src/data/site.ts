@@ -41,7 +41,7 @@ export const site = {
     secondaryEmail: 'uull@aliyun.com',
   },
   filing: {
-    icp: '晋ICP备2023020746号',
+    icp: '晋ICP备2023020746号-2',
     icpUrl: 'https://beian.miit.gov.cn/',
     police: '晋公网安备 14010602111139号',
     policeCode: '14010602111139',

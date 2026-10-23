@@ -64,7 +64,8 @@ export class ScreenshotCarousel {
   private readonly el: CarouselElements;
   private readonly total: number;
   private current = 0;
-  private readonly preloaded = new Set<string>();
+  // 原字段 private readonly preloaded = new Set<string>();
+  // 说明：改为交由浏览器按 srcset 选择资源后，不再需要手动去重集合。
   private pointerStart: { id: number; x: number; y: number; target: Element | null } | null = null;
   private metaTimer = 0;
   private readonly reducedMotion: boolean;
@@ -169,19 +170,50 @@ export class ScreenshotCarousel {
     this.metaTimer = window.setTimeout(() => meta.classList.remove('is-switching'), 460);
   }
 
+  /**
+   * 预取相邻截图：只在页面加载完成后的空闲时把相邻幻灯片的 loading 提升为 eager，
+   * 由浏览器按 srcset/sizes 自行选择 AVIF/WebP 与合适宽度。
+   *
+   * 原实现用 `new Image().src = img.currentSrc || img.src` 手动预取，
+   * 命中未加载幻灯片的 JPG 回退且宽度不匹配，实测在移动端提前拉取约 371 KB 无效流量并挤占首屏带宽。
+   * 慢网或开启省流量时直接跳过预取。
+   */
   private preloadAround(index: number): void {
-    const offsets = [-1, 0, 1];
-    for (const offset of offsets) {
-      const target = this.el.slides[wrapIndex(index + offset, this.total)];
-      if (!target) continue;
-      const img = target.querySelector('img');
-      if (!img) continue;
-      const src = img.currentSrc || img.src;
-      if (!src || this.preloaded.has(src)) continue;
-      this.preloaded.add(src);
-      const preload = new Image();
-      preload.src = src;
+    if (this.prefetchBlocked()) return;
+
+    const run = (): void => {
+      for (const offset of [-1, 0, 1]) {
+        const target = this.el.slides[wrapIndex(index + offset, this.total)];
+        const img = target?.querySelector('img');
+        if (!img || img.loading === 'eager') continue;
+        img.loading = 'eager';
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      this.scheduleIdle(run);
+    } else {
+      window.addEventListener('load', () => this.scheduleIdle(run), { once: true });
     }
+  }
+
+  private scheduleIdle(run: () => void): void {
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(run, { timeout: 1200 });
+    } else {
+      window.setTimeout(run, 200);
+    }
+  }
+
+  private prefetchBlocked(): boolean {
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    if (!connection) return false;
+    if (connection.saveData) return true;
+    return connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
   }
 
   private scrollThumbIntoView(index: number): void {

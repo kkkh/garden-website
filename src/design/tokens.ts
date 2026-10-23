@@ -152,7 +152,10 @@ export const darkColors = {
 } as const;
 
 export const typography = {
-  fontDisplay: '"Fraunces Variable", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", serif',
+  // 原字体栈：'"Fraunces Variable", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", serif'
+  // 说明：补齐思源/Noto 宋体的常见家族名，避免 Windows 与部分 Linux 缺少 Songti SC 时直接落到点阵宋体。
+  fontDisplay:
+    '"Fraunces Variable", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "STSong", "SimSun", serif',
   fontBody:
     '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif',
   fontMono: 'ui-monospace, "SFMono-Regular", "SF Mono", "Cascadia Code", "Roboto Mono", monospace',

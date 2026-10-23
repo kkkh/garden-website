@@ -19,7 +19,8 @@ describe('站点数据完整性', () => {
   });
 
   it('备案与联系方式非空', () => {
-    expect(site.filing.icp).toMatch(/^晋ICP备\d+号$/);
+    // 允许「晋ICP备XXXXXXXX号-2」这类网站序号后缀
+    expect(site.filing.icp).toMatch(/^晋ICP备\d+号(-\d+)?$/);
     expect(site.filing.policeCode).toMatch(/^\d+$/);
     expect(site.contact.primaryEmail).toContain('@');
   });
@@ -68,6 +69,7 @@ describe('架构图数据', () => {
     for (const figure of architectureFigures) {
       expect(figure.title.length).toBeGreaterThan(3);
       expect(figure.description.length).toBeGreaterThan(10);
+      expect(figure.longDescription.length).toBeGreaterThan(60);
     }
   });
 });

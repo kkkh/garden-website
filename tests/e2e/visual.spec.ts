@@ -1,4 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
+import { settleVisuals } from './visual-helpers';
 
 /**
  * 视觉回归基线。
@@ -9,31 +11,10 @@ import { expect, test, type Page } from '@playwright/test';
  * - 其他 CI 任务用 `--grep-invert=@visual` 跳过，避免跨平台像素差异造成假失败。
  *
  * 首次运行会生成基线：`npm run test:visual:update`。
+ *
+ * 原实现：settleVisuals 定义在本文件内；现抽取到 visual-helpers.ts，
+ * 供 WebKit 关键界面基线复用，避免两处维护同一段稳定化逻辑。
  */
-
-/**
- * 让首屏编排与滚动显现进入稳定终态，避免全页截图捕捉到动画中间帧。
- * 视觉用例仍依赖 Playwright 的 animations: 'disabled'，这里额外消除时序不确定性。
- */
-async function settleVisuals(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((element) => {
-      element.classList.add('is-visible');
-    });
-    window.scrollTo(0, 0);
-  });
-  await page.waitForFunction(
-    () => {
-      const nodes = Array.from(
-        document.querySelectorAll<HTMLElement>('.hero__copy > *, .hero__stage'),
-      );
-      return nodes.every((element) => Number(getComputedStyle(element).opacity) >= 0.99);
-    },
-    undefined,
-    { timeout: 3000 },
-  );
-  await page.waitForTimeout(700);
-}
 
 test.describe('页面视觉基线 @visual', () => {
   test('首页首屏', async ({ page }) => {

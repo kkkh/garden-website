@@ -103,13 +103,14 @@ jobs:
       - name: 构建
         run: npm run build
 
-      - name: 安装 Playwright（Chromium）
-        run: npx playwright install chromium
+      - name: 安装 Playwright（Chromium + WebKit）
+        run: npx playwright install chromium webkit
 
       - name: 视觉回归
         run: >-
           npx playwright test
           --project=desktop-light --project=desktop-dark --project=tablet-light --project=mobile-light
+          --project=webkit-visual
           --grep=@visual
         env:
           CI: 'true'

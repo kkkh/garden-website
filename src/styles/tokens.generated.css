@@ -79,7 +79,7 @@
   --color-gold-glow: rgba(184, 147, 74, 0.22);
 
   /* ---- Typography ---- */
-  --font-display: "Fraunces Variable", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", serif;
+  --font-display: "Fraunces Variable", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "STSong", "SimSun", serif;
   --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", "Cascadia Code", "Roboto Mono", monospace;
   --text-2xs: 0.6875rem;

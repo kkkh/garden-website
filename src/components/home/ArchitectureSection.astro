@@ -35,6 +35,7 @@ const total = architectureFigures.length;
             data-lightbox-group-title="平台架构图"
             data-track="showcase:expand"
             data-track-label={figure.title}
+            aria-describedby={`architecture-desc-${figure.index}`}
             title="查看大图"
           >
             <Picture
@@ -48,6 +49,10 @@ const total = architectureFigures.length;
               decoding="async"
             />
           </button>
+
+          <p class="sr-only" id={`architecture-desc-${figure.index}`}>
+            {figure.longDescription}
+          </p>
 
           <figcaption class="architecture-card__body">
             <span class="architecture-card__figure">
