@@ -95,14 +95,14 @@ check:tokens → check:contrast → typecheck → lint → format:check
 | `typecheck`             | Astro + TS strict（含 `noUncheckedIndexedAccess`）                        | 类型错误                                   |
 | `lint`                  | ESLint：JS/TS/Astro、禁 `any`、`console` 仅允许 warn/error                | 代码规范问题                               |
 | `format:check`          | Prettier（100 列、单引号、尾逗号）                                        | 未格式化                                   |
-| `test:unit`             | 3 个文件 37 个用例                                                        | 轮播算法、主题、数据契约回归               |
+| `test:unit`             | 3 个文件 38 个用例                                                        | 轮播算法、主题、数据契约回归               |
 | `build`                 | Astro 构建成功，4 个页面输出                                              | 组件/内容/图片管线错误                     |
 | `check:release`         | 根目录产物与 `dist/` 体积、清单一致，无残留旧文件                        | 忘记同步产物                               |
 | `playwright test`       | 结构、交互、a11y、响应式、减弱动效、视觉基线                              | 功能或像素回归                             |
 | `review:independent`    | 独立实现的 A–K 巡检（不包含在 verify 内）                                 | 交叉验证失败，建议在发布前执行             |
 | `audit`                 | high 及以上漏洞（CI 中 `continue-on-error`）                              | 依赖风险，需人工评估                       |
 
-最近一次验收记录：37 个单元测试、100 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
+最近一次验收记录：38 个单元测试、101 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
 
 ---
 

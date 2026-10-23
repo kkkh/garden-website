@@ -242,7 +242,7 @@ HTML 解析
 （无 id）         FactBand：44 个本科专业 / 35 个机构 / 22 张界面 / 0 注册
 #intro           应用介绍：4 张卡片
 #features        功能特性：6 张卡片，可跳转到对应截图
-#screenshots     应用截图：22 张轮播 + 缩略图轨 + 灯箱
+#screenshots     应用截图：22 张 iPhone 13 Pro Max（苍岭绿）轮播 + 缩略图轨 + 灯箱
 #architecture    平台架构：10 张架构图 + 灯箱
 #system          系统与隐私：4 组说明 + 官网隐私声明
 #faq             常见问题：6 项（首项默认展开）

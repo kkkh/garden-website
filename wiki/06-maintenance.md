@@ -57,6 +57,9 @@ npm run test:visual:update
 
 > 功能卡的 `targetShot` 是 1-based，数据测试会校验其不超过截图总数。新增截图后如有新的关联入口，记得同步。
 
+> 设备框由 [DeviceFrame.astro](../src/components/ui/DeviceFrame.astro) 统一渲染，固定为 iPhone 13 Pro Max 苍岭绿
+> （`src/data/site.ts` 的 `screenshotDevice`）。若更换拍摄机型，需同步调整设备框令牌、CSS、机型标注、单元/E2E 断言与视觉基线。
+
 ---
 
 ## 3. 新增或替换平台架构图

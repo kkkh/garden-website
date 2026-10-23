@@ -79,6 +79,31 @@
 
 对比度实测结果见 `docs/design-system/contrast-report.md`（33 项，0 未通过）。
 
+### 2.5 设备框（iPhone 13 Pro Max · 苍岭绿）
+
+截图舞台与 Hero 使用同一套设备框令牌，表达真实机身的苍岭绿铝合金质感，而不是主题色：
+
+| 令牌                        | 值                        | 用途           |
+| --------------------------- | ------------------------- | -------------- |
+| `--color-alpine-900`        | `#2b3630`                 | 中框深部阴影   |
+| `--color-alpine-800`        | `#3a473d`                 | 中框暗面       |
+| `--color-alpine-700`        | `#49584c`                 | 中框过渡       |
+| `--color-alpine-600`        | `#596a5b`                 | 中框主色       |
+| `--color-alpine-500`        | `#6b7d6c`                 | 中框反光       |
+| `--color-alpine-300`        | `#a6b4a2`                 | 高光边缘       |
+| `--color-device-frame`      | `var(--color-alpine-600)` | 设备框中框主色 |
+| `--color-device-frame-deep` | `var(--color-alpine-800)` | 设备框暗面     |
+| `--color-device-frame-edge` | `var(--color-alpine-300)` | 设备框高光边缘 |
+| `--color-device-screen`     | `var(--color-ink-950)`    | 屏幕底色       |
+| `--color-device-notch`      | `var(--color-black)`      | 刘海底色       |
+
+规则：
+
+- 设备框是**物理外观**，浅色与深色主题使用同一苍岭绿，不随主题换色；
+- 刘海、侧键、镜面高光全部 `aria-hidden`，读屏只读截图 `alt`；
+- 22 张截图均为 1284×2778，与 iPhone 13 Pro Max 原生分辨率一致；
+- 设备框不得使用品牌金或强调色，避免与 CTA、装饰线混淆。
+
 ---
 
 ## 3. 排版
@@ -149,6 +174,8 @@
 | 缩略图   | `[data-carousel-thumb]` + `aria-current` + roving `tabindex`    | `role="group"`，不是 tablist（见 ADR-0005）                             |
 | 说明     | `[data-carousel-caption-title                                   | body]`                                                                  | 随切换更新，另用 `role="status"` 播报 |
 | 灯箱触发 | `[data-lightbox-trigger]` + `[data-lightbox-item]`              | 分组 `screenshots` / `architecture`                                     |
+| 设备框   | `.device-frame` + `data-device-model` + `data-device-finish`    | `DeviceFrame.astro` 共用；Hero 与轮播一致，灯箱不加框                   |
+| 机型标注 | `[data-device-label]`                                           | 可见文本「iPhone 13 Pro Max · 苍岭绿」                                  |
 
 ### 5.4 Dialog（`.mobile-nav`、`.lightbox`）
 

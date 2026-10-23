@@ -97,6 +97,18 @@ test.describe('截图轮播', () => {
     await expect(page.locator('[data-carousel-thumb]')).toHaveCount(22);
   });
 
+  test('设备框标注 iPhone 13 Pro Max · 苍岭绿', async ({ page }) => {
+    const frame = page.locator('[data-carousel-slide][data-active="true"] .device-frame');
+    await expect(frame).toHaveAttribute('data-device-model', 'iphone-13-pro-max');
+    await expect(frame).toHaveAttribute('data-device-finish', 'alpine-green');
+    await expect(page.locator('[data-device-label]')).toContainText('iPhone 13 Pro Max');
+    await expect(page.locator('[data-device-label]')).toContainText('苍岭绿');
+    await expect(page.locator('.hero__device .device-frame')).toHaveAttribute(
+      'data-device-model',
+      'iphone-13-pro-max',
+    );
+  });
+
   test('箭头可前进与环形回退', async ({ page }) => {
     await page.locator('[data-carousel-next]').click();
     await expect(page.locator('[data-carousel-current]')).toHaveText('02');

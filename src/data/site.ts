@@ -25,6 +25,12 @@ export const site = {
   ],
   platform: 'iOS 26.0+ · iPhone / iPad',
   availability: '即将上架 App Store',
+  screenshotDevice: {
+    model: 'iPhone 13 Pro Max',
+    finish: '苍岭绿',
+    nativeWidth: 1284,
+    nativeHeight: 2778,
+  },
   developer: {
     name: '秦超（个人）',
     copyright: '© 2026 秦超（个人）版权所有',

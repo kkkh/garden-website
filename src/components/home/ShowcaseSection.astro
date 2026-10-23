@@ -1,10 +1,13 @@
 ---
 import { Picture } from 'astro:assets';
+import DeviceFrame from '@/components/ui/DeviceFrame.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { screenshots } from '@/data/screenshots';
+import { site } from '@/data/site';
 
 const total = screenshots.length;
 const first = screenshots[0];
+const device = site.screenshotDevice;
 ---
 
 <section class="section" id="screenshots" aria-labelledby="screenshots-title">
@@ -15,8 +18,8 @@ const first = screenshots[0];
         应用截图
       </h2>
       <p class="section-lede">
-        {total} 张 iPhone
-        真机界面。支持左右箭头、缩略图、方向键与滑动切换，点击「查看大图」可放大细看。
+        {total} 张 {device.model} 真机界面（{device.finish}
+        ）。支持左右箭头、缩略图、方向键与滑动切换，点击「查看大图」可放大细看。
       </p>
     </div>
 
@@ -60,7 +63,7 @@ const first = screenshots[0];
               data-lightbox-caption={shot.caption}
               data-lightbox-index={String(index)}
             >
-              <div class="device-frame">
+              <DeviceFrame>
                 <Picture
                   src={shot.image}
                   alt={shot.alt}
@@ -72,7 +75,7 @@ const first = screenshots[0];
                   decoding="async"
                   fetchpriority={index === 0 ? 'high' : 'auto'}
                 />
-              </div>
+              </DeviceFrame>
             </div>
           ))}
         </div>
@@ -84,6 +87,11 @@ const first = screenshots[0];
       </div>
 
       <div class="showcase__meta">
+        <p class="showcase__device" data-device-label>
+          <Icon name="device" size={14} />
+          <span>{device.model}</span>
+          <span class="showcase__device-finish">{device.finish}</span>
+        </p>
         <p class="showcase__counter" aria-hidden="true">
           <b data-carousel-current>01</b>
           <span>/</span>

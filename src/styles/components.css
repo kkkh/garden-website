@@ -414,37 +414,173 @@
 }
 
 /* --------------------------------------------------------------------------
-   设备框（截图舞台）
+   设备框（iPhone 13 Pro Max · 苍岭绿）
+   铝合金中框、刘海、侧键与屏幕高光均为装饰，截图由 DeviceFrame 插槽提供。
    -------------------------------------------------------------------------- */
 .device-frame {
+  --device-bezel: clamp(4px, 1.5%, 7px);
+  --device-radius: clamp(2rem, 12.6%, 3.25rem);
+
   position: relative;
   aspect-ratio: var(--phone-ratio);
-  border: 7px solid var(--color-ink-950);
-  border-radius: var(--radius-2xl);
-  background: var(--color-text-inverse);
+  border-radius: var(--device-radius);
+  background: linear-gradient(
+    135deg,
+    var(--color-device-frame-edge) 0%,
+    var(--color-device-frame) 9%,
+    var(--color-device-frame-deep) 30%,
+    var(--color-device-frame) 52%,
+    var(--color-device-frame-deep) 76%,
+    var(--color-device-frame-edge) 94%,
+    var(--color-device-frame) 100%
+  );
   box-shadow:
-    0 40px 90px var(--color-shadow-color-strong),
-    0 0 0 1px var(--color-highlight-ring);
-  overflow: hidden;
+    inset 0 0 0 1px color-mix(in srgb, var(--color-device-frame-edge) 55%, transparent),
+    inset 0 0 0 3px color-mix(in srgb, var(--color-device-frame-shadow) 62%, transparent),
+    0 2px 2px color-mix(in srgb, var(--color-device-frame-shadow) 55%, transparent),
+    0 38px 90px var(--color-shadow-color-strong),
+    0 0 0 1px color-mix(in srgb, var(--color-device-frame-edge) 26%, transparent);
   isolation: isolate;
 }
 
-.device-frame--sm {
-  border-width: 5px;
-  border-radius: var(--radius-xl);
+/* 中框的金属镜面高光：只覆盖边缘，不改变截图可读性 */
+.device-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-device-frame-edge) 46%, transparent) 0%,
+    transparent 22%,
+    transparent 74%,
+    color-mix(in srgb, var(--color-device-frame-edge) 28%, transparent) 100%
+  );
+  pointer-events: none;
 }
 
-.device-frame::after {
+.device-frame--sm {
+  --device-bezel: 4px;
+  --device-radius: var(--radius-xl);
+}
+
+.device-frame__screen {
+  position: absolute;
+  inset: var(--device-bezel);
+  overflow: hidden;
+  border-radius: calc(var(--device-radius) - var(--device-bezel));
+  background: var(--color-device-screen);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-device-frame-shadow) 78%, transparent);
+}
+
+.device-frame__screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* 屏幕玻璃在状态栏区域的轻微渐隐，避免与刘海产生生硬边界 */
+.device-frame__screen::before {
   content: '';
   position: absolute;
   inset-block-start: 0;
   inset-inline: 0;
-  height: 2.25rem;
+  z-index: 2;
+  height: 12%;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--color-ink-950) 16%, transparent),
+    color-mix(in srgb, var(--color-device-screen) 20%, transparent),
     transparent
   );
   pointer-events: none;
-  z-index: 2;
+}
+
+.device-frame__glint {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--color-paper-50) 15%, transparent) 0%,
+    transparent 24%,
+    transparent 72%,
+    color-mix(in srgb, var(--color-paper-50) 7%, transparent) 100%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.device-frame__notch {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  width: 36%;
+  height: clamp(1.05rem, 5.2%, 1.7rem);
+  transform: translateX(-50%);
+  border-radius: 0 0 0.9rem 0.9rem;
+  background: var(--color-device-notch);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-device-screen) 68%, transparent);
+}
+
+.device-frame__camera {
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: var(--radius-full);
+  background: radial-gradient(
+    circle at 35% 35%,
+    color-mix(in srgb, var(--color-blue-500) 72%, var(--color-device-notch)),
+    var(--color-device-notch) 68%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper-50) 12%, transparent);
+}
+
+.device-frame__speaker {
+  width: 21%;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-paper-50) 24%, transparent);
+}
+
+.device-frame__button {
+  position: absolute;
+  z-index: 4;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--color-device-frame-edge),
+    var(--color-device-frame-deep)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-device-frame-shadow) 62%, transparent);
+}
+
+.device-frame__button--mute {
+  inset-block-start: 16%;
+  inset-inline-start: -2px;
+  height: 5%;
+}
+
+.device-frame__button--volume-up {
+  inset-block-start: 24%;
+  inset-inline-start: -2px;
+  height: 7%;
+}
+
+.device-frame__button--volume-down {
+  inset-block-start: 33%;
+  inset-inline-start: -2px;
+  height: 7%;
+}
+
+.device-frame__button--power {
+  inset-block-start: 27%;
+  inset-inline-end: -2px;
+  height: 12%;
 }

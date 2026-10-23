@@ -15,12 +15,12 @@
 | --- | ------------------------------ | ---- | -------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | 1   | `npm run check:tokens`         | ✅   | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色                                  | `docs/acceptance/logs/verify.txt`                  |
 | 2   | `npm run check:contrast`       | ✅   | 检查 33 项，未通过 0 项                                                                      | `docs/design-system/contrast-report.md`            |
-| 3   | `npm run typecheck`            | ✅   | Result (53 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
+| 3   | `npm run typecheck`            | ✅   | Result (54 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
 | 4   | `npm run lint`                 | ✅   | 无输出（0 problems）                                                                         | 同上日志                                           |
 | 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
-| 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 37 passed                                                         | 同上日志                                           |
+| 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 38 passed                                                         | 同上日志                                           |
 | 7   | `npm run build`                | ✅   | 4 page(s) built；`[build] Complete!`                                                         | 同上日志                                           |
-| 8   | `npx playwright test`          | ✅   | **100 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
+| 8   | `npx playwright test`          | ✅   | **101 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
 | 9   | `npm audit --audit-level=high` | ✅   | found 0 vulnerabilities                                                                      | 见第 4 节                                          |
 | 10  | 生产部署与线上验证             | ✅   | 推送 `main` 后线上切换 v2；4 页 200、资源 200、未知路径 404、`index.html` 与根产物逐字节一致 | `docs/acceptance/logs/deployment-verification.txt` |
 
@@ -30,15 +30,15 @@
 
 ## 2. 测试明细
 
-### 2.1 单元测试（Vitest，37 项）
+### 2.1 单元测试（Vitest，38 项）
 
-| 文件                          | 用例数 | 覆盖内容                                                                                                                                         |
-| ----------------------------- | -----: | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tests/unit/carousel.test.ts` |     12 | 环形索引归一化（越界、负数、NaN、小数）、序号补零、滑动判定阈值与纵横比                                                                          |
-| `tests/unit/theme.test.ts`    |      9 | 偏好合法性、系统偏好解析、`data-theme`/`color-scheme`/meta 主题色写入、存储禁用时的降级                                                          |
-| `tests/unit/data.test.ts`     |     16 | 导航与法律导航契约、备案与联系方式格式、截图数量与文案契约、架构图数量、首页数据结构、结构化数据（WebSite/MobileApplication/FAQPage/Breadcrumb） |
+| 文件                          | 用例数 | 覆盖内容                                                                                                                                                |
+| ----------------------------- | -----: | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/carousel.test.ts` |     12 | 环形索引归一化（越界、负数、NaN、小数）、序号补零、滑动判定阈值与纵横比                                                                                 |
+| `tests/unit/theme.test.ts`    |      9 | 偏好合法性、系统偏好解析、`data-theme`/`color-scheme`/meta 主题色写入、存储禁用时的降级                                                                 |
+| `tests/unit/data.test.ts`     |     17 | 导航与法律导航契约、备案与联系方式格式、截图数量与设备标注/分辨率、架构图数量、首页数据结构、结构化数据（WebSite/MobileApplication/FAQPage/Breadcrumb） |
 
-### 2.2 端到端测试（Playwright，100 项，5 个项目）
+### 2.2 端到端测试（Playwright，101 项，5 个项目）
 
 | 项目             | 设备/条件                       | 用例                                                                                                              |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------- |

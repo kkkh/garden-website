@@ -1,7 +1,7 @@
 # 独立渲染巡检报告
 
 - 目标地址：http://127.0.0.1:4321
-- 生成时间：2026-10-23T08:28:04.053Z
+- 生成时间：2026-10-23T09:44:38.942Z
 - 结论：19/19 项通过，0 项未通过
 
 | 分组 | 检查项 | 结果 | 细节 |
@@ -9,7 +9,7 @@
 | A 首页结构 | 地标与标题唯一、含跳转链接 | ✅ | {"header":1,"main":1,"footer":1,"h1":1,"skipLink":true,"lang":"zh-CN"} |
 | A 首页结构 | 七个内容区块齐备 | ✅ | intro, features, screenshots, architecture, system, faq, about |
 | A 首页结构 | SEO 元信息与三类结构化数据 | ✅ | {"canonical":"https://jl.43322.cn/","description":"园枢是一款面向山西晋中理工学院师生、考生与家长的校园信息聚合应用，聚合学校官网新闻、通知公告、院系专业、招生资讯、校园风光等内容，支持收藏、搜索、个性化阅读与本地通知提醒。","ogImage":"https://jl.43322.cn/og/og-default.png","manifest":"/site.webmanifest","jsonLd":["WebSite","MobileApplication","FAQPage"],"favicon":2} |
-| A 首屏 | 设备框未横向溢出视口 | ✅ | {"heroBox":{"x":792.03125,"y":158.9011993408203,"width":288,"height":623.0937347412109},"heroSection":{"x":0,"y":73,"width":1440,"height":884.671875},"viewportWidth":1440} |
+| A 首屏 | 设备框未横向溢出视口 | ✅ | {"heroBox":{"x":792.03125,"y":158.90127563476562,"width":288,"height":623.0937194824219},"heroSection":{"x":0,"y":73,"width":1440,"height":884.671875},"viewportWidth":1440} |
 | B 轮播 | 初始 01 / 22，箭头序列 02>03>04>03 | ✅ | {"initial":{"index":"01","caption":"首页汇聚办学数据与院系、资讯、荣誉等高频入口，重","activeSlides":1,"thumbs":22,"currentThumbs":1},"seq":["02","03","04","03"]} |
 | B 轮播 | 缩略图第 8 项联动序号/说明/高亮 | ✅ | {"index":"08","caption":"机构与文章双通道检索，支持搜索历史与快捷回填，校园信息一","selected":1,"selectedIndex":7} |
 | B 轮播 | 舞台焦点下方向键切换 | ✅ | 08 -> 09 |

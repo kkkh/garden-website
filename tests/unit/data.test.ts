@@ -33,6 +33,14 @@ describe('截图数据', () => {
     );
   });
 
+  it('设备标注为 iPhone 13 Pro Max 苍岭绿，且声明原生分辨率', () => {
+    expect(site.screenshotDevice.model).toBe('iPhone 13 Pro Max');
+    expect(site.screenshotDevice.finish).toBe('苍岭绿');
+    expect(site.screenshotDevice.nativeWidth).toBe(1284);
+    expect(site.screenshotDevice.nativeHeight).toBe(2778);
+    expect(screenshots[0]?.image).toBeTruthy();
+  });
+
   it('每张都有 alt 与 caption，且 caption 以句号收尾', () => {
     for (const shot of screenshots) {
       expect(shot.alt.length).toBeGreaterThan(6);

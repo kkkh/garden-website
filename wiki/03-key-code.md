@@ -26,6 +26,8 @@
 | `data-carousel-caption-title` / `-body`| `ShowcaseSection.astro`             | `carousel.ts`                     | 说明标题与正文                                    |
 | `data-carousel-live`                   | `ShowcaseSection.astro`             | `carousel.ts`                     | `role="status"` 读屏播报                          |
 | `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 会刷新其灯箱数据集               |
+| `data-device-model` / `data-device-finish` | `DeviceFrame.astro`             | 测试 / 样式                       | 固定为 `iphone-13-pro-max` / `alpine-green`      |
+| `data-device-label`                    | `ShowcaseSection.astro`             | 测试                              | 可见机型标注「iPhone 13 Pro Max · 苍岭绿」        |
 | `data-shot-target`                     | `IntroSection.astro`                | `app.ts`                          | 功能卡跳转到指定截图（1-based）                    |
 | `data-lightbox`                        | `Lightbox.astro`                    | `lightbox.ts`                     | 全局灯箱 `<dialog>`                               |
 | `data-lightbox-trigger`                | Showcase / Architecture             | `lightbox.ts`                     | 打开灯箱的触发元素                                |
