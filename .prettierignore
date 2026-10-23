@@ -17,6 +17,22 @@ docs/acceptance/independent-review.md
 docs/acceptance/independent-review.json
 docs/acceptance/logs/
 
+# 根目录发布产物（由 scripts/sync-root.mjs 从 dist 同步，压缩输出，无需格式化）
+/index.html
+/404.html
+/privacy.html
+/agreement.html
+/robots.txt
+/site.webmanifest
+/sitemap-index.xml
+/sitemap-0.xml
+/_astro/
+/icons/
+/og/
+/beian/
+/.well-known/
+/.release-manifest.json
+
 # 视觉回归基线（二进制）
 tests/e2e/**/*-snapshots/
 

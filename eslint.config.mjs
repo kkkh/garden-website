@@ -11,6 +11,10 @@ export default tseslint.config(
       '.astro/**',
       'reports/**',
       'src/styles/tokens.generated.css',
+      // 根目录发布产物（由 scripts/sync-root.mjs 从 dist 同步的打包文件）
+      '_astro/**',
+      'icons/**',
+      'og/**',
     ],
   },
   js.configs.recommended,

@@ -42,6 +42,7 @@ npm run verify      # 一键执行下列全部检查
 | `npm run format:check`       | Prettier 格式检查                                                  |     ✅     |
 | `npm run test:unit`          | Vitest 单元测试（轮播逻辑、主题、数据契约、结构化数据）            |     ✅     |
 | `npm run build`              | 生产构建                                                           |     ✅     |
+| `npm run check:release`      | 校验仓库根产物与 `dist/` 一致（推送前必须通过）                    |     ✅     |
 | `npx playwright test`        | E2E、可访问性（axe）、响应式、减弱动效、视觉回归                   |     ✅     |
 | `npm run review:independent` | 独立实现路径的渲染巡检（需先 `npm run build` + `npm run preview`） |    建议    |
 | `npm run audit`              | 依赖漏洞扫描（high 及以上）                                        |    建议    |
@@ -119,18 +120,20 @@ npm run test:visual:update
 
 ---
 
-## 部署
+## 部署（推送即上线）
 
-静态托管即可，站点根目录指向 `dist/`。
+线上：`https://jl.43322.cn`，仓库 `github.com/kkkh/garden-website`，推送 `main` 即更新。
 
 ```bash
-npm ci
-npm run build
-# 将 dist/ 发布到静态托管（本仓库当前线上为 EdgeOne Makers + 自定义域 jl.43322.cn）
+npm run release            # 构建 + 把产物同步到仓库根 + 校验一致性
+git add -A && git commit -m "release: v2"
+git push origin main
 ```
 
-注意：v1 时代仓库根目录即站点根，v2 的站点根变为 `dist/`，托管平台需要调整发布目录。
-详细步骤、缓存策略与回滚方案见 `docs/operations/deployment.md` 与 `docs/operations/rollback.md`。
+产物同时存在于 `dist/` 与仓库根目录，以兼容「纯静态根目录」与「构建型平台」两种平台配置（详见 [ADR-0011](docs/adr/0011-release-sync.md)）。
+
+注意：改了源码但忘记同步时，`npm run verify`（含 `check:release`）与 CI 都会失败。
+详细步骤、缓存建议、发布后验证与故障排查见 [部署文档](docs/operations/deployment.md)。
 
 ---
 

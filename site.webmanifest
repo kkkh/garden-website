@@ -1,0 +1,35 @@
+{
+  "name": "园枢 · 山西晋中理工学院校园信息聚合应用",
+  "short_name": "园枢",
+  "description": "园枢是一款面向山西晋中理工学院师生、考生与家长的校园信息聚合应用，聚合学校官网新闻、通知公告、院系专业、招生资讯、校园风光等内容，支持收藏、搜索、个性化阅读与本地通知提醒。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a1220",
+  "theme_color": "#0a1220",
+  "categories": [
+    "education",
+    "news"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
