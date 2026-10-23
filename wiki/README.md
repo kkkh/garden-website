@@ -3,7 +3,7 @@
 > 「园枢」是面向山西晋中理工学院师生、考生与家长的校园信息聚合 iOS 应用的官方网站。
 > 本 Wiki 面向维护者与开发者，按「架构 → 模块 → 关键代码 → 依赖 → 运行部署 → 维护」组织，覆盖 v2 仓库内的全部源码、构建脚本与测试。
 
-**文档基准**：`main` 分支 commit `78b9fcd`（2026-10-23），对应 `package.json` 版本 `2.0.0`。
+**文档基准**：`main` 分支 v3 发布 commit `0d87273`（2026-10-24），对应 `package.json` 版本 `3.0.0`。
 **历史归档**：v1（纯静态 HTML / CSS / JS）时代的旧版 Code Wiki 保留在 [archive-v1/](archive-v1/README.md)，描述重构前的实现，仅供追溯；本套文档为 v2 Astro 架构的现行版本。
 
 ---
@@ -14,7 +14,7 @@
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
 | 项目类型           | 静态展示型官网（Marketing / 官方信息站），面向访客介绍 iOS 应用                                                            |
 | 技术栈             | Astro 7.4.2（静态输出）+ TypeScript 6.0.3（strict）+ 原生 CSS 设计令牌 + 原生 TypeScript 浏览器模块                        |
-| 页面数量           | 4 个 HTML 页面：首页、隐私政策、用户协议、404                                                                                     |
+| 页面数量           | 5 个 HTML 页面：首页、隐私政策、用户协议、更新日志、404                                                                                     |
 | 构建工具           | Astro + Vite；`scripts/` 下的 Node 脚本负责令牌、图标与发布同步                                                    |
 | 后端 / 数据库      | 无。页面内容在构建期确定，运行时不请求任何数据接口                                                                                |
 | 第三方运行时依赖   | 0 个网络请求。字体随包打包，无 CDN、无第三方脚本、无统计 SDK                                                                       |
@@ -92,7 +92,7 @@ garden-website/
 └── wiki/                               # 本 Code Wiki（v2 现行文档 + archive-v1 历史归档）
 ```
 
-> 根目录的 `index.html`、`privacy.html`、`agreement.html`、`404.html`、`_astro/`、`icons/`、`og/`、`beian/`、`.well-known/` 都是**构建产物**，请勿手改；源文件在 `src/` 与 `public/`。
+> 根目录的 `index.html`、`privacy.html`、`agreement.html`、`changelog.html`、`404.html`、`_astro/`、`icons/`、`og/`、`beian/`、`.well-known/` 都是**构建产物**，请勿手改；源文件在 `src/` 与 `public/`。
 
 ---
 

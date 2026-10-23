@@ -24,27 +24,28 @@
 
 ### 已解决（保留记录）
 
-| 编号  | 原问题                   | 关闭证据                                                                                                                                                                  |
-| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P1-06 | 平台构建配置未确认       | 2026-10-23 推送 `main` 后线上切换 v2；线上 `index.html` 与仓库根产物逐字节一致，页面/资源全部 200，未知路径 404。证据：`docs/acceptance/logs/deployment-verification.txt` |
-| P1-02 | 视觉回归仅覆盖 Chromium  | 新增 `webkit-visual` 项目，6 个关键界面基线（首屏/轮播/法律页/灯箱/深色首屏/404），CI 视觉 job 安装 WebKit 并纳入执行；基线 `tests/e2e/visual-webkit.spec.ts-snapshots/`  |
-| P1-05 | 架构图缺少长文本替代描述 | 10 张图各补 `longDescription`，按钮 `aria-describedby` 指向隐藏段落；单测校验长度 > 60                                                                                    |
+| 编号  | 原问题                                  | 关闭证据                                                                                                                                                                  |
+| ----- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1-06 | 平台构建配置未确认                      | 2026-10-23 推送 `main` 后线上切换 v2；线上 `index.html` 与仓库根产物逐字节一致，页面/资源全部 200，未知路径 404。证据：`docs/acceptance/logs/deployment-verification.txt` |
+| P1-02 | 视觉回归仅覆盖 Chromium                 | 新增 `webkit-visual` 项目，6 个关键界面基线（首屏/轮播/法律页/灯箱/深色首屏/404），CI 视觉 job 安装 WebKit 并纳入执行；基线 `tests/e2e/visual-webkit.spec.ts-snapshots/`  |
+| P1-05 | 架构图缺少长文本替代描述                | 10 张图各补 `longDescription`，按钮 `aria-describedby` 指向隐藏段落；单测校验长度 > 60                                                                                    |
+| P2-11 | 响应头缺少 CSP / XCTO / Referrer-Policy | 新增 `edgeone.json`，线上 `curl -I` 已命中 CSP、Referrer-Policy、X-Content-Type-Options、X-Frame-Options、Permissions-Policy；CSP 生效后双引擎巡检 0 控制台错误           |     |
 
 ### P2（可接受，记录备查）
 
-| 编号  | 问题                                                        | 证据                                                                      | 影响                                               |
-| ----- | ----------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
-| P2-01 | `prefers-contrast: more` 与 `forced-colors` 无自动化验证    | 规则存在于 `base.css`                                                     | 规则可能失效而无人察觉                             |
-| P2-02 | 打印样式未做 PDF 分页人工复核                               | `base.css` 打印区                                                         | 法律页打印效果未验收                               |
-| P2-03 | 图片源文件仍为原始分辨率                                    | `src/assets/**`                                                           | 仓库体积约 9 MB                                    |
-| P2-04 | 视觉基线文件约 18 MB 入库                                   | `tests/e2e/visual*.spec.ts-snapshots/`（Chromium 16 MB + WebKit 2.1 MB）  | 仓库体积增加                                       |
-| P2-05 | 埋点仅本地缓冲                                              | `src/lib/analytics.ts`                                                    | 无真实流量分析                                     |
-| P2-06 | Node 低于 24 无法运行令牌生成脚本（依赖原生 TS 支持）       | `scripts/generate-tokens.mjs` 导入 `.ts`；Astro 7.4.2 要求 ≥ 22.23.4      | 低版本环境下需改用预编译或升级 Node                |
-| P2-07 | 无 Service Worker / 离线访问                                | 未实现                                                                    | 断网不可访问                                       |
-| P2-08 | 首页 FAQ 与结构化数据需人工保持同步                         | `src/data/faq.ts` 同时驱动两者                                            | 若只改其一会出现不一致（当前为单一数据源，风险低） |
-| P2-09 | 站点地图包含 `.html` 后缀路径                               | `sitemap-0.xml`                                                           | 与「无扩展名 URL」的偏好不同，但保持与旧链接一致   |
-| P2-10 | `http://` 直接返回 200，未 301 到 HTTPS，且无 HSTS          | `curl -I http://jl.43322.cn/` 无 `Location` / `Strict-Transport-Security` | 存在明文入口；canonical 已指向 HTTPS，SEO 影响有限 |
-| P2-11 | 响应头缺少 CSP、`X-Content-Type-Options`、`Referrer-Policy` | `curl -I https://jl.43322.cn/` 仅见 `Vary`、`Cache-Control`、`Server`     | 安全纵深不足；纯静态站且无第三方请求，风险较低     |
+| 编号  | 问题                                                     | 证据                                                                                  | 影响                                               |
+| ----- | -------------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| P2-01 | `prefers-contrast: more` 与 `forced-colors` 无自动化验证 | 规则存在于 `base.css`                                                                 | 规则可能失效而无人察觉                             |
+| P2-02 | 打印样式未做 PDF 分页人工复核                            | `base.css` 打印区                                                                     | 法律页打印效果未验收                               |
+| P2-03 | 截图源文件仍为原始分辨率                                 | 架构图已转无损 WebP（3.0 MB → 1.9 MB）；截图 22 张仍为 1284×2778 原图（约 5.9 MB）    | 仓库体积约 7.8 MB                                  |
+| P2-04 | 视觉基线文件约 19 MB 入库                                | `tests/e2e/visual*.spec.ts-snapshots/`（Chromium 17 MB + WebKit 2.2 MB）              | 仓库体积增加                                       |
+| P2-05 | 埋点仅本地缓冲                                           | `src/lib/analytics.ts`                                                                | 无真实流量分析                                     |
+| P2-06 | Node 低于 24 无法运行令牌生成脚本（依赖原生 TS 支持）    | `scripts/generate-tokens.mjs` 导入 `.ts`；Astro 7.4.2 要求 ≥ 22.23.4                  | 低版本环境下需改用预编译或升级 Node                |
+| P2-07 | 无 Service Worker / 离线访问                             | 未实现                                                                                | 断网不可访问                                       |
+| P2-08 | 首页 FAQ 与结构化数据需人工保持同步                      | `src/data/faq.ts` 同时驱动两者                                                        | 若只改其一会出现不一致（当前为单一数据源，风险低） |
+| P2-09 | 站点地图包含 `.html` 后缀路径                            | `sitemap-0.xml`                                                                       | 与「无扩展名 URL」的偏好不同，但保持与旧链接一致   |
+| P2-10 | `http://` 直接返回 200，未 301 到 HTTPS，且无 HSTS       | `curl -I http://jl.43322.cn/` 仍返回 200，无 `Location` / `Strict-Transport-Security` | 存在明文入口；canonical 已指向 HTTPS，SEO 影响有限 |
+| P2-12 | 上架前无真实 App Store 链接与二维码                      | `src/data/appStore.ts` 为 `coming-soon`；`public/qr/` 未生成                          | 下载入口当前仅为邮件提醒                           |
 
 ---
 

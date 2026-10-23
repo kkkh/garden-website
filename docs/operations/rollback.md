@@ -166,11 +166,27 @@ dist/404.html  dist/agreement.html  dist/index.html  dist/privacy.html
 
 ---
 
-## 5. 回滚后必做
+## 5. 单项功能回滚（v3 起）
+
+| 场景                     | 操作                                                                                                                   | 验证                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| App Store 链接错误或下架 | 把 `src/data/appStore.ts` 的 `status` 改回 `coming-soon`，`url`/`appStoreId` 置空 → `npm run build && npm run release` | 首页无 `apps.apple.com` 外链、无 `apple-itunes-app`；`#download` 显示邮件提醒 |
+| 二维码失效               | 删除 `public/qr/app-store.svg` 与对 `assets.appStoreQr` 的引用，或把 `status` 回退为 `coming-soon`                     | 下载区不出现破图                                                              |
+| 更新日志内容有误         | 回退 `src/data/releases.ts` 对应条目；不要改页面组件                                                                   | 首页预览与 `/changelog.html` 同步恢复                                         |
+| CSP 阻断页面功能         | 删除 `edgeone.json` 中 `Content-Security-Policy` 条目（保留其他头）→ 重新推送                                          | 两引擎巡检 0 控制台错误                                                       |
+| 301 别名异常             | 删除 `edgeone.json` 的 `/changelog` 重定向                                                                             | `/changelog.html` 仍可直接访问                                                |
+
+> HSTS 与「HTTP → HTTPS 强制跳转」由 EdgeOne 控制台下发，回滚需在控制台关闭；
+> 已下发的 HSTS 在 `max-age` 到期前无法撤回，因此首次务必使用短周期。
+
+---
+
+## 6. 回滚后必做
 
 ```text
-[ ] 确认 4 个页面 200 且内容正确
+[ ] 确认 5 个页面 200 且内容正确
 [ ] 确认备案链接可打开
+[ ] 确认下载入口状态与 App Store 实际状态一致
 [ ] 记录事故时间线、根因、修复提交
 [ ] 在 docs/operations/known-issues.md 补充该问题（若属于新发现的缺陷类型）
 [ ] 若回滚到 v1，需在部署平台把输出目录改回 dist 前，先修复根因并重新走一次发布清单

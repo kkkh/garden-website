@@ -1,53 +1,69 @@
 # 生产部署验证（最近一次）
 
-- 时间：2026-10-23T15:10Z
+- 时间：2026-10-24T05:35Z
 - 目标：https://jl.43322.cn
-- 发布提交：a1e91dc（首屏性能 + WebKit 基线 + 架构图长描述 + 字形细化）
-- 部署观察：main 推送后 ≤5 分钟生效（首次有效检查即命中新产物）
+- 发布提交：0d87273（下载入口状态机 + 应用信息区 + 更新日志 + 安全响应头）
+- 部署观察：main 推送后约 125 秒，`/changelog.html` 返回 200
 
 ## 1. 页面与 404
 
 /                  200
 /privacy.html      200
 /agreement.html    200
+/changelog.html    200
 /404.html          200
 /not-exist-page    404
 
-## 2. 判据
+## 2. 路由与安全头
 
-主样式：index.html 内联 `<style>`，已无 `/_astro/BaseLayout.*.css` 外链
-脚本哈希：BaseLayout / SiteHeader 为 `yVmALTYE`，app 为 `PWoYWUdO`
-相邻截图预取：加载完成后取 AVIF（screenshot-02 64.9 KB、screenshot-22 42.2 KB），不再拉 JPG 回退
-首屏总传输：309 KiB（改前 566 KiB）
-Lighthouse 移动端：performance 91 / FCP 2.2s / LCP 3.1s / CLS 0
-Lighthouse 桌面端：performance 99 / FCP 0.5s / LCP 0.9s / CLS 0
-备案信息：`晋ICP备2023020746号-2` 已在页脚渲染
+GET /changelog → 301，Location: /changelog.html
+Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none';
+  frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self';
+  style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';
+  connect-src 'self'; upgrade-insecure-requests
+Referrer-Policy: strict-origin-when-cross-origin
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
 
-## 3. 静态资源
+## 3. 下载入口与结构化数据
 
-/site.webmanifest                              200
-/robots.txt                                    200
-/sitemap-index.xml                             200
-/og/og-default.png                             200
-/icons/icon-192.png                            200
-/beian/beian.png                                200
+data-app-store-state="soon"
+apps.apple.com 外链：0
+apple-itunes-app：未输出
+MobileApplication.offers.availability: PreOrder
 
-## 4. 与本地发布产物对比
+## 4. 渲染与无障碍
+
+Chromium + WebKit × 5 页面 × 明暗主题：0 控制台错误、0 失败请求、0 4xx/5xx、无溢出、无破图
+axe 双引擎 × 双主题 × 5 页面：0 serious/critical
+
+## 5. 性能（Lighthouse，线上）
+
+/changelog.html：performance 92、accessibility 100、best-practices 100、SEO 100
+LCP 2.8s、CLS 0
+
+## 6. 与本地发布产物对比
 
 index.html: identical to local root artifact
+changelog.html: identical to local root artifact
+产物数量：443（dist 与根目录一致）
 
-## 5. 自动化门禁
+## 7. 自动化门禁
 
-npm run verify 退出码 0：38 unit、111 Playwright、70 视觉基线、33 项对比度
-CI：39974296407（main）success
+npm run verify 退出码 0：54 unit、132 Playwright、74 视觉基线、33 项对比度
+CI：见 deployment.md 对应记录
+
+## 8. 未完成
+
+HTTP → HTTPS 301 与 HSTS 需在 EdgeOne 控制台开启；当前 http:// 仍返回 200
 
 ---
 
 # 历史记录（上一版）
 
-- 时间：2026-10-23T13:30:53Z
-- 发布提交：78b9fcd（点击反馈强化 + 灯箱加载占位与高清图预取）
-- 部署观察：main 推送后轮询 23 次（5s 间隔）切换完成，约 115 秒
-- CSS: /_astro/BaseLayout.CL6nEc2O.css；thumb-select / meta-shift / lightbox-spin 命中
-- .screenshot-card 23 处；.device-frame 0 处；轮播图片 object-fit: contain
+- 时间：2026-10-23T15:10Z
+- 发布提交：a1e91dc（首屏性能 + WebKit 基线 + 架构图长描述 + 字形细化）
+- 主样式：index.html 内联 `<style>`，无 `/_astro/BaseLayout.*.css` 外链
+- Lighthouse 移动端 91 / LCP 3.1s / 309 KiB；桌面 99 / LCP 0.9s
 - index.html: identical to local root artifact

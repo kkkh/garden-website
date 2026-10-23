@@ -96,13 +96,13 @@ check:tokens → check:contrast → typecheck → lint → format:check
 | `lint`                  | ESLint：JS/TS/Astro、禁 `any`、`console` 仅允许 warn/error                | 代码规范问题                               |
 | `format:check`          | Prettier（100 列、单引号、尾逗号）                                        | 未格式化                                   |
 | `test:unit`             | 3 个文件 38 个用例                                                        | 轮播算法、主题、数据契约回归               |
-| `build`                 | Astro 构建成功，4 个页面输出                                              | 组件/内容/图片管线错误                     |
+| `build`                 | Astro 构建成功，5 个页面输出                                              | 组件/内容/图片管线错误                     |
 | `check:release`         | 根目录产物与 `dist/` 体积、清单一致，无残留旧文件                        | 忘记同步产物                               |
 | `playwright test`       | 结构、交互、a11y、响应式、减弱动效、视觉基线                              | 功能或像素回归                             |
 | `review:independent`    | 独立实现的 A–K 巡检（不包含在 verify 内）                                 | 交叉验证失败，建议在发布前执行             |
 | `audit`                 | high 及以上漏洞（CI 中 `continue-on-error`）                              | 依赖风险，需人工评估                       |
 
-最近一次验收记录：38 个单元测试、105 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
+最近一次验收记录：54 个单元测试、132 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
 
 ---
 
@@ -201,7 +201,7 @@ node scripts/sync-root.mjs --check
 发布产物（共 437 个文件，随内容变化）：
 
 ```text
-index.html  privacy.html  agreement.html  404.html
+index.html  privacy.html  agreement.html  changelog.html  404.html
 _astro/                 # 哈希命名的 CSS/JS/AVIF/WebP/图片
 icons/                  # favicon、Apple Touch Icon、192/512
 og/og-default.png       # 1200×630 分享图
@@ -237,7 +237,7 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 | 发布方式 | 推送 `main` 即更新（无需平台侧改配置）                              |
 
 > 2026-10-23 实测：推送后约 115 秒生效，线上 `index.html` 与仓库根产物逐字节一致；
-> 4 个页面 200、未知路径 404、资源全部 200，截图零裁切、点击交互与浏览器烟测 19/19 通过。
+> 5 个页面 200、未知路径 404、资源全部 200，截图零裁切、点击交互与浏览器烟测 19/19 通过。
 > 证据：`docs/acceptance/logs/deployment-verification.txt`、`docs/acceptance/baseline/v2-interactions/hero-live.png`。
 
 发布后逐项验证：

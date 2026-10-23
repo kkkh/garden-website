@@ -83,7 +83,7 @@ npm run test:visual:update
 │   ├── .well-known/apple-app-site-association
 │   ├── beian/beian.png
 │   ├── icons/                  # 由脚本生成
-│   ├── og/og-default.png       # 由脚本生成
+│   ├── og/                     # 首页与各页 OG 图（og-default 由脚本生成，其余由 scripts/generate-og.mjs 生成）
 │   └── robots.txt
 ├── scripts/                    # 构建与门禁脚本
 ├── tests/                      # unit / e2e / 视觉基线
@@ -96,14 +96,17 @@ npm run test:visual:update
 
 ## 页面与路由
 
-| 路由                 | 文件                                                      | 说明                                                                        |
-| -------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `/`                  | `src/pages/index.astro`                                   | 首页：Hero、概览数据、应用介绍、功能特性、截图、架构、系统与隐私、FAQ、关于 |
-| `/privacy.html`      | `src/pages/[slug].astro` + `src/content/legal/privacy.md` | 隐私政策（含目录、锚点、打印样式）                                          |
-| `/agreement.html`    | 同上                                                      | 用户协议                                                                    |
-| `/404.html`          | `src/pages/404.astro`                                     | 品牌化 404，带返回入口                                                      |
-| `/site.webmanifest`  | `src/pages/site.webmanifest.ts`                           | Web App Manifest                                                            |
-| `/sitemap-index.xml` | `@astrojs/sitemap`                                        | 站点地图                                                                    |
+| 路由                 | 文件                                                      | 说明                                                                                                  |
+| -------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `/`                  | `src/pages/index.astro`                                   | 首页：Hero、概览数据、应用下载与信息、应用介绍、功能特性、截图、架构、系统与隐私、最近更新、FAQ、关于 |
+| `/privacy.html`      | `src/pages/[slug].astro` + `src/content/legal/privacy.md` | 隐私政策（含目录、锚点、打印样式）                                                                    |
+| `/agreement.html`    | 同上                                                      | 用户协议                                                                                              |
+| `/changelog.html`    | `src/pages/changelog.astro`                               | 更新日志：由 `src/data/releases.ts` 驱动，含版本锚点与结构化数据                                      |
+| `/404.html`          | `src/pages/404.astro`                                     | 品牌化 404，带返回入口                                                                                |
+| `/site.webmanifest`  | `src/pages/site.webmanifest.ts`                           | Web App Manifest                                                                                      |
+| `/sitemap-index.xml` | `@astrojs/sitemap`                                        | 站点地图                                                                                              |
+
+`/changelog` 由 `edgeone.json` 301 到 `/changelog.html`。
 
 保留 `.html` 后缀是为了与 v1 线上地址完全兼容，避免旧链接失效。
 

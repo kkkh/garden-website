@@ -178,6 +178,8 @@
 | 灯箱触发 | `[data-lightbox-trigger]` + `[data-lightbox-item]`              | 分组 `screenshots` / `architecture`                                     |
 | 截图卡片 | `.screenshot-card` + `data-device-model` + `data-device-finish` | `ScreenshotCard.astro` 共用；Hero 与轮播一致，灯箱保持纯图              |
 | 机型标注 | `[data-device-label]`                                           | 可见文本「iPhone 13 Pro Max · 苍岭绿」                                  |
+| 下载区   | `#download` + `data-app-store-state`                            | `soon` 显邮件提醒；`live` 显 App Store 按钮与二维码（见 ADR-0012）      |
+| 更新日志 | `.release` + `.release__group`                                  | 版本锚点 `#vX-Y-Z`；类别用文字标签而非仅颜色                            |
 
 ### 5.4 Dialog（`.mobile-nav`、`.lightbox`）
 

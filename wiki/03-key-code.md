@@ -450,7 +450,7 @@ if (document.readyState === 'loading') {
 
 ### 10.3 `sync-root.mjs`
 
-- `SYNC_TARGETS` 白名单：4 个 HTML、`robots.txt`、`site.webmanifest`、两个 sitemap、`_astro`、`icons`、`og`、`beian`、`.well-known`；
+- `SYNC_TARGETS` 白名单：5 个 HTML、`robots.txt`、`site.webmanifest`、两个 sitemap、`_astro`、`icons`、`og`、`beian`、`.well-known`；
 - 同步前检查白名单条目是否都在 `dist/`；
 - `--check` 逐文件比较体积、清理名单中的残留旧产物、核对 manifest 清单是否过期；
 - 同步模式复制新文件、删除上次清单中已不存在的文件、写入 `{ generatedAt, count, files }`。

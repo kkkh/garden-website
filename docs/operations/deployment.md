@@ -256,3 +256,20 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 | 产物       | 根目录与 `dist` 均为 436 个文件（原外链 CSS 消失）                                                        |
 | 浏览器烟测 | 111 项 Playwright 全通过（含 6 项 WebKit 视觉）；0 控制台错误                                             |
 | CI         | `39974296407`（main）success                                                                              |
+
+### 2026-10-24 · v3 下载入口、更新日志与安全头（commit `0d87273`）
+
+| 项         | 结果                                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------- |
+| 变更       | 下载入口状态机、应用信息区、最近更新、`/changelog.html`、独立 OG、无损 WebP 架构图、`edgeone.json` 安全头与 301 |
+| 生效观察   | 推送后轮询约 125 秒，`/changelog.html` 返回 200                                                                 |
+| 页面       | `/`、`/privacy.html`、`/agreement.html`、`/changelog.html`、`/404.html` 均 200；未知路径 404                    |
+| 重定向     | `GET /changelog` → 301 `Location: /changelog.html`                                                              |
+| 安全头     | 线上命中 CSP、`Referrer-Policy`、`X-Content-Type-Options`、`X-Frame-Options`、`Permissions-Policy`              |
+| 产物一致性 | 线上 `index.html`、`changelog.html` 与仓库根产物逐字节一致                                                      |
+| 产物数量   | 仓库根与 `dist` 均为 **443** 个文件                                                                             |
+| 渲染巡检   | Chromium + WebKit × 5 页面 × 明暗主题：0 控制台错误、0 失败请求、0 4xx/5xx、无溢出、无破图                      |
+| 无障碍     | axe 双引擎 × 双主题 × 5 页面全通过；修复轮播计数 2.92:1 对比度问题                                              |
+| 性能       | `/changelog.html` Lighthouse：performance 92、a11y 100、best-practices 100、SEO 100，LCP 2.8s、CLS 0            |
+| 自动化     | 54 unit、132 E2E（1 项 tablet 视觉按设计跳过）、74 视觉基线、33 项对比度                                        |
+| 未完成     | HTTP → HTTPS 301 与 HSTS 需在 EdgeOne 控制台开启（代码侧无法下发）                                              |

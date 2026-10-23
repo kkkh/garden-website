@@ -12,6 +12,10 @@
 | 首页概览数据 / 介绍卡 / 功能卡 / 系统卡 | `src/data/home.ts`                                                     | 数量由测试约束（4 / 4 / 6 / 4）            |
 | 截图序号、alt、说明               | `src/data/screenshots.ts`                                              | 图片本体在 `src/assets/screenshots/`       |
 | 架构图标题与说明                 | `src/data/architecture.ts`                                             | 图片本体在 `src/assets/architecture/`      |
+| 下载入口与上架状态               | `src/data/appStore.ts`                                                 | 改动 `status`/`url` 单点切换；详见 ADR-0012 |
+| 版本更新日志                     | `src/data/releases.ts`                                                 | 同时驱动首页预览、`/changelog.html` 与 `appInfo` 版本 |
+| 应用信息（版本、大小、分级）     | `src/data/appInfo.ts`                                                  | `version`/日期从 `releases` 派生            |
+| 平台响应头 / 301 / 缓存          | `edgeone.json`                                                         | 部署后用 `curl -I` 验证                     |
 | FAQ                              | `src/data/faq.ts`                                                      | 同时驱动页面与 FAQPage JSON-LD             |
 | 隐私政策 / 用户协议              | `src/content/legal/privacy.md` / `agreement.md`                        | frontmatter + Markdown                     |
 | 颜色、字号、间距、圆角、阴影、动效 | `src/design/tokens.ts`                                                 | 生成 `tokens.generated.css`，禁止手改生成物 |
@@ -204,7 +208,20 @@ git add tests/e2e/visual.spec.ts-snapshots
 - 基线文件名包含项目、主题与平台后缀，**只在 macOS 更新**；
 - 更新后查看 `reports/playwright-html` 或差异图，确认变化是预期设计调整，而不是布局破坏；
 - 若只是本地字体差异，不要在非 macOS 环境提交基线；
-- 基线共 64 张 PNG（12 个用例的 16 组快照 × 4 个项目），体积较大，谨慎提交无关变化。
+- 基线共 74 张 PNG（Chromium 67 + WebKit 7），体积较大，谨慎提交无关变化。
+
+---
+
+## 10.1 发布新版本与上架切换（v3 起）
+
+| 任务 | 操作 |
+| --- | --- |
+| 记录一个新版本 | 在 `src/data/releases.ts` 顶部新增条目：已发布用 `status: 'released'` + 真实 `date`；未发布用 `upcoming` + `date: null` |
+| 应用上架 | 把 `src/data/appStore.ts` 的 `status` 改为 `'live'`，填真实数字 `appStoreId` 与 `https://apps.apple.com/app/id...` |
+| 补充商店信息 | 在 `src/data/appInfo.ts` 填 `size`、`ageRating`；`version`/日期自动跟随 `releases` |
+| 生成二维码 | 上架后用 QR 生成脚本输出 `public/qr/app-store.svg`（当前未引入生成依赖，按需添加），并把 `qr` 加入 `SYNC_TARGETS` |
+| 切换后验证 | `npm run verify` → `release` → 推送 → 检查 `apps.apple.com` 外链、`apple-itunes-app`、`InStock` 结构化数据 |
+| 回退 | 见 `docs/operations/rollback.md` 第 5 节 |
 
 ---
 

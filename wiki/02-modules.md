@@ -204,7 +204,7 @@ tests/              单元与端到端测试
 | `generate-icons.mjs`       | 由应用图标生成 4 个 PNG、内嵌位图 SVG 与 1200×630 OG 图                                          | `public/icons/*`、`public/og/og-default.png`                      |
 | `check-tokens.mjs`         | 扫描 `src/` 的颜色字面量；允许令牌源与生成物                                                    | 违规列出文件与行号，退出 1                                        |
 | `check-contrast.mjs`       | 解析令牌引用并计算 33 项 WCAG 对比度；正文 4.5、大文本/非文本 3                                 | `docs/design-system/contrast-report.md`；不达标退出 1              |
-| `sync-root.mjs`            | 把 `dist/` 白名单产物同步到仓库根；`--check` 比对体积、残留与清单                              | 436 个文件 + `.release-manifest.json`                             |
+| `sync-root.mjs`            | 把 `dist/` 白名单产物同步到仓库根；`--check` 比对体积、残留与清单                              | 443 个文件 + `.release-manifest.json`                             |
 | `capture-baseline.mjs`     | 抓取线上 v1 与本地 v2 的桌面/移动截图，用于 before/after 证据                                    | `docs/acceptance/baseline/**`（按需运行，不入 CI）                |
 | `independent-review.mjs`   | 不复用 E2E 代码的独立巡检（A–K 11 组），含 axe 与截图                                            | `docs/acceptance/independent-review.json` 与截图                   |
 
@@ -217,12 +217,17 @@ tests/              单元与端到端测试
 | `tests/unit/carousel.test.ts` | 环形索引、两位序号、滑动判定（阈值/比例/斜向）                                                                    |
 | `tests/unit/theme.test.ts`    | 偏好校验、系统解析、DOM/meta 应用、存储读写与异常降级                                                             |
 | `tests/unit/data.test.ts`     | 导航、备案、22 张截图、10 张架构图、4/6/4 内容数量、功能卡目标范围、四类 schema 契约                              |
+| `tests/unit/app-store.test.ts` | 下载入口状态机：地址白名单、App Store ID、Smart Banner 拼接与回退                                                |
+| `tests/unit/releases.test.ts` | 版本号格式、发布日期约束、锚点、预览条数与变更分组                                                              |
+| `tests/unit/config.test.ts`   | `edgeone.json` 的 301、安全响应头与缓存策略                                                                      |
 | `tests/e2e/home.spec.ts`      | 结构、SEO、导航、轮播、灯箱、主题、FAQ、法律页、外链安全、404                                                     |
-| `tests/e2e/a11y.spec.ts`      | axe 扫描四个页面 + 深色主题、键盘路径、触控目标、正文对比度抽样                                                    |
+| `tests/e2e/a11y.spec.ts`      | axe 扫描五个页面 + 深色主题、键盘路径、触控目标、正文对比度抽样                                                    |
+| `tests/e2e/app-info.spec.ts`  | 下载区未上架降级、应用信息与隐私摘要、结构化数据 PreOrder 断言                                                     |
+| `tests/e2e/changelog.spec.ts` | 更新日志结构、锚点、独立 OG、首页预览互链、页脚入口、零第三方请求                                                 |
 | `tests/e2e/mobile.spec.ts`    | 无横向溢出、抽屉/桌面导航切换、缩略图滚动、Hero 可读性                                                            |
 | `tests/e2e/reduced-motion.spec.ts` | 内容直接可见、无持续动画、过渡近似 0、锚点非平滑滚动                                                         |
-| `tests/e2e/visual.spec.ts`    | 页面与组件状态视觉基线（12 个用例产生 16 组快照，4 个项目共 64 张 PNG）                                          |
-| `tests/e2e/visual-webkit.spec.ts` | WebKit 关键界面基线（6 个场景：首屏/轮播/法律页/灯箱/深色首屏/404）                                          |
+| `tests/e2e/visual.spec.ts`    | 页面与组件状态视觉基线（16 组快照，4 个项目共 67 张 PNG）                                          |
+| `tests/e2e/visual-webkit.spec.ts` | WebKit 关键界面基线（7 个场景：首屏/轮播/法律页/灯箱/深色首屏/更新日志/404）                                |
 | `playwright.config.ts`       | 6 个项目、`astro preview` webServer、报告输出、1% 像素容差                                                         |
 | `vitest.config.ts`           | Node 环境、`@` 别名、覆盖率范围                                                                                   |
 | `eslint.config.mjs`          | JS/TS/Astro 规则、禁 `any`、console 限制、忽略发布产物                                                             |
@@ -240,7 +245,10 @@ tests/              单元与端到端测试
 | `data/screenshots.ts` | `assets/screenshots/*`、`data/types.ts`                                                                          | Hero、Showcase、测试                                  |
 | `data/architecture.ts` | `assets/architecture/*`、`data/types.ts`                                                                         | Architecture、测试                                    |
 | `data/faq.ts` | `data/site.ts`、`lib/schema.ts`（类型）                                                                                | FaqSection、schema、测试                              |
-| `lib/schema.ts` | `data/site.ts`                                                                                                        | 首页、法律页、测试                                    |
+| `data/appStore.ts` | 无（状态机 + 地址白名单）                                                                                         | 下载区、FAQ、schema、Seo、测试                        |
+| `data/releases.ts` | 无                                                                                                                | 更新日志、首页预览、`appInfo`、schema、测试           |
+| `data/appInfo.ts` | `data/releases.ts`                                                                                                  | 下载区、schema                                        |
+| `lib/schema.ts` | `data/site.ts`、`data/appStore.ts`、`data/appInfo.ts`、`data/releases.ts`                                              | 首页、法律页、更新日志、测试                          |
 | `lib/theme.ts` | `design/tokens.ts`（`metaColors`）                                                                                     | `app.ts`、单元测试                                     |
 | `lib/analytics.ts` | 无                                                                                                                  | 轮播、灯箱、`app.ts`、各组件埋点属性                   |
 | `scripts/*`   | `lib/analytics`、`lib/theme`、各 `data-*` 契约                                                                          | `app.ts`（通过组件内的 `<script>` 引入）               |

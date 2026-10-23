@@ -1,6 +1,6 @@
 # 验收报告
 
-- 验收对象：`main`，发布 commit `a1e91dc`（v2 Astro + 截图零裁切 + 点击交互 + 首屏性能 + WebKit 基线 + 架构图长描述）
+- 验收对象：`main`，v3 发布 commit `0d87273`（下载入口状态机 + 应用信息区 + 更新日志 + 安全响应头）；v2 基线为 `a1e91dc`
 - 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
@@ -343,3 +343,43 @@
 | HTML 校验       | `html-validate` 4 个页面 **0 error / 0 warning**；灯箱占位图补 1×1 透明 `src`，不新增网络请求                                                              |
 | 渲染巡检        | Chromium + WebKit × 4 页面 × 明暗主题：0 控制台错误/警告、0 失败请求、0 4xx/5xx、无横向溢出、无重复 id、无失效锚点、无破图                                 |
 | CI              | 运行 `39974296407`（main）success                                                                                                                          |
+
+---
+
+## 9. v3 验收记录（2026-10-24）
+
+发布 commit `0d87273`；目标为「上架就绪 + 更新日志 + 安全加固」，保持纯静态与无第三方依赖。
+
+### 9.1 门禁与页面
+
+| 项               | 结果                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `npm run verify` | 退出码 0：tokens、33 项对比度、typecheck（71 文件）、lint、format、**54 unit**、build（5 页）、check:release、Playwright |
+| Playwright       | **132 passed / 1 skipped**（tablet 视觉按设计跳过），无 flaky                                                            |
+| 视觉基线         | **74 张**（Chromium 67 + WebKit 7）                                                                                      |
+| axe              | 双引擎 × 双主题 × 5 页面全通过；修复轮播计数 `opacity 0.6` 导致的 2.92:1 对比度问题                                      |
+| 渲染巡检         | 线上 Chromium + WebKit × 5 页面 × 2 主题：0 控制台错误、0 失败请求、0 4xx/5xx、无溢出、无重复 id、无破图                 |
+| 产物             | `dist/` 与仓库根均为 **443** 个文件；线上 `index.html`、`changelog.html` 逐字节一致                                      |
+
+### 9.2 线上行为
+
+| 项         | 结果                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| 页面       | `/`、`/privacy.html`、`/agreement.html`、`/changelog.html`、`/404.html` 均 200；未知路径 404         |
+| 别名       | `GET /changelog` → 301 → `/changelog.html`                                                           |
+| 安全头     | CSP、`Referrer-Policy`、`X-Content-Type-Options`、`X-Frame-Options`、`Permissions-Policy` 全部命中   |
+| CSP 兼容性 | 生效后双引擎巡检无 CSP 拦截；内联样式与主题脚本按预期放行                                            |
+| 下载入口   | `coming-soon` 状态下无 `apps.apple.com` 外链、无二维码、无 `apple-itunes-app`，仅邮件提醒            |
+| 结构化数据 | `MobileApplication` 仍为 `PreOrder`；更新日志输出 `ItemList`（倒序）                                 |
+| 性能       | `/changelog.html` Lighthouse：performance 92、a11y 100、best-practices 100、SEO 100，LCP 2.8s、CLS 0 |
+| 源资源     | 架构图 3.0 MB → 1.9 MB（无损 WebP，逐像素校验一致）；截图未改动                                      |
+| HTML 校验  | 构建产物 5 页 `html-validate` 0 error / 0 warning                                                    |
+
+### 9.3 仍未完成（需人工或平台权限）
+
+| 项                       | 说明                                                               |
+| ------------------------ | ------------------------------------------------------------------ |
+| HTTP → HTTPS 301 与 HSTS | 需在 EdgeOne 控制台开启；代码侧无法下发，当前 `http://` 仍返回 200 |
+| 真机与读屏               | iOS Safari 实机、VoiceOver 朗读、法律页打印 PDF 仍需人工验收       |
+| App Store 上架切换       | 等待真实 App Store ID 与链接；切换步骤见 ADR-0012 与 wiki 维护手册 |
+| AASA 验证                | P1-04，需上架后在真机验证 Universal Links                          |
