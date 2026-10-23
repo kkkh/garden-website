@@ -135,16 +135,16 @@
 
 ### 6.2 线上验证
 
-| 项         | 结果                                                                               |
-| ---------- | ---------------------------------------------------------------------------------- |
-| 页面状态   | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 全部 200                      |
-| 未知路径   | 404 + `noindex, follow`                                                            |
-| 设备判据   | `data-device-model="iphone-13-pro-max"` ×2、`data-device-finish="alpine-green"` ×2 |
-| v2 判据    | `data-carousel` 存在、JSON-LD ×3、manifest ×1、v1 `cvr-stage` ×0                   |
-| 静态资源   | manifest、robots、sitemap、OG、图标、备案图、AASA、CSS 全部 200                    |
-| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                           |
-| 浏览器烟测 | 桌面 + 移动 25/25 通过；0 控制台错误、0 第三方请求                                 |
-| 生效时间   | 首次 v2 约 110 秒；设备框改版约 85 秒                                              |
+| 项         | 结果                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| 页面状态   | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 全部 200                                              |
+| 未知路径   | 404 + `noindex, follow`                                                                                    |
+| 设备判据   | `data-device-model="iphone-13-pro-max"` ×23（Hero + 22 张幻灯片）、`data-device-finish="alpine-green"` ×23 |
+| v2 判据    | `data-carousel` 存在、JSON-LD ×3、manifest ×1、v1 `cvr-stage` ×0                                           |
+| 静态资源   | manifest、robots、sitemap、OG、图标、备案图、AASA、CSS 全部 200                                            |
+| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                                                   |
+| 浏览器烟测 | 桌面 + 移动 25/25 通过；0 控制台错误、0 第三方请求                                                         |
+| 生效时间   | 首次 v2 约 110 秒；设备框改版约 85 秒                                                                      |
 
 ### 6.3 CI
 
