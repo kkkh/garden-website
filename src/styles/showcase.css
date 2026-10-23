@@ -711,12 +711,33 @@
 }
 
 .lightbox__figure {
+  position: relative;
   display: grid;
   place-items: center;
+  min-height: clamp(14rem, 46vh, 30rem);
   max-height: calc(100dvh - 12rem);
   padding: var(--space-4);
   overflow: auto;
   background: var(--color-hero-surface-alt);
+}
+
+/* 高清图加载期间保持稳定尺寸，并显示细环加载指示 */
+@keyframes lightbox-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lightbox__figure.is-loading::before {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid color-mix(in srgb, var(--color-hero-text-muted) 30%, transparent);
+  border-top-color: var(--color-gold-300);
+  border-radius: var(--radius-full);
+  animation: lightbox-spin 800ms linear infinite;
+  pointer-events: none;
 }
 
 .lightbox__figure img {

@@ -31,6 +31,7 @@ export class Lightbox {
   private items: LightboxItem[] = [];
   private index = 0;
   private trigger: HTMLElement | null = null;
+  private readonly preloaded = new Set<string>();
 
   constructor(dialog: HTMLDialogElement) {
     this.dialog = dialog;
@@ -49,6 +50,17 @@ export class Lightbox {
       if (!trigger) return;
       event.preventDefault();
       this.open(trigger);
+    });
+
+    // 指针悬停即预取高清图，点击放大时更快就位（每种图只取一次）。
+    document.addEventListener('pointerover', (event) => {
+      const target = (event.target as Element | null)?.closest<HTMLElement>('[data-lightbox-full]');
+      const src = target?.dataset.lightboxFull;
+      if (!src || this.preloaded.has(src)) return;
+
+      this.preloaded.add(src);
+      const preload = new Image();
+      preload.src = src;
     });
 
     this.dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => {
