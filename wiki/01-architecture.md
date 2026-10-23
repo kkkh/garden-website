@@ -75,7 +75,7 @@ flowchart LR
     subgraph Output["产物"]
         CSS["styles/tokens.generated.css"]
         ICONS["public/icons + public/og"]
-        DIST["dist/（371 个文件）"]
+        DIST["dist/（437 个文件）"]
         ROOT["仓库根同步产物"]
     end
 
@@ -313,7 +313,7 @@ dist/ ────────────────┐
 ```
 
 - 双兼容策略解决「无法从代码侧确认平台输出目录」的问题，避免推送后 404；
-- `.release-manifest.json` 记录 371 个文件，`--check` 按体积与清单比对，CI 与 `verify` 会拦截「改了源码但忘记同步」；
+- `.release-manifest.json` 记录 437 个文件，`--check` 按体积与清单比对，CI 与 `verify` 会拦截「改了源码但忘记同步」；
 - 缓存策略建议：`_astro/*` 长缓存 immutable，HTML 短缓存，图标/OG 一天，manifest/sitemap 一小时（详见 [05](05-run-and-deploy.md)）。
 
 ---

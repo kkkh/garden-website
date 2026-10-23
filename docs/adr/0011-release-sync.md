@@ -83,7 +83,7 @@
 
 ```bash
 npm run release                     # 构建 + 同步 + 校验
-node scripts/sync-root.mjs --check  # 期望：根目录产物与 dist 一致（371 个文件）
+node scripts/sync-root.mjs --check  # 期望：根目录产物与 dist 一致（437 个文件）
 
 # 用「纯静态根目录」方式模拟平台（关键验证）
 python3 -m http.server 8123

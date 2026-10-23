@@ -52,7 +52,7 @@ v1 时代平台直接从仓库根目录服务静态文件；v2 使用 Astro，�
 
 ## 3. 产物清单
 
-`npm run release` 后，以下条目同时存在于 `dist/` 与仓库根（共 371 个文件）：
+`npm run release` 后，以下条目同时存在于 `dist/` 与仓库根（共 437 个文件）：
 
 ```text
 index.html  privacy.html  agreement.html  404.html
@@ -135,7 +135,7 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 
 ```text
 [ ] npm run verify 通过（含 check:release）
-[ ] npm run release 已执行，root 与 dist 一致（371 个文件）
+[ ] npm run release 已执行，root 与 dist 一致（437 个文件）
 [ ] git status 中产物变更已一并提交
 [ ] 推送 main 完成，平台部署状态为成功
 [ ] 第 4 节 4.1–4.5 全部通过（尤其 4.2 的 v2 判据）
@@ -201,7 +201,7 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 | 视觉证据   | `docs/acceptance/baseline/v2-device/hero-live-fixed.png`、`showcase-live-fixed.png` |
 | CI         | `39945314644` / `39945319392` 双 job 全绿                                           |
 
-### 2026-10-23 · 设备框边到边贴合（commit `252136a`）
+### 2026-10-23 · 设备框边到边贴合（commit `252136a`，已被下一节修订）
 
 | 项         | 结果                                                                                  |
 | ---------- | ------------------------------------------------------------------------------------- |
@@ -213,3 +213,18 @@ v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，
 | 浏览器烟测 | 13/13 通过；0 控制台错误、0 第三方请求                                                |
 | 视觉证据   | `docs/acceptance/baseline/v2-device/hero-live-clean.png`、`showcase-live-clean.png`   |
 | CI         | `39949296050` / `39949303220` 双 job 全绿                                             |
+
+### 2026-10-23 · 移除手机壳、截图零裁切（commit `25a5d4f`）
+
+| 项         | 结果                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------- |
+| 变更       | 删除 `DeviceFrame`，改为无边框 `ScreenshotCard`；图片按原始比例自然撑开，零裁切       |
+| 轮播       | 视口宽度驱动（桌面 22rem / 移动 14.5rem）；图片 `object-fit: contain`；按钮移入信息区 |
+| 生效观察   | 推送后轮询 25 次（5s 间隔）切换完成，约 125 秒；线上 CSS 为 `BaseLayout.DBAqLkF7.css` |
+| CSS 判据   | `.screenshot-card` 命中 23；`.device-frame` 命中 0；卡片 `padding: 0px`               |
+| 零裁切判据 | Hero 显示比例 0.4619 / 原图 0.4622；轮播 0.4619 / 0.4620                              |
+| 页面与资源 | 4 个页面 200；未知路径 404；静态资源抽样全部 200                                      |
+| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                              |
+| 浏览器烟测 | 17/17 通过；0 控制台错误、0 第三方请求                                                |
+| 视觉证据   | `docs/acceptance/baseline/v2-noshell/hero-live.png`、`showcase-live.png`              |
+| CI         | `39955177922` / `39955185277` 双 job 全绿                                             |

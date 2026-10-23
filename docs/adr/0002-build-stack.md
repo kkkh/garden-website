@@ -74,5 +74,5 @@ v1 是零构建的纯静态站：3 个 HTML 手写全站结构，1 个 965 行 C
 ```bash
 npm ci
 npm run build          # 生成 dist/，含 4 个 HTML、sitemap、manifest
-npm run verify         # 全部门禁，含构建与 101 项 E2E
+npm run verify         # 全部门禁，含构建与 102 项 E2E
 ```

@@ -1,6 +1,6 @@
 # 验收报告
 
-- 验收对象：`main`，发布 commit `252136a`（v2 Astro + 苍岭绿设备框 + 动效升级 + 边到边贴合修正）
+- 验收对象：`main`，发布 commit `25a5d4f`（v2 Astro + 动效升级 + 移除手机壳、截图零裁切）
 - 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
@@ -20,7 +20,7 @@
 | 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
 | 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 38 passed                                                         | 同上日志                                           |
 | 7   | `npm run build`                | ✅   | 4 page(s) built；`[build] Complete!`                                                         | 同上日志                                           |
-| 8   | `npx playwright test`          | ✅   | **101 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
+| 8   | `npx playwright test`          | ✅   | **102 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
 | 9   | `npm audit --audit-level=high` | ✅   | found 0 vulnerabilities                                                                      | 见第 4 节                                          |
 | 10  | 生产部署与线上验证             | ✅   | 推送 `main` 后线上切换 v2；4 页 200、资源 200、未知路径 404、`index.html` 与根产物逐字节一致 | `docs/acceptance/logs/deployment-verification.txt` |
 
@@ -38,7 +38,7 @@
 | `tests/unit/theme.test.ts`    |      9 | 偏好合法性、系统偏好解析、`data-theme`/`color-scheme`/meta 主题色写入、存储禁用时的降级                                                                 |
 | `tests/unit/data.test.ts`     |     17 | 导航与法律导航契约、备案与联系方式格式、截图数量与设备标注/分辨率、架构图数量、首页数据结构、结构化数据（WebSite/MobileApplication/FAQPage/Breadcrumb） |
 
-### 2.2 端到端测试（Playwright，101 项，5 个项目）
+### 2.2 端到端测试（Playwright，102 项，5 个项目）
 
 | 项目             | 设备/条件                       | 用例                                                                                                              |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -261,7 +261,7 @@
 | 视觉证据       | `docs/acceptance/baseline/v2-device/hero-live-fixed.png`、`showcase-live-fixed.png` |
 | CI             | 运行 `39945314644` / `39945319392` 双 job 全绿                                      |
 
-### 8.6 设备框边到边贴合修正（2026-10-23）
+### 8.6 设备框边到边贴合修正（2026-10-23，已被 8.7 修订）
 
 用户复验后反馈「图片还有黑边没贴合」。8.5 的黑色玻璃正面与 CSS 刘海仍被判定为黑边，本次改为真正的边到边贴合。
 
@@ -278,3 +278,24 @@
 | 线上浏览器烟测 | 13/13 通过：无黑色刘海/侧键叠层、窄边框贴合 3px、轮播、灯箱、移动端；0 控制台错误、0 第三方请求 |
 | 视觉证据       | `docs/acceptance/baseline/v2-device/hero-live-clean.png`、`showcase-live-clean.png`             |
 | CI             | 运行 `39949296050` / `39949303220` 双 job 全绿                                                  |
+
+### 8.7 移除手机壳、截图零裁切（2026-10-23）
+
+用户最终要求「去掉手机壳，用其他更完美的方案，确保图片不裁切、完整」。本次不再模拟任何机身，改为无边框截图卡片。
+
+| 项             | 值                                                                                                                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 发布提交       | `25a5d4f`（`main` 与 `refactor/v2-astro`）                                                                           |
+| 组件           | 删除 `DeviceFrame.astro`，新增 `ScreenshotCard.astro`；截图卡仅保留圆角、发丝内高光与分层阴影                        |
+| 零裁切         | 移除容器固定 `aspect-ratio` 与 `object-fit: cover`；图片 `width: 100%; height: auto` 按原始比例撑开                  |
+| 轮播           | 视口改为宽度驱动（桌面 22rem / 移动 14.5rem），比例与 1284×2778 一致；图片 `object-fit: contain`                     |
+| 令牌           | 删除 `device-frame*`、`device-screen` 与 5 个未使用 alpine 色阶；`tokens.generated.css` 同步                         |
+| 操作区         | 「查看大图」移入截图信息区，不再悬浮遮挡截图；移动端箭头 44×44 内收，与卡片保持 6px 间距                             |
+| 生效观察       | 推送后轮询 25 次（5s 间隔）切到 `/_astro/BaseLayout.DBAqLkF7.css`，约 125 秒                                         |
+| 零裁切判据     | Hero 显示比例 0.4619 / 原图 0.4622；轮播 0.4619 / 0.4620；误差 < 0.005                                               |
+| 页面与资源     | 4 个页面 200；未知路径 404；静态资源抽样全部 200                                                                     |
+| 产物一致性     | 线上 `index.html` 与仓库根产物逐字节一致                                                                             |
+| 线上浏览器烟测 | 17/17 通过：无 `.device-frame`、卡片 padding 0、截图零裁切、按钮不遮挡、移动端箭头不遮挡；0 控制台错误、0 第三方请求 |
+| 自动化门禁     | 38 unit、102 E2E（新增零裁切断言）、48 视觉基线、19/19 独立巡检                                                      |
+| 视觉证据       | `docs/acceptance/baseline/v2-noshell/hero-live.png`、`showcase-live.png`                                             |
+| CI             | 运行 `39955177922` / `39955185277` 双 job 全绿                                                                       |

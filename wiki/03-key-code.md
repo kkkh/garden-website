@@ -29,7 +29,7 @@
 | `data-scroll-progress`                 | `BaseLayout.astro`                  | `header.ts`                       | 阅读进度线，写入 `scaleX`                          |
 | `data-hero-tilt`                       | `HeroSection.astro`                 | `hero-tilt.ts`                    | 桌面指针微倾斜作用域                              |
 | `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 会刷新其灯箱数据集               |
-| `data-device-model` / `data-device-finish` | `DeviceFrame.astro`             | 测试 / 样式                       | 固定为 `iphone-13-pro-max` / `alpine-green`      |
+| `data-device-model` / `data-device-finish` | `ScreenshotCard.astro`              | 测试 / 样式                       | 固定为 `iphone-13-pro-max` / `alpine-green`      |
 | `data-device-label`                    | `ShowcaseSection.astro`             | 测试                              | 可见机型标注「iPhone 13 Pro Max · 苍岭绿」        |
 | `data-shot-target`                     | `IntroSection.astro`                | `app.ts`                          | 功能卡跳转到指定截图（1-based）                    |
 | `data-lightbox`                        | `Lightbox.astro`                    | `lightbox.ts`                     | 全局灯箱 `<dialog>`                               |

@@ -106,7 +106,7 @@ tests/              单元与端到端测试
 | -------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | `Icon.astro`         | 24×24 线性 SVG 图标库，按 `name` 查表输出路径                                                  | 覆盖功能/系统图标与箭头、展开、关闭、信息、菜单；`aria-hidden`          |
 | `ThemeToggle.astro`  | 三态主题按钮组（浅色/深色/跟随系统），`role="group"` + `aria-pressed`                          | 初始 `aria-pressed` 以 system 为 true，脚本加载后按实际偏好同步          |
-| `DeviceFrame.astro`  | iPhone 13 Pro Max 苍岭绿边到边机身框：窄金属边框 + 圆角屏幕，截图完整贴合                    | `data-device-model="iphone-13-pro-max"`；Hero 与轮播共用；无黑色面板/刘海叠层 |
+| `ScreenshotCard.astro` | 无边框截图卡片：图片按 1284×2778 原始比例完整展示，零裁切                                   | `data-device-model="iphone-13-pro-max"`；Hero 与轮播共用；仅圆角、发丝高光与分层阴影 |
 | `Lightbox.astro`     | 全局 `<dialog>` 灯箱骨架：标题、计数、图片区、说明、前后按钮、关闭按钮                          | `data-lightbox`、`data-lightbox-image`、`data-lightbox-count` 等          |
 
 `Icon` 的图标表是纯数据映射；新增图标需要同时改 `name` 类型与 `PATHS`。
@@ -203,7 +203,7 @@ tests/              单元与端到端测试
 | `generate-icons.mjs`       | 由应用图标生成 4 个 PNG、内嵌位图 SVG 与 1200×630 OG 图                                          | `public/icons/*`、`public/og/og-default.png`                      |
 | `check-tokens.mjs`         | 扫描 `src/` 的颜色字面量；允许令牌源与生成物                                                    | 违规列出文件与行号，退出 1                                        |
 | `check-contrast.mjs`       | 解析令牌引用并计算 33 项 WCAG 对比度；正文 4.5、大文本/非文本 3                                 | `docs/design-system/contrast-report.md`；不达标退出 1              |
-| `sync-root.mjs`            | 把 `dist/` 白名单产物同步到仓库根；`--check` 比对体积、残留与清单                              | 371 个文件 + `.release-manifest.json`                             |
+| `sync-root.mjs`            | 把 `dist/` 白名单产物同步到仓库根；`--check` 比对体积、残留与清单                              | 437 个文件 + `.release-manifest.json`                             |
 | `capture-baseline.mjs`     | 抓取线上 v1 与本地 v2 的桌面/移动截图，用于 before/after 证据                                    | `docs/acceptance/baseline/**`（按需运行，不入 CI）                |
 | `independent-review.mjs`   | 不复用 E2E 代码的独立巡检（A–K 11 组），含 axe 与截图                                            | `docs/acceptance/independent-review.json` 与截图                   |
 

@@ -57,8 +57,9 @@ npm run test:visual:update
 
 > 功能卡的 `targetShot` 是 1-based，数据测试会校验其不超过截图总数。新增截图后如有新的关联入口，记得同步。
 
-> 设备框由 [DeviceFrame.astro](../src/components/ui/DeviceFrame.astro) 统一渲染，固定为 iPhone 13 Pro Max 苍岭绿
-> （`src/data/site.ts` 的 `screenshotDevice`）。若更换拍摄机型，需同步调整设备框令牌、CSS、机型标注、单元/E2E 断言与视觉基线。
+> 截图由 [ScreenshotCard.astro](../src/components/ui/ScreenshotCard.astro) 统一渲染，按原始比例完整展示、零裁切，
+> 机型信息来自 `src/data/site.ts` 的 `screenshotDevice`。若更换拍摄机型，需同步调整机型标注、单元/E2E 断言与视觉基线；
+> 任何情况下都不要恢复固定宽高比 + `object-fit: cover` 的裁切方案。
 
 ---
 
@@ -247,7 +248,7 @@ git add tests/e2e/visual.spec.ts-snapshots
 [ ] 如改截图/架构图数量：单测、E2E、OG 文案、README/wiki 数量全部同步
 [ ] 如改法律文本：日期与章节数断言同步
 [ ] 如改令牌：tokens.generated.css 已由脚本生成，未手改
-[ ] npm run release 已执行，根产物与 dist/ 一致（371 个文件，随内容变化）
+[ ] npm run release 已执行，根产物与 dist/ 一致（437 个文件，随内容变化）
 [ ] git status 中产物变更已一并提交
 [ ] 推送 main 后按 05 的 7.1–7.5 验证线上
 ```
