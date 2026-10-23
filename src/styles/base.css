@@ -1,0 +1,261 @@
+/* ==========================================================================
+   园枢 · 基础层
+   仅做重置、排版基线与全局可访问性约定；不承载具体组件外观。
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + var(--space-5));
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-relaxed);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  accent-color: var(--color-accent);
+  caret-color: var(--color-accent);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+picture {
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+strong,
+b {
+  font-weight: var(--font-weight-semibold);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-xs);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+[id] {
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
+[hidden] {
+  display: none !important;
+}
+
+dialog {
+  color: var(--color-text-primary);
+}
+
+::backdrop {
+  background: var(--color-overlay);
+}
+
+/* 尊重系统减弱动态效果：关闭滚动、过渡与动画，不影响信息可见性。 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 系统增强对比度：用原始色阶提升边界与次要文字强度。 */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border-subtle: var(--color-ink-300);
+    --color-text-secondary: var(--color-ink-700);
+  }
+
+  [data-theme='dark'] {
+    --color-border-subtle: var(--color-ink-300);
+    --color-text-secondary: var(--color-paper-200);
+  }
+}
+
+/* 强制色彩模式（Windows 高对比度等）：保证边界可见。 */
+@media (forced-colors: active) {
+  .button,
+  .surface-panel,
+  .feature-item,
+  .system-card,
+  .architecture-card,
+  .legal-article {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* 打印：法律页优先，隐藏导航、页脚、目录与操作按钮。 */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: var(--color-print-bg);
+    color: var(--color-print-text);
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .legal-toc,
+  .print-hidden,
+  .mobile-nav,
+  .lightbox,
+  .to-top {
+    display: none !important;
+  }
+
+  main {
+    max-width: none;
+    padding: 0;
+  }
+
+  a {
+    color: var(--color-print-text);
+    text-decoration: underline;
+  }
+
+  .legal-layout {
+    display: block;
+  }
+
+  .legal-article {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .legal-prose {
+    max-width: none;
+  }
+
+  .legal-prose h2,
+  .legal-prose h3 {
+    break-after: avoid;
+  }
+
+  .legal-prose li,
+  .legal-prose p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  @page {
+    margin: 18mm;
+  }
+}

@@ -1,0 +1,145 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import { screenshots } from '@/data/screenshots';
+
+const total = screenshots.length;
+const first = screenshots[0];
+---
+
+<section class="section" id="screenshots" aria-labelledby="screenshots-title">
+  <div class="container container--wide">
+    <div class="section-heading section-heading--center" data-reveal>
+      <p class="eyebrow eyebrow--plain">Screenshots</p>
+      <h2 class="section-title" id="screenshots-title">
+        应用截图
+      </h2>
+      <p class="section-lede">
+        {total} 张 iPhone
+        真机界面。支持左右箭头、缩略图、方向键与滑动切换，点击「查看大图」可放大细看。
+      </p>
+    </div>
+
+    <div class="showcase" data-carousel data-reveal>
+      <div
+        class="showcase__stage"
+        id="screenshots-stage"
+        data-carousel-stage
+        tabindex="0"
+        aria-label="应用截图画廊，可使用左右方向键切换"
+      >
+        <button class="showcase__arrow showcase__arrow--prev" type="button" data-carousel-prev>
+          <Icon name="arrow-left" size={20} />
+          <span class="sr-only">上一张截图</span>
+        </button>
+
+        <button
+          class="showcase__expand js-only"
+          type="button"
+          data-carousel-expand
+          data-lightbox-trigger
+          data-lightbox-group="screenshots"
+          data-lightbox-index="0"
+          data-lightbox-group-title="应用界面"
+        >
+          <Icon name="expand" size={16} />
+          查看大图
+        </button>
+
+        <div class="showcase__viewport">
+          {screenshots.map((shot, index) => (
+            <div
+              class="showcase__slide"
+              data-carousel-slide
+              data-active={index === 0 ? 'true' : 'false'}
+              aria-hidden={index === 0 ? 'false' : 'true'}
+              data-caption-title={`第 ${index + 1} 张`}
+              data-caption-body={shot.caption}
+              data-lightbox-full={shot.image.src}
+              data-lightbox-alt={shot.alt}
+              data-lightbox-caption={shot.caption}
+              data-lightbox-index={String(index)}
+            >
+              <div class="device-frame">
+                <Picture
+                  src={shot.image}
+                  alt={shot.alt}
+                  widths={[352, 704]}
+                  sizes="(max-width: 480px) 62vw, (max-width: 1024px) 46vw, 352px"
+                  formats={['avif', 'webp']}
+                  quality={70}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  fetchpriority={index === 0 ? 'high' : 'auto'}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button class="showcase__arrow showcase__arrow--next" type="button" data-carousel-next>
+          <Icon name="arrow-right" size={20} />
+          <span class="sr-only">下一张截图</span>
+        </button>
+      </div>
+
+      <div class="showcase__meta">
+        <p class="showcase__counter" aria-hidden="true">
+          <b data-carousel-current>01</b>
+          <span>/</span>
+          <span>{String(total).padStart(2, '0')}</span>
+        </p>
+        <p class="showcase__caption">
+          <strong data-carousel-caption-title>第 1 张</strong>
+          <span data-carousel-caption-body>{first?.caption}</span>
+        </p>
+        <p class="sr-only" role="status" aria-live="polite" data-carousel-live></p>
+      </div>
+
+      <div class="showcase__rail" role="group" aria-label="截图缩略图">
+        {screenshots.map((shot, index) => (
+          <button
+            class="showcase__thumb"
+            type="button"
+            data-carousel-thumb
+            aria-current={index === 0 ? 'true' : undefined}
+            tabindex={index === 0 ? 0 : -1}
+            title={shot.alt}
+            data-track="showcase:change"
+            data-track-source="thumbnail"
+          >
+            <Picture
+              src={shot.image}
+              alt=""
+              widths={[352]}
+              sizes="72px"
+              formats={['avif', 'webp']}
+              quality={48}
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="showcase__thumb-index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span class="sr-only">{`查看第 ${index + 1} 张截图：${shot.alt}`}</span>
+          </button>
+        ))}
+      </div>
+
+      <div hidden>
+        {screenshots.map((shot, index) => (
+          <span
+            data-lightbox-item
+            data-lightbox-group="screenshots"
+            data-lightbox-index={String(index)}
+            data-lightbox-full={shot.image.src}
+            data-lightbox-alt={shot.alt}
+            data-lightbox-caption={shot.caption}
+          />
+        ))}
+      </div>
+
+      <p class="showcase__hint">提示：在手机上可左右滑动切换；缩略图支持方向键、Home 与 End 键。</p>
+    </div>
+  </div>
+</section>

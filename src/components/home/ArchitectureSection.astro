@@ -1,0 +1,63 @@
+---
+import { Picture } from 'astro:assets';
+import { architectureFigures } from '@/data/architecture';
+
+const total = architectureFigures.length;
+---
+
+<section class="section section--muted" id="architecture" aria-labelledby="architecture-title">
+  <div class="container container--wide">
+    <div class="section-heading section-heading--center" data-reveal>
+      <p class="eyebrow eyebrow--plain">Architecture</p>
+      <h2 class="section-title" id="architecture-title">
+        平台架构
+      </h2>
+      <p class="section-lede">
+        园枢采用「官方数据源 → 网络与协议层 → 服务层 →
+        视图层」的分层设计，从学校官网公开接口聚合内容，经缓存与降级机制保障稳定，全程日志留痕、可监测可诊断。以下{' '}
+        {total} 张图完整呈现平台的运行架构与数据流。
+      </p>
+    </div>
+
+    <div class="grid grid--2">
+      {architectureFigures.map((figure, index) => (
+        <figure class:list={['architecture-card', `reveal-delay-${(index % 2) + 1}`]} data-reveal>
+          <button
+            class="architecture-card__button"
+            type="button"
+            data-lightbox-trigger
+            data-lightbox-item
+            data-lightbox-group="architecture"
+            data-lightbox-index={String(index)}
+            data-lightbox-full={figure.image.src}
+            data-lightbox-alt={`${figure.title}：${figure.description}`}
+            data-lightbox-caption={figure.description}
+            data-lightbox-group-title="平台架构图"
+            data-track="showcase:expand"
+            data-track-label={figure.title}
+            title="查看大图"
+          >
+            <Picture
+              src={figure.image}
+              alt={`${figure.title}：${figure.description}`}
+              widths={[600, 1200]}
+              sizes="(max-width: 768px) 92vw, (max-width: 1280px) 46vw, 560px"
+              formats={['avif', 'webp']}
+              quality={78}
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+
+          <figcaption class="architecture-card__body">
+            <span class="architecture-card__figure">
+              FIG {String(figure.index).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </span>
+            <h3 class="architecture-card__title">{figure.title}</h3>
+            <p class="architecture-card__desc">{figure.description}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,60 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+interface Props {
+  title: string;
+  groupLabel: string;
+}
+const { title, groupLabel } = Astro.props;
+---
+
+<dialog class="lightbox" data-lightbox aria-label={groupLabel}>
+  <div class="lightbox__bar">
+    <p class="lightbox__title" data-lightbox-title>
+      {title}
+    </p>
+    <p class="lightbox__count" data-lightbox-count aria-hidden="true"></p>
+    <button class="button button--icon button--on-ink" type="button" data-lightbox-close>
+      <Icon name="close" size={18} />
+      <span class="sr-only">关闭大图</span>
+    </button>
+  </div>
+
+  <div class="lightbox__figure" data-lightbox-figure>
+    <img data-lightbox-image alt="" decoding="async" />
+  </div>
+
+  <div class="lightbox__controls">
+    <button class="button button--icon button--on-ink" type="button" data-lightbox-prev>
+      <Icon name="arrow-left" size={18} />
+      <span class="sr-only">上一张</span>
+    </button>
+    <p class="lightbox__caption" data-lightbox-caption aria-live="polite"></p>
+    <button class="button button--icon button--on-ink" type="button" data-lightbox-next>
+      <Icon name="arrow-right" size={18} />
+      <span class="sr-only">下一张</span>
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .lightbox__controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem 1rem;
+    border-block-start: 1px solid var(--color-hero-line);
+  }
+
+  .lightbox__controls .lightbox__caption {
+    flex: 1;
+    padding: 0;
+    text-align: left;
+  }
+
+  @media (max-width: 640px) {
+    .lightbox__caption {
+      font-size: var(--text-xs);
+    }
+  }
+</style>

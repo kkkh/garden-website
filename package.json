@@ -1,0 +1,60 @@
+{
+  "name": "garden-website",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "园枢 · 山西晋中理工学院校园移动应用官方网站",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "npm run tokens:build && astro dev",
+    "build": "npm run tokens:build && npm run icons:build && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "tokens:build": "node scripts/generate-tokens.mjs",
+    "icons:build": "node scripts/generate-icons.mjs",
+    "check": "astro check",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "npm run build && playwright test",
+    "test:a11y": "npm run build && playwright test tests/e2e/a11y.spec.ts",
+    "test:visual": "npm run build && playwright test tests/e2e/visual.spec.ts",
+    "test:visual:update": "npm run build && playwright test tests/e2e/visual.spec.ts --update-snapshots",
+    "check:tokens": "node scripts/generate-tokens.mjs --check && node scripts/check-tokens.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "verify": "npm run check:tokens && npm run check:contrast && npm run typecheck && npm run lint && npm run format:check && npm run test:unit && npm run build && playwright test",
+    "audit": "npm audit --audit-level=high"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.4",
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/fraunces": "5.3.0",
+    "astro": "7.4.2",
+    "github-slugger": "2.0.0",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-slug": "6.0.0",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.5",
+    "culori": "4.0.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-astro": "3.2.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}

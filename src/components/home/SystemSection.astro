@@ -1,0 +1,42 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { systemGroups } from '@/data/home';
+---
+
+<section class="section" id="system" aria-labelledby="system-title">
+  <div class="container container--wide">
+    <div class="section-heading" data-reveal>
+      <p class="eyebrow">System &amp; Privacy</p>
+      <h2 class="section-title" id="system-title">
+        系统与隐私信息
+      </h2>
+      <p class="section-lede">
+        园枢坚持最小权限原则：只申请实现功能所必需的系统权限，所有个人数据仅保存在设备本地。
+      </p>
+    </div>
+
+    <div class="grid grid--2">
+      {systemGroups.map((group, index) => (
+        <article class:list={['system-card', `reveal-delay-${(index % 2) + 1}`]} data-reveal>
+          <h3 class="system-card__title">
+            <Icon name={group.icon} size={18} />
+            {group.title}
+          </h3>
+          <ul class="system-list">
+            {group.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <p class="notice" data-reveal>
+      <Icon name="info" />
+      <span>
+        本站（园枢官网）除你主动点击备案外链外，不加载任何第三方脚本、字体或统计；主题偏好仅保存在浏览器本地，可随时清除。详见
+        <a href="/privacy.html">隐私政策</a>。
+      </span>
+    </p>
+  </div>
+</section>

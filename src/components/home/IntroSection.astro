@@ -1,0 +1,69 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { features, introCards } from '@/data/home';
+
+const introId = 'intro';
+---
+
+<section class="section" aria-labelledby={`${introId}-title`}>
+  <div class="container container--wide">
+    <div class="section-heading" data-reveal>
+      <p class="eyebrow">About</p>
+      <h2 class="section-title" id={`${introId}-title`}>
+        应用介绍
+      </h2>
+      <p class="section-lede">
+        园枢是一款面向山西晋中理工学院师生、考生与家长的校园信息聚合工具，让校园官方信息触手可及。
+      </p>
+    </div>
+
+    <div class="grid grid--2" data-intro-grid>
+      {introCards.map((card, index) => (
+        <article class:list={['card', 'card--ruled', `reveal-delay-${index + 1}`]} data-reveal>
+          <span class="card__index" aria-hidden="true">
+            {card.index}
+          </span>
+          <h3 class="card__title">{card.title}</h3>
+          <p class="card__body">{card.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section section--muted" id="features" aria-labelledby="features-title">
+  <div class="container container--wide">
+    <div class="section-heading section-heading--center" data-reveal>
+      <p class="eyebrow eyebrow--plain">Features</p>
+      <h2 class="section-title" id="features-title">
+        功能特性
+      </h2>
+      <p class="section-lede">六大核心能力，覆盖校园信息获取、查询与个性化阅读的完整场景。</p>
+    </div>
+
+    <div class="grid grid--3">
+      {features.map((feature, index) => (
+        <article class:list={['feature-item', `reveal-delay-${(index % 3) + 1}`]} data-reveal>
+          <div class="feature-item__head">
+            <span class="feature-item__mark" aria-hidden="true">
+              <Icon name={feature.icon} />
+            </span>
+            <h3 class="feature-item__title">{feature.title}</h3>
+            <span class="feature-item__index">{feature.index}</span>
+          </div>
+          <p class="feature-item__body">{feature.description}</p>
+          <a
+            class="button button--ghost"
+            href={`#screenshots`}
+            data-track="cta:click"
+            data-track-label={feature.targetLabel}
+            data-shot-target={feature.targetShot}
+          >
+            {feature.targetLabel}
+            <Icon name="arrow-right" size={16} class="button__icon" />
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

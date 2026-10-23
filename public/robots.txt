@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jl.43322.cn/sitemap-index.xml

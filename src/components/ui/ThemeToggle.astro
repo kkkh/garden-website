@@ -1,0 +1,49 @@
+---
+interface Props {
+  groupLabel: string;
+  labels: {
+    light: string;
+    dark: string;
+    system: string;
+  };
+}
+
+const { groupLabel, labels } = Astro.props;
+
+const icons: Record<string, string> = {
+  light:
+    '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.4M12 19v2.4M4.2 12H1.8M22.2 12h-2.4M6.3 6.3 4.6 4.6M19.4 19.4l-1.7-1.7M17.7 6.3l1.7-1.7M4.6 19.4l1.7-1.7"/>',
+  dark: '<path d="M20.4 14.2A8.6 8.6 0 0 1 9.8 3.6a8.8 8.8 0 1 0 10.6 10.6Z"/>',
+  system:
+    '<rect x="2.6" y="4.2" width="18.8" height="12.6" rx="2.2"/><path d="M8.6 20.6h6.8M12 16.8v3.8"/>',
+};
+
+const options: ReadonlyArray<{ value: 'light' | 'dark' | 'system'; label: string }> = [
+  { value: 'light', label: labels.light },
+  { value: 'dark', label: labels.dark },
+  { value: 'system', label: labels.system },
+];
+---
+
+<div class="theme-toggle" role="group" aria-label={groupLabel} data-theme-toggle>
+  {options.map((option) => (
+    <button
+      type="button"
+      data-theme-value={option.value}
+      aria-pressed={option.value === 'system' ? 'true' : 'false'}
+      title={option.label}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        set:html={icons[option.value]}
+      />
+      <span class="sr-only">{option.label}</span>
+    </button>
+  ))}
+</div>

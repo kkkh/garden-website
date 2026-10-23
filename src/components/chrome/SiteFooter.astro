@@ -1,0 +1,112 @@
+---
+import { site, legalNavigation, navigation } from '@/data/site';
+
+interface Props {
+  homeHref: string;
+  iconSrc: string;
+}
+const { homeHref, iconSrc } = Astro.props;
+const year = 2026;
+
+const resolve = (href: string) => (href.startsWith('#') ? `${homeHref}${href}` : href);
+---
+
+<footer class="site-footer">
+  <div class="container container--wide">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src={iconSrc} alt="" width="36" height="36" loading="lazy" decoding="async" />
+          {site.name}
+        </div>
+        <p class="footer-tagline">
+          {site.shortDescription}
+          <br />
+          {site.slogan}
+        </p>
+      </div>
+
+      <nav aria-label="页脚导航">
+        <h2 class="footer-heading">站点导航</h2>
+        <ul class="footer-list">
+          {navigation.map((item) => (
+            <li>
+              <a href={resolve(item.href)} data-track="nav:click" data-track-label={item.label}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="footer-heading">法律与联系</h2>
+        <ul class="footer-list">
+          {legalNavigation.map((item) => (
+            <li>
+              <a href={item.href} data-track="nav:click" data-track-label={item.label}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href={`mailto:${site.contact.primaryEmail}`}
+              data-track="outbound:click"
+              data-track-label="邮箱"
+            >
+              {site.contact.primaryEmail}
+            </a>
+          </li>
+          <li>
+            <span>{site.domain.replace('https://', '')}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <span>{site.developer.copyright}</span>
+        <span class="footer-divider" aria-hidden="true"></span>
+        <a
+          href={site.filing.icpUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="工业和信息化部 ICP/IP地址/域名信息备案管理系统"
+          data-track="outbound:click"
+          data-track-label="ICP备案"
+        >
+          {site.filing.icp}
+        </a>
+        <span class="footer-divider" aria-hidden="true"></span>
+        <a
+          href={site.filing.policeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="全国互联网安全管理服务平台 · 公安备案查询"
+          data-track="outbound:click"
+          data-track-label="公安备案"
+        >
+          <img
+            class="beian-badge"
+            src="/beian/beian.png"
+            alt=""
+            width="20"
+            height="20"
+            loading="lazy"
+            decoding="async"
+          />
+          {site.filing.police}
+        </a>
+      </div>
+      <p>
+        本网站为{site.legalName}官方网站，域名：{site.domain}
+        ，内容来源于山西晋中理工学院官方网站公开信息。
+      </p>
+      <p>
+        © {year} {site.name} · 保留所有权利
+      </p>
+    </div>
+  </div>
+</footer>

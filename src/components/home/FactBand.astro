@@ -1,0 +1,16 @@
+---
+import { facts } from '@/data/home';
+---
+
+<section class="fact-band" aria-label="园枢概览数据">
+  <div class="container container--wide">
+    <div class="stat-strip">
+      {facts.map((fact, index) => (
+        <div class:list={['stat', `reveal-delay-${index + 1}`]} data-reveal>
+          <span class="stat__value">{fact.value}</span>
+          <span class="stat__label">{fact.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

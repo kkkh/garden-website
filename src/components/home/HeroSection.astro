@@ -1,0 +1,78 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import { site } from '@/data/site';
+import { screenshots } from '@/data/screenshots';
+
+const heroShot = screenshots[0];
+const shotAlt = heroShot?.alt ?? '园枢首页界面';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container container--wide hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow">校园信息聚合 · iOS 原生应用</p>
+
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__title-mark">园枢</span>
+      </h1>
+
+      <p class="hero__slogan">{site.shortDescription}</p>
+
+      <p class="hero__lede">
+        把分散在学校官网各栏目与子站中的要闻、公告、院系专业、招生资讯与校园风光汇聚到一个应用：
+        <strong>打开园枢，校园动态一屏尽览；重要更新，本地通知及时提醒。</strong>
+        无需注册登录，不收集个人信息，专注、轻量、快人一步。
+      </p>
+
+      <div class="hero__actions">
+        <a
+          class="button button--primary"
+          href="#features"
+          data-track="cta:click"
+          data-track-label="了解功能"
+        >
+          <Icon name="aggregate" size={18} class="button__icon" />
+          了解功能
+        </a>
+        <a
+          class="button button--on-ink"
+          href="#screenshots"
+          data-track="cta:click"
+          data-track-label="查看应用截图"
+        >
+          查看应用截图
+        </a>
+      </div>
+
+      <p class="hero__note">{site.availability} · 无需注册 · 不收集个人信息</p>
+    </div>
+
+    <div class="hero__stage">
+      <span class="hero__ring" aria-hidden="true"></span>
+
+      {heroShot && (
+        <div class="hero__device">
+          <div class="device-frame">
+            <Picture
+              src={heroShot.image}
+              alt={shotAlt}
+              widths={[352, 704]}
+              sizes="(max-width: 1024px) 60vw, 300px"
+              formats={['avif', 'webp']}
+              quality={70}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+        </div>
+      )}
+
+      <div class="hero__badges">
+        <span class="tag tag--accent">即将上架 App Store</span>
+        <span class="tag tag--on-ink">iOS 26.0+ · iPhone / iPad</span>
+      </div>
+    </div>
+  </div>
+</section>

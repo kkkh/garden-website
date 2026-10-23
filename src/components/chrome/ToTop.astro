@@ -1,0 +1,16 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+const { label = '回到顶部' } = Astro.props;
+---
+
+<button class="to-top print-hidden" type="button" data-to-top aria-label={label} title={label}>
+  <Icon name="arrow-left" size={18} class="to-top__icon" />
+</button>
+
+<style>
+  /* 复用同一箭头图标，旋转 90° 指向上方 */
+  .to-top__icon {
+    rotate: 90deg;
+  }
+</style>

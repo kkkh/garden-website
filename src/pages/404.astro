@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const suggestions = [
+  { label: '返回首页', href: '/', primary: true },
+  { label: '查看应用截图', href: '/#screenshots', primary: false },
+  { label: '平台架构', href: '/#architecture', primary: false },
+  { label: '隐私政策', href: '/privacy.html', primary: false },
+];
+---
+
+<BaseLayout
+  title="页面未找到"
+  description="你访问的页面不存在或已被移动，可从下方入口继续浏览园枢官网内容。"
+  path="/404.html"
+  noindex
+>
+  <div class="container error-page">
+    <div class="error-page__inner">
+      <p class="error-page__code" aria-hidden="true">
+        404
+      </p>
+      <h1 class="error-page__title">页面未找到</h1>
+      <p class="error-page__body">
+        你访问的地址不存在或已被移动。可以回到首页，或直接查看应用截图与平台架构。
+      </p>
+
+      <div class="hero__actions">
+        {suggestions.map((item) => (
+          <a
+            class:list={['button', item.primary ? 'button--primary' : 'button--outline']}
+            href={item.href}
+            data-track="nav:click"
+            data-track-label={item.label}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,8 @@
+@import '@fontsource-variable/fraunces/standard.css';
+@import './tokens.generated.css';
+@import './base.css';
+@import './utilities.css';
+@import './components.css';
+@import './chrome.css';
+@import './showcase.css';
+@import './editorial.css';

@@ -1,0 +1,60 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import type { LegalNavigationItem, NavigationItem } from '@/data/site';
+
+interface Props {
+  navigation: readonly NavigationItem[];
+  legalNavigation: readonly LegalNavigationItem[];
+  labels: {
+    brand: string;
+    tagline: string;
+    close: string;
+    homeHref: string;
+  };
+}
+
+const { navigation, legalNavigation, labels } = Astro.props;
+
+const resolve = (href: string) => (href.startsWith('#') ? `${labels.homeHref}${href}` : href);
+---
+
+<dialog class="mobile-nav" data-mobile-nav aria-label="站点导航">
+  <div class="mobile-nav__bar">
+    <span class="brand__name">{labels.brand}</span>
+    <button class="button button--icon button--outline" type="button" data-nav-close>
+      <Icon name="close" size={18} />
+      <span class="sr-only">{labels.close}</span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav__body" aria-label="移动端导航">
+    {navigation.map((item, index) => (
+      <a
+        class="mobile-nav__link"
+        href={resolve(item.href)}
+        data-track="nav:click"
+        data-track-label={item.label}
+      >
+        {item.label}
+        <span>{String(index + 1).padStart(2, '0')}</span>
+      </a>
+    ))}
+    {legalNavigation.map((item, index) => (
+      <a
+        class="mobile-nav__link"
+        href={item.href}
+        data-track="nav:click"
+        data-track-label={item.label}
+      >
+        {item.label}
+        <span>{String(navigation.length + index + 1).padStart(2, '0')}</span>
+      </a>
+    ))}
+
+    <p class="mobile-nav__footer">
+      {labels.tagline}
+      <br />
+      支持 iOS 26.0+，可在 iPhone 与 iPad 上运行。
+    </p>
+  </nav>
+</dialog>

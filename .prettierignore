@@ -1,0 +1,23 @@
+# 构建与工具产物
+dist/
+node_modules/
+.astro/
+reports/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+
+# 生成产物：由脚本产出，格式化会破坏生成器一致性校验
+src/styles/tokens.generated.css
+public/icons/
+public/og/
+docs/design-system/contrast-report.md
+
+# 视觉回归基线（二进制）
+tests/e2e/**/*-snapshots/
+
+# 其他
+LICENSE
+package-lock.json
+wiki/

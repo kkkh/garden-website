@@ -1,0 +1,146 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { Picture } from 'astro:assets';
+import { site } from '@/data/site';
+import mark from '@/assets/brand/app-icon.png';
+
+const contactRows = [
+  { label: '开发与运营', value: site.developer.name, href: null },
+  {
+    label: 'QQ 邮箱',
+    value: site.contact.primaryEmail,
+    href: `mailto:${site.contact.primaryEmail}`,
+  },
+  {
+    label: '阿里邮箱',
+    value: site.contact.secondaryEmail,
+    href: `mailto:${site.contact.secondaryEmail}`,
+  },
+  { label: '官网域名', value: site.domain, href: null },
+];
+---
+
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="container container--wide">
+    <div class="section-heading" data-reveal>
+      <p class="eyebrow">About us</p>
+      <h2 class="section-title" id="about-title">
+        关于我们
+      </h2>
+      <p class="section-lede">园枢的开发与运营信息、联系方式与内容版权说明。</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-panel" data-reveal>
+        <div class="about-panel__head">
+          <Picture
+            src={mark}
+            alt="园枢应用图标"
+            width={64}
+            height={64}
+            formats={['avif', 'webp']}
+            class="about-panel__mark"
+          />
+          <div>
+            <h3 class="about-panel__title">{site.name}</h3>
+            <p class="about-panel__meta">{site.platform}</p>
+          </div>
+        </div>
+
+        <p class="about-panel__body">
+          园枢由个人开发者{site.developer.name.replace('（个人）', '')}
+          独立设计、开发与运营，致力于为高校师生提供稳定、轻量、注重隐私的校园信息工具。
+        </p>
+        <p class="about-panel__body">
+          应用内展示的新闻资讯、通知公告、图片与视频等内容均来源于山西晋中理工学院官方网站公开信息，相关内容的版权归学校所有；园枢仅对公开信息进行检索、聚合与呈现。「园枢」名称、应用图标与界面设计等归开发者所有。
+        </p>
+
+        <p class="notice">
+          <Icon name="info" />
+          <span>涉及招生、教务、行政等重要事项，请以学校官方网站等正式渠道发布的信息为准。</span>
+        </p>
+      </div>
+
+      <div class="about-panel" data-reveal>
+        <h3 class="about-panel__title">联系方式</h3>
+        <dl class="contact-list">
+          {contactRows.map((row) => (
+            <div>
+              <dt>{row.label}</dt>
+              <dd>
+                {row.href ? (
+                  <a href={row.href} data-track="outbound:click" data-track-label={row.label}>
+                    {row.value}
+                  </a>
+                ) : (
+                  row.value
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <h3 class="about-panel__title">备案信息</h3>
+        <ul class="footer-legal about-filing">
+          <li>
+            <a
+              href={site.filing.icpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="outbound:click"
+              data-track-label="ICP备案"
+            >
+              {site.filing.icp}
+            </a>
+          </li>
+          <li>
+            <a
+              href={site.filing.policeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track="outbound:click"
+              data-track-label="公安备案"
+            >
+              {site.filing.police}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-panel__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .about-panel__mark {
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .about-panel__meta {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .about-filing {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .about-filing a {
+    color: var(--color-text-secondary);
+  }
+
+  .about-filing a:hover {
+    color: var(--color-accent-strong);
+  }
+</style>

@@ -1,9 +1,26 @@
+# 依赖与构建产物
 node_modules/
-.next/
 dist/
-build/
+.astro/
+.next/
+
+# 报告与测试产物
+reports/
+playwright-report/
+test-results/
+blob-report/
+coverage/
+*.tsbuildinfo
+
+# 环境变量
 .env
 .env.local
+
+# 编辑器与系统
 .DS_Store
 *.log
-tsconfig.tsbuildinfo
+.vscode/
+.idea/
+
+# 历史遗留的分享压缩包（体积大且不参与构建）
+.trae-html-share-packages/

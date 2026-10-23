@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroSection from '@/components/home/HeroSection.astro';
+import FactBand from '@/components/home/FactBand.astro';
+import IntroSection from '@/components/home/IntroSection.astro';
+import ShowcaseSection from '@/components/home/ShowcaseSection.astro';
+import ArchitectureSection from '@/components/home/ArchitectureSection.astro';
+import SystemSection from '@/components/home/SystemSection.astro';
+import FaqSection from '@/components/home/FaqSection.astro';
+import AboutSection from '@/components/home/AboutSection.astro';
+import { faqItems } from '@/data/faq';
+import { site } from '@/data/site';
+import { faqSchema, mobileApplicationSchema, websiteSchema } from '@/lib/schema';
+
+const jsonLd = [websiteSchema(), mobileApplicationSchema(), faqSchema(faqItems)];
+---
+
+<BaseLayout
+  title={`${site.name} · ${site.shortDescription}`}
+  description={site.description}
+  path="/"
+  lightboxTitle="应用界面"
+  jsonLd={jsonLd}
+>
+  <HeroSection />
+  <FactBand />
+  <IntroSection />
+  <ShowcaseSection />
+  <ArchitectureSection />
+  <SystemSection />
+  <FaqSection faq={faqItems} />
+  <AboutSection />
+</BaseLayout>

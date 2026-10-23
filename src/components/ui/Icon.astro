@@ -1,0 +1,58 @@
+---
+import type { FeatureIcon, SystemIcon } from '@/data/types';
+
+interface Props {
+  name:
+    FeatureIcon | SystemIcon | 'arrow-left' | 'arrow-right' | 'expand' | 'close' | 'info' | 'menu';
+  class?: string;
+  size?: number | string;
+}
+
+const { name, class: className, size } = Astro.props;
+
+const PATHS: Record<string, string> = {
+  aggregate:
+    '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>',
+  news: '<path d="M4 5.2A1.2 1.2 0 0 1 5.2 4h9.6A1.2 1.2 0 0 1 16 5.2V19H6a2 2 0 0 1-2-2V5.2Z"/><path d="M16 8h2.8A1.2 1.2 0 0 1 20 9.2V17a2 2 0 0 1-2 2h-2"/><path d="M7 8.4h6M7 11.6h6M7 14.8h4"/>',
+  departments:
+    '<path d="M3.4 20V9.6L12 4l8.6 5.6V20"/><path d="M9.2 20v-5.4h5.6V20"/><path d="M6.6 12.4h2.2M15.2 12.4h2.2"/>',
+  overview:
+    '<path d="M12 3.4 3.6 7.2 12 11l8.4-3.8L12 3.4Z"/><path d="M3.6 12.2 12 16l8.4-3.8"/><path d="M3.6 16.8 12 20.6l8.4-3.8"/>',
+  admissions:
+    '<path d="M4.6 8.4 12 4.2l7.4 4.2L12 12.6 4.6 8.4Z"/><path d="M7.6 10.6v5.2c0 1.6 2 2.9 4.4 2.9s4.4-1.3 4.4-2.9v-5.2"/><path d="M19.4 8.4v6"/>',
+  privacy:
+    '<path d="M12 3.6 5 6.2v5.1c0 4.2 2.9 7.6 7 8.9 4.1-1.3 7-4.7 7-8.9V6.2l-7-2.6Z"/><path d="M9.4 12.2l1.9 1.9 3.6-3.8"/>',
+  device:
+    '<rect x="6.4" y="2.6" width="11.2" height="18.8" rx="3"/><path d="M10.6 5.4h2.8"/><path d="M11 19h2"/>',
+  permissions:
+    '<rect x="4.2" y="10.4" width="15.6" height="10.4" rx="2.4"/><path d="M8.2 10.4V7.6a3.8 3.8 0 0 1 7.6 0v2.8"/><path d="M12 14.6v2.4"/>',
+  network:
+    '<circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4c2.4 2.4 3.6 5.4 3.6 8.6S14.4 18.2 12 20.6c-2.4-2.4-3.6-5.4-3.6-8.6S9.6 5.8 12 3.4Z"/>',
+  storage:
+    '<ellipse cx="12" cy="6.2" rx="7.2" ry="2.8"/><path d="M4.8 6.2v11.6c0 1.6 3.2 2.8 7.2 2.8s7.2-1.2 7.2-2.8V6.2"/><path d="M4.8 12c0 1.6 3.2 2.8 7.2 2.8s7.2-1.2 7.2-2.8"/>',
+  'arrow-left': '<path d="M14.8 5.4 8.2 12l6.6 6.6"/>',
+  'arrow-right': '<path d="M9.2 5.4 15.8 12l-6.6 6.6"/>',
+  expand: '<path d="M9.4 4.2H4.2v5.2M14.6 4.2h5.2v5.2M9.4 19.8H4.2v-5.2M14.6 19.8h5.2v-5.2"/>',
+  close: '<path d="M6.2 6.2l11.6 11.6M17.8 6.2 6.2 17.8"/>',
+  info: '<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.2"/><path d="M12 7.8h.01"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+};
+
+const path = PATHS[name] ?? '';
+const dimension = size ? `${size}` : undefined;
+---
+
+<svg
+  class:list={['icon', className]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  width={dimension}
+  height={dimension}
+  set:html={path}
+/>

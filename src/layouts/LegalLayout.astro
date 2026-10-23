@@ -1,0 +1,112 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { legalNavigation, site } from '@/data/site';
+import { formatDate, formatIsoDate } from '@/lib/format';
+import { breadcrumbSchema, websiteSchema } from '@/lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  summary: string;
+  path: string;
+  effectiveDate: Date;
+  updatedDate: Date;
+  headings: readonly { id: string; text: string }[];
+}
+
+const { title, description, summary, path, effectiveDate, updatedDate, headings } = Astro.props;
+
+const jsonLd = [
+  websiteSchema(),
+  breadcrumbSchema([
+    { name: '首页', path: '/' },
+    { name: title, path },
+  ]),
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={path}
+  type="article"
+  publishedTime={formatIsoDate(effectiveDate)}
+  modifiedTime={formatIsoDate(updatedDate)}
+  jsonLd={jsonLd}
+  lightboxTitle={title}
+>
+  <div class="container container--wide legal-layout">
+    <aside class="legal-toc print-hidden" data-legal-toc aria-labelledby="legal-toc-title">
+      <h2 class="legal-toc__title" id="legal-toc-title">
+        目录
+      </h2>
+      <ol>
+        {headings.map((heading) => (
+          <li>
+            <a href={`#${heading.id}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+      <div class="legal-toc__meta">
+        <p>生效日期：{formatDate(effectiveDate)}</p>
+        <p>最近更新：{formatDate(updatedDate)}</p>
+      </div>
+    </aside>
+
+    <article class="legal-article" data-legal-article aria-labelledby="legal-title">
+      <header class="legal-article__head">
+        <p class="eyebrow eyebrow--plain">{site.name} · 法律信息</p>
+        <h1 class="legal-article__title" id="legal-title">
+          {title}
+        </h1>
+        <p class="legal-article__meta">
+          生效日期：{formatDate(effectiveDate)}
+          <span class="legal-article__divider" aria-hidden="true">
+            |
+          </span>
+          最近更新：{formatDate(updatedDate)}
+        </p>
+        <p class="legal-article__summary">{summary}</p>
+      </header>
+
+      <div class="legal-prose">
+        <slot />
+      </div>
+
+      <footer class="legal-article__foot">
+        <p class="notice">
+          <Icon name="info" />
+          <span>
+            如对本{title.includes('隐私') ? '政策' : '协议'}有疑问，可通过
+            <a href={`mailto:${site.contact.primaryEmail}`}>{site.contact.primaryEmail}</a>
+            与我们联系。
+          </span>
+        </p>
+        <nav class="legal-article__nav" aria-label="法律文档导航">
+          {legalNavigation
+            .filter((item) => item.href !== path)
+            .map((item) => (
+              <a
+                class="button button--outline"
+                href={item.href}
+                data-track="nav:click"
+                data-track-label={item.label}
+              >
+                {item.label}
+                <Icon name="arrow-right" size={16} class="button__icon" />
+              </a>
+            ))}
+          <a
+            class="button button--ghost"
+            href="/"
+            data-track="nav:click"
+            data-track-label="返回首页"
+          >
+            返回首页
+          </a>
+        </nav>
+      </footer>
+    </article>
+  </div>
+</BaseLayout>
