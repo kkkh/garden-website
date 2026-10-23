@@ -231,7 +231,7 @@ flowchart TD
 | Node.js            | ≥ 24（`engines`）                        | `generate-tokens.mjs` 直接导入 `.ts`，依赖原生类型剥离；Astro 7.4.2 要求 ≥ 22.23.4 |
 | npm                | 随 Node 24                               | CI 使用 `npm ci` 严格安装                                     |
 | 操作系统（本地）   | macOS / Linux                            | `sharp` 需对应平台原生二进制                                  |
-| 浏览器（测试）     | Playwright Chromium                      | 视觉基线在 macOS 生成，文件名带 `-darwin`                     |
+| 浏览器（测试）     | Playwright Chromium + WebKit             | 视觉基线在 macOS 生成，文件名带 `-darwin`；WebKit 仅覆盖 6 个关键界面 |
 | CI 门禁任务        | `ubuntu-latest`，Node 24                 | 令牌、对比度、类型、Lint、格式、单测、构建、E2E（非视觉）      |
 | CI 视觉任务        | `macos-latest`，Node 24                  | 仅跑 `@visual`，避免跨平台字体渲染差异                        |
 | GitHub Actions     | `checkout@v4`、`setup-node@v4`、`upload-artifact@v4` | 见 [.github/workflows/ci.yml](../.github/workflows/ci.yml) |

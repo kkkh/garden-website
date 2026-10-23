@@ -1,6 +1,6 @@
 # 验收报告
 
-- 验收对象：`main`，发布 commit `78b9fcd`（v2 Astro + 截图零裁切 + 点击反馈与灯箱交互增强）
+- 验收对象：`main`，发布 commit `a1e91dc`（v2 Astro + 截图零裁切 + 点击交互 + 首屏性能 + WebKit 基线 + 架构图长描述）
 - 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
@@ -15,12 +15,12 @@
 | --- | ------------------------------ | ---- | -------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | 1   | `npm run check:tokens`         | ✅   | 生成文件与 `tokens.ts` 一致；未发现令牌文件之外的硬编码颜色                                  | `docs/acceptance/logs/verify.txt`                  |
 | 2   | `npm run check:contrast`       | ✅   | 检查 33 项，未通过 0 项                                                                      | `docs/design-system/contrast-report.md`            |
-| 3   | `npm run typecheck`            | ✅   | Result (55 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
+| 3   | `npm run typecheck`            | ✅   | Result (57 files): 0 errors / 0 warnings / 0 hints                                           | 同上日志                                           |
 | 4   | `npm run lint`                 | ✅   | 无输出（0 problems）                                                                         | 同上日志                                           |
 | 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
 | 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 38 passed                                                         | 同上日志                                           |
 | 7   | `npm run build`                | ✅   | 4 page(s) built；`[build] Complete!`                                                         | 同上日志                                           |
-| 8   | `npx playwright test`          | ✅   | **105 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
+| 8   | `npx playwright test`          | ✅   | **111 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
 | 9   | `npm audit --audit-level=high` | ✅   | found 0 vulnerabilities                                                                      | 见第 4 节                                          |
 | 10  | 生产部署与线上验证             | ✅   | 推送 `main` 后线上切换 v2；4 页 200、资源 200、未知路径 404、`index.html` 与根产物逐字节一致 | `docs/acceptance/logs/deployment-verification.txt` |
 
@@ -38,7 +38,7 @@
 | `tests/unit/theme.test.ts`    |      9 | 偏好合法性、系统偏好解析、`data-theme`/`color-scheme`/meta 主题色写入、存储禁用时的降级                                                                 |
 | `tests/unit/data.test.ts`     |     17 | 导航与法律导航契约、备案与联系方式格式、截图数量与设备标注/分辨率、架构图数量、首页数据结构、结构化数据（WebSite/MobileApplication/FAQPage/Breadcrumb） |
 
-### 2.2 端到端测试（Playwright，105 项，5 个项目）
+### 2.2 端到端测试（Playwright，111 项，6 个项目）
 
 | 项目             | 设备/条件                       | 用例                                                                                                              |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -47,6 +47,7 @@
 | `tablet-light`   | iPad (gen 7) 视口，Chromium     | 视觉基线                                                                                                          |
 | `mobile-light`   | iPhone 13 视口 + 触控，Chromium | 移动端响应式与视觉基线                                                                                            |
 | `reduced-motion` | `reducedMotion: reduce`         | 减弱动效降级（4 项）                                                                                              |
+| `webkit-visual`  | Desktop Safari（WebKit）        | WebKit 关键界面视觉基线（6 项）                                                                                   |
 
 关键断言（节选）：
 
@@ -68,7 +69,7 @@
 
 ### 2.4 视觉回归
 
-- 基线数量：**64 张 PNG**（4 项目 × 16 场景，含桌面浅色 / 桌面深色 / 平板 / 手机），位于 `tests/e2e/visual.spec.ts-snapshots/`；
+- 基线数量：**70 张 PNG**（Chromium 4 项目 × 16 场景 = 64 张，位于 `tests/e2e/visual.spec.ts-snapshots/`；WebKit 关键界面 6 张，位于 `tests/e2e/visual-webkit.spec.ts-snapshots/`）；
 - 覆盖：首页首屏/全页、轮播舞台与切换后状态、隐私页、404、按钮 default/hover/focus、卡片 default/hover、主题切换控件、灯箱打开、深色首页、深色法律页；
 - 判定：`maxDiffPixelRatio: 0.02`，动画禁用；
 - CI 拆分：视觉用例带 `@visual` 标记，仅在 macOS runner 执行（基线含 `-darwin` 平台后缀），其他任务用 `--grep-invert=@visual` 跳过。
@@ -318,3 +319,24 @@
 | 自动化门禁     | 38 unit、105 E2E、48 视觉基线、19/19 独立巡检                                                       |
 | 视觉证据       | `docs/acceptance/baseline/v2-interactions/hero-live.png`、`showcase-live.png`、`lightbox-live.png`  |
 | CI             | 运行 `39961272620` / `39961278145` 双 job 全绿                                                      |
+
+### 8.9 首屏性能、WebKit 基线、架构图长描述与字形细化（2026-10-23）
+
+用户要求继续提升，并明确「字体字形和样式要美观」。本轮先实测再改，Lighthouse 对线上真实地址执行。
+
+| 项           | 值                                                                                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 发布提交     | `a1e91dc`                                                                                                                                                  |
+| 性能基线     | 移动端（默认节流）：performance 82、FCP 2.9s、LCP 3.6s、总传输 566 KiB；桌面：performance 94、LCP 1.4s                                                     |
+| 性能改动     | ① 主样式改为全部内联（消除 12 KB 渲染阻塞请求）；② 相邻截图预取改为 `load` 后空闲期把 `loading` 置为 eager，由浏览器按 srcset 选 AVIF，不再手动拉 JPG 回退 |
+| 性能复测     | 移动端：performance **91**、FCP **2.2s**、LCP **3.1s**、总传输 **309 KiB**；桌面：performance **99**、LCP **0.9s**                                         |
+| 预加载结论   | 实测 LCP 元素为中文文本（`hero__slogan`），Hero 图与 Fraunces 字体不构成 LCP 关键路径，故未加 preload，避免无收益的请求竞争                                |
+| 残余瓶颈     | TTFB 952ms 属边缘节点与网络；Render Delay 2152ms 主要为 900 元素下的样式与绘制，继续压缩需重构首屏视觉层                                                   |
+| WebKit 基线  | 新增 `webkit-visual` 项目 6 个关键界面（首屏/轮播/法律页/灯箱/深色首屏/404），基线 6 张共 2.1 MB；CI 视觉 job 同步安装 WebKit                              |
+| 无障碍长描述 | 10 张架构图各补 `longDescription`，按钮 `aria-describedby` 关联隐藏段落；单测校验长度 > 60                                                                 |
+| 字形细化     | 开启 `font-optical-sizing: auto`、`font-kerning: normal`、标准连字；宋体回退补齐思源/Noto 家族名                                                           |
+| 备案         | 用户更新为 `晋ICP备2023020746号-2`，单测正则放开 `-N` 后缀；`site.filing` 单点生效                                                                         |
+| 产物         | `dist/` 与根目录 **436** 个产物一致（少 1 个外链 CSS）                                                                                                     |
+| 页面与资源   | 4 页 200；未知路径 404；线上 `index.html` 与仓库根产物逐字节一致                                                                                           |
+| 自动化门禁   | 38 unit、**111 E2E**（含 6 项 WebKit 视觉）、70 视觉基线、33 项对比度、0 硬编码颜色                                                                        |
+| CI           | 运行 `39974296407`（main）success                                                                                                                          |

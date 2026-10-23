@@ -248,7 +248,7 @@ git add tests/e2e/visual.spec.ts-snapshots
 [ ] 如改截图/架构图数量：单测、E2E、OG 文案、README/wiki 数量全部同步
 [ ] 如改法律文本：日期与章节数断言同步
 [ ] 如改令牌：tokens.generated.css 已由脚本生成，未手改
-[ ] npm run release 已执行，根产物与 dist/ 一致（437 个文件，随内容变化）
+[ ] npm run release 已执行，根产物与 dist/ 一致（436 个文件，随内容变化）
 [ ] git status 中产物变更已一并提交
 [ ] 推送 main 后按 05 的 7.1–7.5 验证线上
 ```

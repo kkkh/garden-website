@@ -103,11 +103,18 @@
 
 ## 3. 排版
 
-| 项       | 令牌             | 值                                                     |
-| -------- | ---------------- | ------------------------------------------------------ |
-| 展示字体 | `--font-display` | Fraunces Variable（Latin，本地自托管）+ 宋体栈（中文） |
-| 正文字体 | `--font-body`    | 系统无衬线栈（PingFang SC 等）                         |
-| 等宽     | `--font-mono`    | 系统等宽（序号、标签、代码）                           |
+| 项       | 令牌             | 值                                                                                                                                            |
+| -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 展示字体 | `--font-display` | Fraunces Variable（Latin，本地自托管）+ 宋体栈（中文：Songti SC → Source Han Serif SC → Noto Serif CJK SC → Noto Serif SC → STSong → SimSun） |
+| 正文字体 | `--font-body`    | 系统无衬线栈（PingFang SC 等）                                                                                                                |
+| 等宽     | `--font-mono`    | 系统等宽（序号、标签、代码）                                                                                                                  |
+
+字形渲染（`base.css`）：
+
+- `font-optical-sizing: auto`：Fraunces 为可变字体，按字号自动选择 `opsz`；Hero 标题通过 `font-variation-settings` 显式固定为 144，不受影响；
+- `font-kerning: normal` + `font-variant-ligatures: common-ligatures contextual`：启用字距调整与标准/上下文连字；
+- `text-rendering: optimizeLegibility` 保留，`-webkit-font-smoothing: antialiased` 仅作用于 macOS；
+- 中文标题仍由系统宋体承担，未引入 CJK 网络字体，避免为单一语言新增数百 KB 下载。
 
 字号阶梯（`--text-*`）：`2xs .6875rem` → `xs .75rem` → `sm .875rem` → `md 1rem` → `lg 1.125rem` → `xl 1.375rem` → `2xl/3xl/4xl` 为 `clamp()` 流体值 → `display`（仅备用）。
 
