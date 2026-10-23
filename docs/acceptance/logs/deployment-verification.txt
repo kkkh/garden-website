@@ -1,8 +1,8 @@
 # 发布后线上验证
-- 时间：2026-10-23T12:44:57Z
+- 时间：2026-10-23T13:30:53Z
 - 目标：https://jl.43322.cn
-- 发布提交：25a5d4f（移除手机壳，截图按原始比例完整展示）
-- 部署观察：main 推送后轮询 25 次（5s 间隔）切换完成，约 125 秒
+- 发布提交：78b9fcd（点击反馈强化 + 灯箱加载占位与高清图预取）
+- 部署观察：main 推送后轮询 23 次（5s 间隔）切换完成，约 115 秒
 
 ## 1. 页面与 404
 /                  200
@@ -12,12 +12,10 @@
 /not-exist-page    404
 
 ## 2. 判据
-CSS: /_astro/BaseLayout.DBAqLkF7.css
+CSS: /_astro/BaseLayout.CL6nEc2O.css
+thumb-select / meta-shift / lightbox-spin 均在线上 CSS 中命中
 .screenshot-card occurrences: 23
 .device-frame occurrences: 0
-data-scroll-progress: 1
-JSON-LD blocks: 3
-卡片 padding: 0px（无边框）
 轮播图片 object-fit: contain
 
 ## 3. 静态资源
@@ -32,25 +30,28 @@ JSON-LD blocks: 3
 index.html: identical to local root artifact
 
 ## 5. 线上浏览器烟测
-PASS  标题 — 园枢 · 山西晋中理工学院校园信息聚合应用
-PASS  已移除手机壳
-PASS  无边框截图卡片 23 个
-PASS  卡片无内边距（无边框） — 0px
-PASS  Hero 截图零裁切 — shown 0.4619 / natural 0.4622
-PASS  轮播图片 contain 完整展示 — contain
-PASS  轮播截图零裁切 — shown 0.4619 / natural 0.4620
+PASS  缩略图回弹动画已上线
+PASS  说明区切换动画已上线
+PASS  灯箱加载指示已上线
+PASS  切换态样式已上线
+PASS  轻点截图打开大图
+PASS  高清图加载完成 — figure min-height 414px；1284×2778
+PASS  灯箱图片零裁切 — shown 0.4622 / natural 0.4622
+PASS  Esc 关闭灯箱
+PASS  键盘回车打开大图
+PASS  拖动切图到 02
+PASS  拖动不会误开大图
+PASS  桌面箭头不遮挡截图
+PASS  轮播图片 contain
+PASS  截图零裁切 — shown 0.4619 / natural 0.4620
 PASS  缩略图 22 张
-PASS  查看大图按钮不遮挡截图
-PASS  切换到 02
-PASS  灯箱打开
-PASS  灯箱关闭
 PASS  无控制台错误 — []
 PASS  无第三方请求 — []
-PASS  移动抽屉
-PASS  移动端无横向溢出 — {"s":390,"c":390}
 PASS  移动端箭头不遮挡截图
-SUMMARY 17/17 passed
+PASS  移动端无横向溢出 — {"s":390,"c":390}
+SUMMARY 19/19 passed
 
 ## 6. 视觉证据
-docs/acceptance/baseline/v2-noshell/hero-live.png
-docs/acceptance/baseline/v2-noshell/showcase-live.png
+docs/acceptance/baseline/v2-interactions/hero-live.png
+docs/acceptance/baseline/v2-interactions/showcase-live.png
+docs/acceptance/baseline/v2-interactions/lightbox-live.png

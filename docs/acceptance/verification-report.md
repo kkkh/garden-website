@@ -1,6 +1,6 @@
 # 验收报告
 
-- 验收对象：`main`，发布 commit `25a5d4f`（v2 Astro + 动效升级 + 移除手机壳、截图零裁切）
+- 验收对象：`main`，发布 commit `78b9fcd`（v2 Astro + 截图零裁切 + 点击反馈与灯箱交互增强）
 - 验收时间：2026-10-23（本地门禁 + 生产发布后验证）
 - 验收执行者：实施方（自动化门禁）；独立复核见第 5 节
 - 结论口径：**在下列证据与已知缺陷下达到验收标准**（不使用「完美 / 零缺陷 / 极致」等表述）
@@ -20,7 +20,7 @@
 | 5   | `npm run format:check`         | ✅   | All matched files use Prettier code style                                                    | 同上日志                                           |
 | 6   | `npm run test:unit`            | ✅   | Test Files 3 passed；Tests 38 passed                                                         | 同上日志                                           |
 | 7   | `npm run build`                | ✅   | 4 page(s) built；`[build] Complete!`                                                         | 同上日志                                           |
-| 8   | `npx playwright test`          | ✅   | **102 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
+| 8   | `npx playwright test`          | ✅   | **105 passed**                                                                               | `docs/acceptance/logs/playwright-results.json`     |
 | 9   | `npm audit --audit-level=high` | ✅   | found 0 vulnerabilities                                                                      | 见第 4 节                                          |
 | 10  | 生产部署与线上验证             | ✅   | 推送 `main` 后线上切换 v2；4 页 200、资源 200、未知路径 404、`index.html` 与根产物逐字节一致 | `docs/acceptance/logs/deployment-verification.txt` |
 
@@ -38,7 +38,7 @@
 | `tests/unit/theme.test.ts`    |      9 | 偏好合法性、系统偏好解析、`data-theme`/`color-scheme`/meta 主题色写入、存储禁用时的降级                                                                 |
 | `tests/unit/data.test.ts`     |     17 | 导航与法律导航契约、备案与联系方式格式、截图数量与设备标注/分辨率、架构图数量、首页数据结构、结构化数据（WebSite/MobileApplication/FAQPage/Breadcrumb） |
 
-### 2.2 端到端测试（Playwright，102 项，5 个项目）
+### 2.2 端到端测试（Playwright，105 项，5 个项目）
 
 | 项目             | 设备/条件                       | 用例                                                                                                              |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -299,3 +299,22 @@
 | 自动化门禁     | 38 unit、102 E2E（新增零裁切断言）、48 视觉基线、19/19 独立巡检                                                      |
 | 视觉证据       | `docs/acceptance/baseline/v2-noshell/hero-live.png`、`showcase-live.png`                                             |
 | CI             | 运行 `39955177922` / `39955185277` 双 job 全绿                                                                       |
+
+### 8.8 点击反馈与灯箱交互增强（2026-10-23）
+
+用户要求继续增强功能与点击交互动效。本次新增独立交互反馈层，并补齐截图放大路径。
+
+| 项             | 值                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| 发布提交       | `d5b9287`（点击反馈）→ `78b9fcd`（灯箱加载占位，最终线上）                                          |
+| 交互反馈       | 新增 `interactions.css`：主按钮 560ms 高光扫过、全局按压回弹、缩略图选中回弹、说明区 360ms 轻移淡入 |
+| 截图放大       | 轻点截图或舞台聚焦后按回车直接打开灯箱；`cursor: zoom-in` 提示可点                                  |
+| 防误触         | 指针位移 < 6px 判定为轻点；超过阈值按横向滑动切图，不会误开灯箱                                     |
+| 灯箱加载       | 图区最小高度 46vh，加载时显示金环指示，避免空白与布局跳变；悬停即预取高清图                         |
+| 生效观察       | 推送后轮询 23 次（5s 间隔）切到 `/_astro/BaseLayout.CL6nEc2O.css`，约 115 秒                        |
+| 页面与资源     | 4 个页面 200；未知路径 404；静态资源抽样全部 200                                                    |
+| 产物一致性     | 线上 `index.html` 与仓库根产物逐字节一致                                                            |
+| 线上浏览器烟测 | 19/19 通过：轻点/回车开灯箱、拖动切图不误开、灯箱零裁切、箭头不遮挡；0 控制台错误、0 第三方请求     |
+| 自动化门禁     | 38 unit、105 E2E、48 视觉基线、19/19 独立巡检                                                       |
+| 视觉证据       | `docs/acceptance/baseline/v2-interactions/hero-live.png`、`showcase-live.png`、`lightbox-live.png`  |
+| CI             | 运行 `39961272620` / `39961278145` 双 job 全绿                                                      |

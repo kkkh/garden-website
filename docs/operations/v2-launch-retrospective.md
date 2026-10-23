@@ -3,7 +3,7 @@
 - 日期：2026-10-23
 - 范围：v1 纯静态站 → v2 Astro 重构、生产上线、iPhone 13 Pro Max 苍岭绿设备框改版
 - 线上：<https://jl.43322.cn>
-- 关键提交：v2 发布 `033f444`；设备框改版 `423fb63`；最终移除手机壳 `25a5d4f`
+- 关键提交：v2 发布 `033f444`；设备框改版 `423fb63`；移除手机壳 `25a5d4f`；交互增强 `78b9fcd`
 - 结论口径：**在本文所列证据与已知缺陷下达到发布验收标准**；不使用「完美 / 零缺陷 / 极致」等表述
 
 ---
@@ -15,7 +15,7 @@
 | 完成 v2 架构重构 | Astro 7.4.2 静态输出 + TypeScript strict + 两层设计令牌 + 原生 TS 交互模块           |
 | 完成生产上线     | `main` 推送后 EdgeOne Makers 自动更新；线上从 v1 切到 v2，首页与仓库根产物逐字节一致 |
 | 完成截图展示改版 | Hero 与轮播改为无边框截图卡片，按原始比例完整展示、零裁切，并保留机型/配色标注       |
-| 自动化门禁       | 38 单元、102 E2E、64 视觉基线、19/19 独立巡检、33 项对比度、0 硬编码颜色、0 依赖漏洞 |
+| 自动化门禁       | 38 单元、105 E2E、64 视觉基线、19/19 独立巡检、33 项对比度、0 硬编码颜色、0 依赖漏洞 |
 | CI               | Node 24 下「门禁与测试」「视觉回归（macOS）」双 job 全绿                             |
 | 线上烟测         | 桌面 + 移动 25/25 通过；0 控制台错误、0 未捕获异常、0 第三方请求                     |
 | 发布后人工验收   | 真机、VoiceOver 朗读、法律页打印 PDF 三项仍待人工执行                                |
@@ -41,6 +41,9 @@
 | 11:55 左右  | 线上切换到边到边版本                                   | 轮询 19 次（5s）约 95 秒；13/13 烟测通过             |
 | 12:42       | 用户要求去掉手机壳，改为无边框截图卡片                 | `25a5d4f`；CI `39955177922` / `39955185277` 全绿     |
 | 12:45 左右  | 线上切换到无壳版本                                     | 轮询 25 次（5s）约 125 秒；17/17 烟测通过            |
+| 13:15       | 强化点击反馈与截图放大交互                             | `d5b9287`；新增交互反馈层与 3 项 E2E                 |
+| 13:27       | 灯箱加载占位与高清图预取                               | `78b9fcd`；CI `39961272620` / `39961278145` 全绿     |
+| 13:29 左右  | 线上切换到交互增强版                                   | 轮询 23 次（5s）约 115 秒；19/19 烟测通过            |
 
 ---
 
@@ -51,7 +54,7 @@
 | 工程       | 无 `package.json`、无构建、无 CI、无测试 | Astro 7 + TS strict；25 个 npm scripts；`verify` 一键门禁；GitHub Actions 双 job                                             |
 | 目录       | 3 个根级 HTML + 单文件 CSS + `assets/`   | `src/{assets,components,content,data,design,layouts,lib,pages,scripts,styles}` + `public/` + `scripts/` + `tests/` + `docs/` |
 | 页面       | 三页头尾复制维护                         | `BaseLayout` + 8 个首页区块 + `LegalLayout` + 品牌化 404 + manifest                                                          |
-| 样式       | 965 行单文件，令牌与硬编码混用           | 令牌生成物 + base/utilities/components/chrome/showcase/editorial 七层                                                        |
+| 样式       | 965 行单文件，令牌与硬编码混用           | 令牌生成物 + base/utilities/components/chrome/showcase/interactions/editorial 八层                                           |
 | 颜色       | 仅浅色，10 项不达 WCAG AA                | 明暗双主题独立校准，33/33 项通过（含装饰线豁免）                                                                             |
 | 交互       | 89 行内联 IIFE，仅轮播                   | 7 个类型化模块：轮播、灯箱、抽屉、页头、显现、目录、入口                                                                     |
 | 图片       | 1284×2778 原图直出                       | 构建期 AVIF/WebP/JPG 多尺寸 + `srcset` + 首图 `fetchpriority="high"`                                                         |
@@ -124,6 +127,7 @@
 - 将设备框从通用边框改为可复用组件，Hero 与轮播不再各写一套；
 - 全页视觉基线偶发捕捉到首屏编排中间帧 → 视觉用例强制显现终态并等待编排完成，双分支 CI 复跑全绿；
 - 用户反馈设备框观感异常 → 先去黑色玻璃边框与 CSS 刘海；复验仍判定有黑边 → 边到边贴合；最终按用户要求移除手机壳，改为无边框截图卡片并保证零裁切。
+- 交互仍可再强化 → 新增独立 `interactions.css` 与点击放大路径，把按压、切换、灯箱反馈统一为一层可维护的动效规则。
 
 ---
 
@@ -140,22 +144,22 @@
 | 单元测试                   | 38 passed                                | 同上                                              |
 | 构建                       | 4 页 + sitemap/manifest                  | 同上                                              |
 | 发布一致性                 | 根目录与 `dist/` 一致（437 个文件）      | 同上                                              |
-| E2E / a11y / 响应式 / 视觉 | 102 passed                               | `docs/acceptance/logs/playwright-results.json`    |
+| E2E / a11y / 响应式 / 视觉 | 105 passed                               | `docs/acceptance/logs/playwright-results.json`    |
 | 依赖漏洞                   | 官方 registry：0 vulnerabilities         | `npm audit --registry=https://registry.npmjs.org` |
 | 独立渲染巡检               | 19/19 通过                               | `docs/acceptance/independent-review.md`           |
 
 ### 6.2 线上验证
 
-| 项         | 结果                                                                                                           |
-| ---------- | -------------------------------------------------------------------------------------------------------------- |
-| 页面状态   | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 全部 200                                                  |
-| 未知路径   | 404 + `noindex, follow`                                                                                        |
-| 设备判据   | `data-device-model="iphone-13-pro-max"` ×23（Hero + 22 张幻灯片）、`data-device-finish="alpine-green"` ×23     |
-| v2 判据    | `data-carousel` 存在、JSON-LD ×3、manifest ×1、v1 `cvr-stage` ×0                                               |
-| 静态资源   | manifest、robots、sitemap、OG、图标、备案图、AASA、CSS 全部 200                                                |
-| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                                                       |
-| 浏览器烟测 | 桌面 + 移动 25/25；动效版 28/28；黑边修正 14/14；边到边版 13/13；无壳版 17/17；均为 0 控制台错误、0 第三方请求 |
-| 生效时间   | 首次 v2 约 110 秒；设备框改版约 85 秒；动效升级约 105 秒；黑边修正约 55 秒；边到边约 95 秒；无壳版约 125 秒    |
+| 项         | 结果                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 页面状态   | `/`、`/privacy.html`、`/agreement.html`、`/404.html` 全部 200                                                                |
+| 未知路径   | 404 + `noindex, follow`                                                                                                      |
+| 设备判据   | `data-device-model="iphone-13-pro-max"` ×23（Hero + 22 张幻灯片）、`data-device-finish="alpine-green"` ×23                   |
+| v2 判据    | `data-carousel` 存在、JSON-LD ×3、manifest ×1、v1 `cvr-stage` ×0                                                             |
+| 静态资源   | manifest、robots、sitemap、OG、图标、备案图、AASA、CSS 全部 200                                                              |
+| 产物一致性 | 线上 `index.html` 与仓库根产物逐字节一致                                                                                     |
+| 浏览器烟测 | 桌面 + 移动 25/25；动效版 28/28；黑边修正 14/14；边到边版 13/13；无壳版 17/17；交互版 19/19；均为 0 控制台错误、0 第三方请求 |
+| 生效时间   | 首次 v2 约 110 秒；设备框 85 秒；动效 105 秒；黑边 55 秒；边到边 95 秒；无壳 125 秒；交互版 115 秒                           |
 
 ### 6.3 CI
 
@@ -170,20 +174,24 @@
 | [39949303220](https://github.com/kkkh/garden-website/actions/runs/39949303220) | `refactor/v2-astro`  | ✅   |
 | [39955177922](https://github.com/kkkh/garden-website/actions/runs/39955177922) | `main`（移除手机壳） | ✅   |
 | [39955185277](https://github.com/kkkh/garden-website/actions/runs/39955185277) | `refactor/v2-astro`  | ✅   |
+| [39961272620](https://github.com/kkkh/garden-website/actions/runs/39961272620) | `main`（交互增强）   | ✅   |
+| [39961278145](https://github.com/kkkh/garden-website/actions/runs/39961278145) | `refactor/v2-astro`  | ✅   |
 
 ### 6.4 上线后动效打磨
 
-| 项         | 结果                                                                                    |
-| ---------- | --------------------------------------------------------------------------------------- |
-| 首屏       | Hero 文案 6 段阶梯入场 + 设备落位，总时长约 980ms                                       |
-| 指针反馈   | 桌面精确指针下设备框最大 3° 倾斜；触控与减弱动效禁用                                    |
-| 轮播       | `data-position` 驱动 before/active/after 三态，640ms 方向感知转场                       |
-| 滚动       | 显现升级为 24px + 0.985 缩放；阅读进度线按滚动比例实时 `scaleX`                         |
-| 对话框     | 灯箱与移动抽屉 220ms 淡入/位移；灯箱图片加载态透明度过渡                                |
-| 导航/图标  | 当前区块下划线生长；功能图标 hover 上移并轻微旋转                                       |
-| 线上烟测   | 28/28 通过，包含指针倾斜、进度线、方向感知、减弱动效关闭首屏动画                        |
-| 设备框正面 | 最终移除手机壳：无边框截图卡片按原始比例完整展示，零裁切；线上 17/17 烟测通过           |
-| 视觉证据   | `docs/acceptance/baseline/v2-polish/`、`docs/acceptance/baseline/v2-noshell/*-live.png` |
+| 项         | 结果                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| 首屏       | Hero 文案 6 段阶梯入场 + 设备落位，总时长约 980ms                                            |
+| 指针反馈   | 桌面精确指针下设备框最大 3° 倾斜；触控与减弱动效禁用                                         |
+| 轮播       | `data-position` 驱动 before/active/after 三态，640ms 方向感知转场                            |
+| 滚动       | 显现升级为 24px + 0.985 缩放；阅读进度线按滚动比例实时 `scaleX`                              |
+| 对话框     | 灯箱与移动抽屉 220ms 淡入/位移；灯箱图片加载态透明度过渡                                     |
+| 导航/图标  | 当前区块下划线生长；功能图标 hover 上移并轻微旋转                                            |
+| 线上烟测   | 28/28 通过，包含指针倾斜、进度线、方向感知、减弱动效关闭首屏动画                             |
+| 设备框正面 | 最终移除手机壳：无边框截图卡片按原始比例完整展示，零裁切；线上 17/17 烟测通过                |
+| 点击反馈   | 主按钮高光扫过、全局按压回弹、缩略图选中回弹、说明区切换轻移；全部走 `interactions.css`      |
+| 截图放大   | 轻点截图或回车打开灯箱；6px 位移阈值区分拖动切图；灯箱预取高清图并显示加载金环               |
+| 视觉证据   | `docs/acceptance/baseline/v2-polish/`、`docs/acceptance/baseline/v2-interactions/*-live.png` |
 
 ---
 

@@ -18,7 +18,7 @@
 | `data-theme-toggle`                    | `ThemeToggle.astro`                 | `theme.ts`                        | 三态主题按钮组                                    |
 | `data-theme-value`                     | `ThemeToggle.astro`                 | `theme.ts`                        | `light` / `dark` / `system`                       |
 | `data-carousel`                        | `ShowcaseSection.astro`             | `app.ts`                          | 轮播根容器                                        |
-| `data-carousel-stage`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 键盘与指针区域（`tabindex="0"`）                  |
+| `data-carousel-stage`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 键盘与指针区域（`tabindex="0"`）；方向键切图、回车放大 |
 | `data-carousel-slide`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 每张幻灯片，携带 caption 与灯箱数据               |
 | `data-carousel-thumb`                  | `ShowcaseSection.astro`             | `carousel.ts`                     | 缩略图按钮（roving tabindex）                     |
 | `data-carousel-prev` / `-next`         | `ShowcaseSection.astro`             | `carousel.ts`                     | 前后箭头                                          |
@@ -28,7 +28,7 @@
 | `data-position`                        | `carousel.ts`                       | CSS                               | `active` / `before` / `after`，驱动方向感知切换    |
 | `data-scroll-progress`                 | `BaseLayout.astro`                  | `header.ts`                       | 阅读进度线，写入 `scaleX`                          |
 | `data-hero-tilt`                       | `HeroSection.astro`                 | `hero-tilt.ts`                    | 桌面指针微倾斜作用域                              |
-| `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 会刷新其灯箱数据集               |
+| `data-carousel-expand`                 | `ShowcaseSection.astro`             | `carousel.ts` + `lightbox.ts`     | 查看大图；`sync` 刷新灯箱数据集；轻点截图或回车也触发 |
 | `data-device-model` / `data-device-finish` | `ScreenshotCard.astro`              | 测试 / 样式                       | 固定为 `iphone-13-pro-max` / `alpine-green`      |
 | `data-device-label`                    | `ShowcaseSection.astro`             | 测试                              | 可见机型标注「iPhone 13 Pro Max · 苍岭绿」        |
 | `data-shot-target`                     | `IntroSection.astro`                | `app.ts`                          | 功能卡跳转到指定截图（1-based）                    |

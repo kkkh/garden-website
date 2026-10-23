@@ -102,7 +102,7 @@ check:tokens → check:contrast → typecheck → lint → format:check
 | `review:independent`    | 独立实现的 A–K 巡检（不包含在 verify 内）                                 | 交叉验证失败，建议在发布前执行             |
 | `audit`                 | high 及以上漏洞（CI 中 `continue-on-error`）                              | 依赖风险，需人工评估                       |
 
-最近一次验收记录：38 个单元测试、102 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
+最近一次验收记录：38 个单元测试、105 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
 
 ---
 
@@ -230,15 +230,15 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 
 | 项       | 值                                                                 |
 | -------- | ------------------------------------------------------------------ |
-| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，截图零裁切 commit `25a5d4f`）      |
+| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，交互增强 commit `78b9fcd`）      |
 | 仓库     | `https://github.com/kkkh/garden-website`                            |
 | 分支     | `main`                                                              |
 | 托管     | 腾讯云 EdgeOne Makers（静态，从仓库根目录服务）                     |
 | 发布方式 | 推送 `main` 即更新（无需平台侧改配置）                              |
 
-> 2026-10-23 实测：推送后约 125 秒生效，线上 `index.html` 与仓库根产物逐字节一致；
-> 4 个页面 200、未知路径 404、资源全部 200，截图零裁切与浏览器烟测 17/17 通过。
-> 证据：`docs/acceptance/logs/deployment-verification.txt`、`docs/acceptance/baseline/v2-noshell/hero-live.png`。
+> 2026-10-23 实测：推送后约 115 秒生效，线上 `index.html` 与仓库根产物逐字节一致；
+> 4 个页面 200、未知路径 404、资源全部 200，截图零裁切、点击交互与浏览器烟测 19/19 通过。
+> 证据：`docs/acceptance/logs/deployment-verification.txt`、`docs/acceptance/baseline/v2-interactions/hero-live.png`。
 
 发布后逐项验证：
 

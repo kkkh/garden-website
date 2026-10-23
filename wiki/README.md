@@ -3,7 +3,7 @@
 > 「园枢」是面向山西晋中理工学院师生、考生与家长的校园信息聚合 iOS 应用的官方网站。
 > 本 Wiki 面向维护者与开发者，按「架构 → 模块 → 关键代码 → 依赖 → 运行部署 → 维护」组织，覆盖 v2 仓库内的全部源码、构建脚本与测试。
 
-**文档基准**：`main` 分支 commit `25a5d4f`（2026-10-23），对应 `package.json` 版本 `2.0.0`。
+**文档基准**：`main` 分支 commit `78b9fcd`（2026-10-23），对应 `package.json` 版本 `2.0.0`。
 **历史归档**：v1（纯静态 HTML / CSS / JS）时代的旧版 Code Wiki 保留在 [archive-v1/](archive-v1/README.md)，描述重构前的实现，仅供追溯；本套文档为 v2 Astro 架构的现行版本。
 
 ---
@@ -18,13 +18,13 @@
 | 构建工具           | Astro + Vite；`scripts/` 下的 Node 脚本负责令牌、图标与发布同步                                                    |
 | 后端 / 数据库      | 无。页面内容在构建期确定，运行时不请求任何数据接口                                                                                |
 | 第三方运行时依赖   | 0 个网络请求。字体随包打包，无 CDN、无第三方脚本、无统计 SDK                                                                       |
-| 样式入口           | [src/styles/global.css](../src/styles/global.css)，按令牌、基础、工具、组件、框架、展示、编辑七层拆分                     |
+| 样式入口           | [src/styles/global.css](../src/styles/global.css)，按令牌、基础、工具、组件、框架、展示、交互、编辑八层拆分                     |
 | 交互入口           | [src/scripts/app.ts](../src/scripts/app.ts)，统一启动轮播、灯箱、导航、主题、显现动画与本地埋点                            |
 | 内容事实源         | `src/data/*`（文案与索引）、`src/content/legal/*.md`（法律文本）、`src/design/tokens.ts`（设计令牌）                              |
 | 图片资源           | 22 张 iPhone 13 Pro Max 真机截图（苍岭绿）、10 张平台架构图、1 个应用图标，位于 `src/assets/`，构建期转为 AVIF/WebP 多尺寸 |
 | 构建产物           | `dist/` 437 个文件；同时由 [scripts/sync-root.mjs](../scripts/sync-root.mjs) 同步到仓库根目录，兼容两种平台配置               |
 | 质量门禁           | 令牌一致性、硬编码颜色扫描、33 项对比度、类型检查、ESLint、Prettier、38 个单元测试、E2E / axe / 视觉回归、发布一致性 |
-| 线上域名           | <https://jl.43322.cn>（2026-10-23 已上线 v2，截图零裁切 commit `25a5d4f`）                                                          |
+| 线上域名           | <https://jl.43322.cn>（2026-10-23 已上线 v2，交互增强 commit `78b9fcd`）                                                          |
 | 部署方式           | 腾讯云 EdgeOne Makers 静态托管；推送 `main` 即上线（详见 [05](05-run-and-deploy.md)）                                         |
 | 运行环境           | Node.js ≥ 24；本地开发默认端口 `4321`                                                                                            |
 
