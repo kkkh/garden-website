@@ -206,3 +206,13 @@
 - `.github/workflows/ci.yml` 的两个 job 均固定 `node-version: '24'`；
 - README、Code Wiki、ADR 与已知问题中的 Node 版本说明同步为 24；
 - 调整后本地 `npm run verify` 再次通过（37 单测、100 E2E、发布一致性），等待新 CI 运行复核。
+
+### 8.2 CI 复核结果（2026-10-23）
+
+| 运行                                                                           | 分支                | 结果       | 说明                                                        |
+| ------------------------------------------------------------------------------ | ------------------- | ---------- | ----------------------------------------------------------- |
+| [39929163165](https://github.com/kkkh/garden-website/actions/runs/39929163165) | `main`              | ✅ success | 「门禁与测试」与「视觉回归（macOS 基线）」两个 job 全部通过 |
+| [39929147604](https://github.com/kkkh/garden-website/actions/runs/39929147604) | `refactor/v2-astro` | ✅ success | 同一提交的双分支复核，全部通过                              |
+
+此前 `beeb015` 的运行在 `typecheck` 阶段失败（Node 22.23.3 < Astro 要求的 22.23.4）；
+固定 Node 24 后，上述两次运行均成功，CI 缺陷闭环。
