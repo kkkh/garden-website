@@ -230,15 +230,15 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 
 | 项       | 值                                                                 |
 | -------- | ------------------------------------------------------------------ |
-| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，动效升级 commit `34710dd`）      |
+| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，设备框修正 commit `21d319d`）      |
 | 仓库     | `https://github.com/kkkh/garden-website`                            |
 | 分支     | `main`                                                              |
 | 托管     | 腾讯云 EdgeOne Makers（静态，从仓库根目录服务）                     |
 | 发布方式 | 推送 `main` 即更新（无需平台侧改配置）                              |
 
-> 2026-10-23 实测：推送后约 105 秒生效，线上 `index.html` 与仓库根产物逐字节一致；
-> 4 个页面 200、未知路径 404、资源全部 200，设备框/动效判据与浏览器烟测 28/28 通过。
-> 证据：`docs/acceptance/logs/deployment-verification.txt`、`docs/acceptance/baseline/v2-polish/`。
+> 2026-10-23 实测：推送后约 55 秒生效，线上 `index.html` 与仓库根产物逐字节一致；
+> 4 个页面 200、未知路径 404、资源全部 200，设备框/动效判据与浏览器烟测 14/14 通过。
+> 证据：`docs/acceptance/logs/deployment-verification.txt`、`docs/acceptance/baseline/v2-device/hero-live-fixed.png`。
 
 发布后逐项验证：
 
