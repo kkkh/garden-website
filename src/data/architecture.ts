@@ -1,15 +1,15 @@
 import type { ArchitectureFigure } from './types';
 
-import flow01 from '@/assets/architecture/flow-01.png';
-import flow02 from '@/assets/architecture/flow-02.png';
-import flow03 from '@/assets/architecture/flow-03.png';
-import flow04 from '@/assets/architecture/flow-04.png';
-import flow05 from '@/assets/architecture/flow-05.png';
-import flow06 from '@/assets/architecture/flow-06.png';
-import flow07 from '@/assets/architecture/flow-07.png';
-import flow08 from '@/assets/architecture/flow-08.png';
-import flow09 from '@/assets/architecture/flow-09.png';
-import flow10 from '@/assets/architecture/flow-10.png';
+import flow01 from '@/assets/architecture/flow-01.webp';
+import flow02 from '@/assets/architecture/flow-02.webp';
+import flow03 from '@/assets/architecture/flow-03.webp';
+import flow04 from '@/assets/architecture/flow-04.webp';
+import flow05 from '@/assets/architecture/flow-05.webp';
+import flow06 from '@/assets/architecture/flow-06.webp';
+import flow07 from '@/assets/architecture/flow-07.webp';
+import flow08 from '@/assets/architecture/flow-08.webp';
+import flow09 from '@/assets/architecture/flow-09.webp';
+import flow10 from '@/assets/architecture/flow-10.webp';
 
 const figures = [
   {

@@ -1,0 +1,125 @@
+---
+import { Picture } from 'astro:assets';
+import mark from '@/assets/brand/app-icon.png';
+import AppStoreBadge from '@/components/app/AppStoreBadge.astro';
+import QrCode from '@/components/app/QrCode.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { appInfo } from '@/data/appInfo';
+import { hasDownloadUrl } from '@/data/appStore';
+import { site } from '@/data/site';
+import { formatDateFromIso } from '@/lib/format';
+
+const live = hasDownloadUrl();
+const pending = '上架后公布';
+
+const specs = [
+  { label: '版本', value: appInfo.version ?? pending },
+  { label: '大小', value: appInfo.size ?? pending },
+  { label: '兼容性', value: `${appInfo.minimumOS} 或更高版本` },
+  { label: '设备', value: appInfo.devices.join(' / ') },
+  { label: '语言', value: appInfo.languages.join('、') },
+  { label: '价格', value: appInfo.price.isFree ? '免费下载' : '付费下载' },
+  {
+    label: '内购与广告',
+    value: `${appInfo.price.hasInAppPurchases ? '含内购' : '无内购'} · ${
+      appInfo.price.hasAds ? '含广告' : '无广告'
+    }`,
+  },
+  { label: '年龄分级', value: appInfo.ageRating ?? pending },
+  { label: '开发者', value: appInfo.seller },
+  {
+    label: '更新日期',
+    value: appInfo.releaseDate ? formatDateFromIso(appInfo.releaseDate) : pending,
+  },
+];
+
+const remindHref = `mailto:${site.contact.primaryEmail}?subject=${encodeURIComponent('园枢上架提醒')}`;
+const state = live ? 'live' : 'soon';
+---
+
+<section
+  class="section"
+  id="download"
+  aria-labelledby="download-title"
+  data-app-store-state={state}
+>
+  <div class="container container--wide">
+    <div class="section-heading" data-reveal>
+      <p class="eyebrow">Download</p>
+      <h2 class="section-title" id="download-title">
+        下载园枢
+      </h2>
+      <p class="section-lede">
+        应用信息、系统要求与隐私摘要集中在这里；上架当天，此处的提醒会切换为 App Store
+        下载入口与二维码。
+      </p>
+    </div>
+
+    <div class="app-info">
+      <div class="app-info__intro" data-reveal>
+        <Picture
+          src={mark}
+          alt="园枢应用图标"
+          width={96}
+          height={96}
+          formats={['avif', 'webp']}
+          class="app-info__mark"
+        />
+        <div class="app-info__identity">
+          <h3 class="app-info__name">{site.name}</h3>
+          <p class="app-info__meta">{site.platform}</p>
+        </div>
+        <p class="app-info__body">{site.description}</p>
+
+        <div class="app-info__actions">
+          {live ? (
+            <>
+              <AppStoreBadge />
+              <QrCode />
+            </>
+          ) : (
+            <>
+              <a class="button button--primary app-download" href={remindHref}>
+                <Icon name="info" size={16} />
+                上架时提醒我
+              </a>
+              <p class="app-info__hint">
+                {site.availability}。上架后本页会显示 App Store 按钮与下载二维码。
+              </p>
+            </>
+          )}
+        </div>
+
+        <div class="app-info__privacy">
+          <h3 class="app-info__subtitle">
+            <Icon name="privacy" size={18} />
+            隐私摘要
+          </h3>
+          <ul class="system-list">
+            <li>不收集姓名、手机号、邮箱与位置等个人信息；</li>
+            <li>无账号体系、无第三方统计、无广告；</li>
+            <li>收藏、阅读记录、设置与缓存仅保存在设备本地。</li>
+          </ul>
+          <p class="app-info__policy">
+            完整说明见 <a href="/privacy.html">隐私政策</a>，权限用途见
+            <a href="#system">系统与隐私信息</a>。
+          </p>
+        </div>
+      </div>
+
+      <div class="app-info__details" data-reveal>
+        <div>
+          <h3 class="app-info__subtitle">应用信息</h3>
+          <dl class="spec-list">
+            {specs.map((row) => (
+              <div>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

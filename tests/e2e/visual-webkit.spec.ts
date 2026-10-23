@@ -21,8 +21,17 @@ test.describe('WebKit 关键界面基线 @visual', () => {
 
   test('轮播舞台', async ({ page }) => {
     await page.goto('/#screenshots');
-    await expect(page.locator('.showcase__stage')).toBeVisible();
-    await expect(page.locator('.showcase__stage')).toHaveScreenshot('webkit-showcase-stage.png');
+    const stage = page.locator('.showcase__stage');
+    // 隐藏固定层（页头、进度条、回到顶部），并等待当前幻灯片解码完成
+    await page.addStyleTag({
+      content: '.site-header,[data-scroll-progress],[data-to-top]{visibility:hidden!important}',
+    });
+    await page.waitForFunction(() => {
+      const image = document.querySelector('[data-carousel-slide][data-active="true"] img');
+      return image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0;
+    });
+    await page.waitForTimeout(150);
+    await expect(stage).toHaveScreenshot('webkit-showcase-stage.png');
   });
 
   test('法律页', async ({ page }) => {
@@ -43,6 +52,12 @@ test.describe('WebKit 关键界面基线 @visual', () => {
     await page.goto('/');
     await page.locator('button[data-theme-value="dark"]').click();
     await expect(page.locator('.hero')).toHaveScreenshot('webkit-home-hero-dark.png');
+  });
+
+  test('更新日志页', async ({ page }) => {
+    await page.goto('/changelog.html');
+    await expect(page.locator('.release-timeline')).toBeVisible();
+    await expect(page.locator('.release-timeline')).toHaveScreenshot('webkit-changelog.png');
   });
 
   test('404 页面', async ({ page }) => {

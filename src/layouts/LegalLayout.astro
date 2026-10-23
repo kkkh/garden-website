@@ -10,12 +10,15 @@ interface Props {
   description: string;
   summary: string;
   path: string;
+  image?: string;
+  imageAlt?: string;
   effectiveDate: Date;
   updatedDate: Date;
   headings: readonly { id: string; text: string }[];
 }
 
-const { title, description, summary, path, effectiveDate, updatedDate, headings } = Astro.props;
+const { title, description, summary, path, image, imageAlt, effectiveDate, updatedDate, headings } =
+  Astro.props;
 
 const jsonLd = [
   websiteSchema(),
@@ -31,6 +34,8 @@ const jsonLd = [
   description={description}
   path={path}
   type="article"
+  image={image}
+  imageAlt={imageAlt}
   publishedTime={formatIsoDate(effectiveDate)}
   modifiedTime={formatIsoDate(updatedDate)}
   jsonLd={jsonLd}

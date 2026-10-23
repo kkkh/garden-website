@@ -17,6 +17,7 @@
 | [ADR-0009](0009-legal-content.md)          | 法律文本的迁移方式与隐私事实补充                   | 已采纳                         |
 | [ADR-0010](0010-known-limitations.md)      | 已知限制与残余风险的显式接受                       | 已采纳                         |
 | [ADR-0011](0011-release-sync.md)           | 发布策略修订：根目录产物同步（推送即上线、双兼容） | 已采纳                         |
+| [ADR-0012](0012-app-store-entry.md)        | App Store 下载入口与状态机                         | 已采纳                         |
 
 ## 阅读顺序建议
 

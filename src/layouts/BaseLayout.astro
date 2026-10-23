@@ -13,6 +13,8 @@ interface Props {
   description: string;
   path: string;
   type?: 'website' | 'article';
+  image?: string;
+  imageAlt?: string;
   noindex?: boolean;
   publishedTime?: string;
   modifiedTime?: string;
@@ -26,6 +28,8 @@ const {
   description,
   path,
   type = 'website',
+  image,
+  imageAlt,
   noindex = false,
   publishedTime,
   modifiedTime,
@@ -63,6 +67,8 @@ const headerLabels = {
       description={description}
       path={path}
       type={type}
+      image={image}
+      imageAlt={imageAlt}
       noindex={noindex}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}

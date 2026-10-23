@@ -1,5 +1,5 @@
 ---
-import { site, legalNavigation, navigation } from '@/data/site';
+import { site, legalNavigation, navigation, resourceNavigation } from '@/data/site';
 
 interface Props {
   homeHref: string;
@@ -30,6 +30,13 @@ const resolve = (href: string) => (href.startsWith('#') ? `${homeHref}${href}` :
         <h2 class="footer-heading">站点导航</h2>
         <ul class="footer-list">
           {navigation.map((item) => (
+            <li>
+              <a href={resolve(item.href)} data-track="nav:click" data-track-label={item.label}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+          {resourceNavigation.map((item) => (
             <li>
               <a href={resolve(item.href)} data-track="nav:click" data-track-label={item.label}>
                 {item.label}

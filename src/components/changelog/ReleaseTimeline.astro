@@ -1,0 +1,61 @@
+---
+import { formatDateFromIso } from '@/lib/format';
+import { groupReleaseChanges, releaseAnchor, type Release } from '@/data/releases';
+
+interface Props {
+  releases: readonly Release[];
+  variant?: 'preview' | 'full';
+}
+
+const { releases, variant = 'full' } = Astro.props;
+const isPreview = variant === 'preview';
+const Heading = isPreview ? 'h3' : 'h2';
+const SubHeading = isPreview ? 'h4' : 'h3';
+---
+
+<div class:list={['release-timeline', isPreview && 'release-timeline--preview']}>
+  {releases.map((release) => {
+    const anchor = releaseAnchor(release.version);
+    const groups = groupReleaseChanges(release);
+    return (
+      <article class="release" id={anchor} aria-labelledby={`release-${anchor}-title`}>
+        <header class="release__head">
+          <Heading class="release__title" id={`release-${anchor}-title`}>
+            <span class="release__version">{release.version}</span>
+            <span class="release__name">{release.title}</span>
+          </Heading>
+          <p class="release__meta">
+            {release.date ? (
+              <time datetime={release.date}>{formatDateFromIso(release.date)}</time>
+            ) : (
+              <span class="release__pending">待上架</span>
+            )}
+          </p>
+        </header>
+
+        <p class="release__summary">{release.summary}</p>
+
+        <div class="release__groups">
+          {groups.map((group) => (
+            <div class="release__group">
+              <SubHeading class="release__label">{group.label}</SubHeading>
+              <ul class="release__changes">
+                {group.items.map((change) => (
+                  <li>{change.text}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+{isPreview && (
+  <p class="release-timeline__more">
+    <a class="button button--outline" href="/changelog.html">
+      查看全部更新
+    </a>
+  </p>
+)}

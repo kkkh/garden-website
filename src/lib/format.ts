@@ -16,3 +16,8 @@ export function formatDate(date: Date): string {
 export function formatIsoDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
+
+/** 将 `YYYY-MM-DD` 解析为本地展示文案；固定东八区，避免时区偏移。 */
+export function formatDateFromIso(iso: string): string {
+  return FORMATTER.format(new Date(`${iso}T00:00:00+08:00`));
+}

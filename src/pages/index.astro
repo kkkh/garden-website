@@ -2,13 +2,16 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HeroSection from '@/components/home/HeroSection.astro';
 import FactBand from '@/components/home/FactBand.astro';
+import AppInfoSection from '@/components/home/AppInfoSection.astro';
 import IntroSection from '@/components/home/IntroSection.astro';
 import ShowcaseSection from '@/components/home/ShowcaseSection.astro';
 import ArchitectureSection from '@/components/home/ArchitectureSection.astro';
 import SystemSection from '@/components/home/SystemSection.astro';
 import FaqSection from '@/components/home/FaqSection.astro';
 import AboutSection from '@/components/home/AboutSection.astro';
+import ReleaseTimeline from '@/components/changelog/ReleaseTimeline.astro';
 import { faqItems } from '@/data/faq';
+import { getRecentReleases } from '@/data/releases';
 import { site } from '@/data/site';
 import { faqSchema, mobileApplicationSchema, websiteSchema } from '@/lib/schema';
 
@@ -24,10 +27,25 @@ const jsonLd = [websiteSchema(), mobileApplicationSchema(), faqSchema(faqItems)]
 >
   <HeroSection />
   <FactBand />
+  <AppInfoSection />
   <IntroSection />
   <ShowcaseSection />
   <ArchitectureSection />
   <SystemSection />
+  <section class="section section--muted" id="updates" aria-labelledby="updates-title">
+    <div class="container container--wide">
+      <div class="section-heading" data-reveal>
+        <p class="eyebrow">Changelog</p>
+        <h2 class="section-title" id="updates-title">
+          最近更新
+        </h2>
+        <p class="section-lede">
+          版本变更集中记录在这里；上架后每个版本的新增、改进与修复都会同步到更新日志。
+        </p>
+      </div>
+      <ReleaseTimeline releases={getRecentReleases(3)} variant="preview" />
+    </div>
+  </section>
   <FaqSection faq={faqItems} />
   <AboutSection />
 </BaseLayout>

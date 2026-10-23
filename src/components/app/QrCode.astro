@@ -1,0 +1,30 @@
+---
+import { appStore, hasDownloadUrl } from '@/data/appStore';
+import { assets } from '@/data/site';
+
+/** 下载二维码：未上架时不渲染空图片，改为可见占位文本。 */
+const live = hasDownloadUrl();
+---
+
+{live ? (
+  <figure class="app-qr">
+    <img
+      class="app-qr__image"
+      src={assets.appStoreQr}
+      alt={appStore.qrAlt}
+      width="132"
+      height="132"
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption class="app-qr__caption">
+      扫描二维码前往 App Store，也可以直接打开{' '}
+      <a href={appStore.url ?? undefined} target="_blank" rel="noopener noreferrer">
+        App Store 链接
+      </a>
+      。
+    </figcaption>
+  </figure>
+) : (
+  <p class="app-qr app-qr--placeholder">上架后在此显示 App Store 下载二维码。</p>
+)}

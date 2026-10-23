@@ -1,0 +1,26 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { appStore, hasDownloadUrl } from '@/data/appStore';
+
+/**
+ * App Store 下载入口。
+ *
+ * 当前使用文字主按钮：未取得 Apple 官方营销素材前不伪造徽章。
+ * 取得官方 SVG 后只需替换内部标记，外层链接与埋点保持不变。
+ */
+const live = hasDownloadUrl();
+---
+
+{live && (
+  <a
+    class="button button--primary app-download"
+    href={appStore.url ?? undefined}
+    target="_blank"
+    rel="noopener noreferrer"
+    data-track="outbound:click"
+    data-track-label="App Store 下载"
+  >
+    {appStore.liveLabel}
+    <Icon name="arrow-right" size={16} />
+  </a>
+)}

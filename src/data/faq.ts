@@ -1,11 +1,14 @@
 import type { FaqItem } from '@/lib/schema';
+import { hasDownloadUrl } from './appStore';
 import { site } from './site';
 
 /** 首页可见 FAQ，与 `faqSchema` 使用同一份数据，保证结构化数据与页面一致。 */
 export const faqItems: readonly FaqItem[] = [
   {
     question: '园枢什么时候可以在 App Store 下载？',
-    answer: `${site.availability}。本页面会在上架后更新下载入口，你也可以通过 ${site.contact.primaryEmail} 订阅上架提醒。`,
+    answer: hasDownloadUrl()
+      ? '已上架。你可以在本页「下载园枢」区点击 App Store 按钮或扫描二维码安装，也可以直接搜索「园枢」。'
+      : `${site.availability}。本页面会在上架后更新下载入口，你也可以通过 ${site.contact.primaryEmail} 订阅上架提醒。`,
   },
   {
     question: '使用园枢需要注册账号吗？会收集我的信息吗？',

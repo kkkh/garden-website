@@ -30,6 +30,7 @@ const SYNC_TARGETS = [
   '404.html',
   'privacy.html',
   'agreement.html',
+  'changelog.html',
   'robots.txt',
   'site.webmanifest',
   'sitemap-index.xml',

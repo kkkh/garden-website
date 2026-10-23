@@ -1,6 +1,7 @@
 ---
 import { assets, site } from '@/data/site';
 import { metaColors } from '@/design/tokens';
+import { appleItunesAppContent } from '@/lib/app-store';
 
 interface Props {
   title: string;
@@ -31,6 +32,7 @@ const {
 const canonical = new URL(path, site.domain).href;
 const ogImage = new URL(image, site.domain).href;
 const fullTitle = path === '/' ? title : `${title} · ${site.name}`;
+const appleItunesApp = appleItunesAppContent();
 ---
 
 <title>{fullTitle}</title>
@@ -42,6 +44,7 @@ const fullTitle = path === '/' ? title : `${title} · ${site.name}`;
 <meta name="theme-color" content={site.themeColor} media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content={metaColors.dark} media="(prefers-color-scheme: dark)" />
 <meta name="format-detection" content="telephone=no" />
+{appleItunesApp && <meta name="apple-itunes-app" content={appleItunesApp} />}
 
 <link rel="icon" href={assets.favicon} sizes="32x32" type="image/png" />
 <link rel="icon" href={assets.faviconSvg} type="image/svg+xml" />

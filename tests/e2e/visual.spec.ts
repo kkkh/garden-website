@@ -36,8 +36,18 @@ test.describe('页面视觉基线 @visual', () => {
 
   test('截图轮播区', async ({ page }) => {
     await page.goto('/#screenshots');
+    const stage = page.locator('.showcase__stage');
+    // 隐藏固定层（页头、进度条、回到顶部），避免元素截图被覆盖层污染
+    await page.addStyleTag({
+      content: '.site-header,[data-scroll-progress],[data-to-top]{visibility:hidden!important}',
+    });
+    await page.waitForFunction(() => {
+      const image = document.querySelector('[data-carousel-slide][data-active="true"] img');
+      return image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0;
+    });
+    await page.waitForTimeout(150);
     await expect(page.locator('[data-carousel]')).toBeInViewport();
-    await expect(page.locator('.showcase__stage')).toHaveScreenshot('showcase-stage.png');
+    await expect(stage).toHaveScreenshot('showcase-stage.png');
   });
 
   test('轮播切换后状态', async ({ page }) => {
@@ -50,6 +60,14 @@ test.describe('页面视觉基线 @visual', () => {
     await page.goto('/privacy.html');
     await expect(page.locator('.legal-article')).toBeVisible();
     await expect(page.locator('.legal-article')).toHaveScreenshot('legal-article.png');
+  });
+
+  test('更新日志页', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === 'tablet-light', '移动与桌面已覆盖');
+    await page.goto('/changelog.html');
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('.release-timeline')).toBeVisible();
+    await expect(page.locator('.release-timeline')).toHaveScreenshot('changelog-timeline.png');
   });
 
   test('404 页面', async ({ page }) => {

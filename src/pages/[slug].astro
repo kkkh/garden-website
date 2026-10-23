@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import GithubSlugger from 'github-slugger';
 import LegalLayout from '@/layouts/LegalLayout.astro';
+import { assets } from '@/data/site';
 import type { CollectionEntry } from 'astro:content';
 
 interface Heading {
@@ -31,6 +32,8 @@ const headings: Heading[] = Array.from(entry.body?.matchAll(/^##\s+(.+)$/gm) ?? 
 });
 
 const path = `/${entry.id}.html`;
+const ogImage = entry.id === 'privacy' ? assets.ogImages.privacy : assets.ogImages.agreement;
+const ogImageAlt = `${entry.data.title} · 园枢`;
 ---
 
 <LegalLayout
@@ -38,6 +41,8 @@ const path = `/${entry.id}.html`;
   description={entry.data.description}
   summary={entry.data.summary}
   path={path}
+  image={ogImage}
+  imageAlt={ogImageAlt}
   effectiveDate={entry.data.effectiveDate}
   updatedDate={entry.data.updatedDate}
   headings={headings}

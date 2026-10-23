@@ -5,7 +5,15 @@ import { faqItems } from '@/data/faq';
 import { features, introCards, systemGroups } from '@/data/home';
 import { screenshots } from '@/data/screenshots';
 import { legalNavigation, navigation, site } from '@/data/site';
-import { breadcrumbSchema, faqSchema, mobileApplicationSchema, websiteSchema } from '@/lib/schema';
+import { appStore, type AppStoreConfig } from '@/data/appStore';
+import { releases } from '@/data/releases';
+import {
+  breadcrumbSchema,
+  changelogSchema,
+  faqSchema,
+  mobileApplicationSchema,
+  websiteSchema,
+} from '@/lib/schema';
 
 describe('站点数据完整性', () => {
   it('导航锚点唯一且以 # 开头', () => {
@@ -109,6 +117,29 @@ describe('结构化数据', () => {
     expect(schema['@type']).toBe('MobileApplication');
     expect(schema.operatingSystem).toBe('iOS 26.0+');
     expect(schema.isAccessibleForFree).toBe(true);
+  });
+
+  it('已上架时 schema 切换为 InStock 并带安装地址', () => {
+    const live: AppStoreConfig = {
+      ...appStore,
+      status: 'live',
+      url: 'https://apps.apple.com/app/id1234567890',
+      appStoreId: '1234567890',
+    };
+    const schema = mobileApplicationSchema(live);
+    const offers = schema.offers as Record<string, unknown>;
+    expect(offers.availability).toBe('https://schema.org/InStock');
+    expect(offers.url).toBe('https://apps.apple.com/app/id1234567890');
+    expect(schema.installUrl).toBe('https://apps.apple.com/app/id1234567890');
+  });
+
+  it('更新日志 schema 按版本生成倒序列表', () => {
+    const schema = changelogSchema(releases);
+    expect(schema['@type']).toBe('ItemList');
+    expect(schema.numberOfItems).toBe(releases.length);
+    const items = schema.itemListElement as Array<Record<string, unknown>>;
+    expect(items[0]?.position).toBe(1);
+    expect(String(items[0]?.url)).toContain('/changelog.html#v1-0-0');
   });
 
   it('FAQ schema 与页面可见问答一一对应', () => {

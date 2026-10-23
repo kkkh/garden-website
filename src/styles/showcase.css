@@ -528,8 +528,10 @@
   font-weight: var(--font-weight-semibold);
 }
 
+/* 分隔符与总数原用 opacity 0.6，实测在强调浅底上对比度仅 2.92:1；
+   改为次级文字色，保持层级差异同时满足 AA。 */
 .showcase__counter span {
-  opacity: 0.6;
+  color: var(--color-text-secondary);
 }
 
 .showcase__caption {

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ReleaseTimeline from '@/components/changelog/ReleaseTimeline.astro';
+import { getLatestReleasedRelease, releases } from '@/data/releases';
+import { assets, site } from '@/data/site';
+import { breadcrumbSchema, changelogSchema, websiteSchema } from '@/lib/schema';
+
+const latest = getLatestReleasedRelease();
+const description = '园枢官网更新日志：按版本记录新增功能、体验改进与问题修复，并标注发布日期。';
+const jsonLd = [
+  websiteSchema(),
+  breadcrumbSchema([
+    { name: '首页', path: '/' },
+    { name: '更新日志', path: '/changelog.html' },
+  ]),
+  changelogSchema(releases),
+];
+---
+
+<BaseLayout
+  title="更新日志"
+  description={description}
+  path="/changelog.html"
+  type="article"
+  image={assets.ogImages.changelog}
+  imageAlt={`${site.name} 更新日志`}
+  publishedTime={latest?.date ?? undefined}
+  modifiedTime={latest?.date ?? undefined}
+  jsonLd={jsonLd}
+>
+  <section class="section" aria-labelledby="changelog-title">
+    <div class="container container--narrow">
+      <div class="section-heading" data-reveal>
+        <p class="eyebrow">Changelog</p>
+        <h1 class="section-title" id="changelog-title">
+          更新日志
+        </h1>
+        <p class="section-lede">
+          每个版本的新增功能、体验改进与问题修复都会记录在这里；上架前先展示已完成的准备内容。
+        </p>
+      </div>
+
+      <ReleaseTimeline releases={releases} />
+
+      <p class="changelog-back">
+        <a class="button button--outline" href="/">
+          返回首页
+        </a>
+        <a class="button button--ghost" href="/#download">
+          查看下载入口
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

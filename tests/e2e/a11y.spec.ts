@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 /**
  * 可访问性门禁：使用 axe-core 对三个页面在浅色 / 深色下扫描。
@@ -9,12 +9,31 @@ const pages = [
   { name: '首页', path: '/' },
   { name: '隐私政策', path: '/privacy.html' },
   { name: '用户协议', path: '/agreement.html' },
+  { name: '更新日志', path: '/changelog.html' },
   { name: '404', path: '/404.html' },
 ];
+
+/**
+ * 扫描前把页面推进到稳定终态：
+ * 关闭过渡/动画，并让滚动显现元素直接可见，避免 axe 在透明度过渡中读到中间态颜色。
+ * 动效本身由视觉基线与 reduced-motion 用例覆盖。
+ */
+async function settleForAxe(page: Page): Promise<void> {
+  await page.addStyleTag({
+    content: '*,*::before,*::after{animation:none!important;transition:none!important}',
+  });
+  await page.evaluate(() => {
+    document
+      .querySelectorAll('[data-reveal]')
+      .forEach((element) => element.classList.add('is-visible'));
+  });
+  await page.waitForTimeout(100);
+}
 
 for (const target of pages) {
   test(`${target.name} · 无 serious/critical 级可访问性问题`, async ({ page }) => {
     await page.goto(target.path);
+    await settleForAxe(page);
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
@@ -27,7 +46,10 @@ for (const target of pages) {
 
     expect(
       blocking.map(
-        (violation) => `${violation.id}（${violation.nodes.length} 处）：${violation.help}`,
+        (violation) =>
+          `${violation.id}（${violation.nodes.length} 处）：${violation.nodes
+            .map((node) => node.target.join(' '))
+            .join(' / ')}`,
       ),
     ).toEqual([]);
   });
@@ -37,6 +59,7 @@ test('深色主题下同样通过扫描', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/');
   await page.locator('button[data-theme-value="dark"]').click();
+  await settleForAxe(page);
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

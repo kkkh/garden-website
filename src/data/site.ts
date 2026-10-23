@@ -1,4 +1,5 @@
 import { metaColors } from '@/design/tokens';
+import { appAvailability } from './appStore';
 
 /**
  * 站点级常量：品牌、联系方式、导航与 SEO 文案。
@@ -24,7 +25,7 @@ export const site = {
     'iOS 应用',
   ],
   platform: 'iOS 26.0+ · iPhone / iPad',
-  availability: '即将上架 App Store',
+  availability: appAvailability,
   screenshotDevice: {
     model: 'iPhone 13 Pro Max',
     finish: '苍岭绿',
@@ -64,6 +65,13 @@ export const assets = {
   icon512: '/icons/icon-512.png',
   mark: '/icons/icon-192.png',
   ogImage: '/og/og-default.png',
+  ogImages: {
+    home: '/og/og-default.png',
+    privacy: '/og/og-privacy.png',
+    agreement: '/og/og-agreement.png',
+    changelog: '/og/og-changelog.png',
+  },
+  appStoreQr: '/qr/app-store.svg',
   ogImageWidth: 1200,
   ogImageHeight: 630,
 } as const;
@@ -82,5 +90,12 @@ export const legalNavigation = [
   { label: '用户协议', href: '/agreement.html' },
 ] as const;
 
+/** 页脚「资源」分组：下载入口与更新日志。 */
+export const resourceNavigation = [
+  { label: '应用下载', href: '#download' },
+  { label: '更新日志', href: '/changelog.html' },
+] as const;
+
 export type NavigationItem = (typeof navigation)[number];
 export type LegalNavigationItem = (typeof legalNavigation)[number];
+export type ResourceNavigationItem = (typeof resourceNavigation)[number];

@@ -60,7 +60,7 @@ export default defineConfig({
     {
       name: 'mobile-light',
       use: { ...devices['iPhone 13'], browserName: 'chromium' },
-      testMatch: /(visual|mobile)\.spec\.ts/,
+      testMatch: /(visual|mobile|app-info)\.spec\.ts/,
     },
     {
       name: 'reduced-motion',
