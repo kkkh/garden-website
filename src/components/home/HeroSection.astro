@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
-import DeviceFrame from '@/components/ui/DeviceFrame.astro';
+import ScreenshotCard from '@/components/ui/ScreenshotCard.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { site } from '@/data/site';
 import { screenshots } from '@/data/screenshots';
@@ -54,7 +54,7 @@ const shotAlt = heroShot?.alt ?? '园枢首页界面';
 
       {heroShot && (
         <div class="hero__device">
-          <DeviceFrame>
+          <ScreenshotCard>
             <Picture
               src={heroShot.image}
               alt={shotAlt}
@@ -66,7 +66,7 @@ const shotAlt = heroShot?.alt ?? '园枢首页界面';
               fetchpriority="high"
               decoding="async"
             />
-          </DeviceFrame>
+          </ScreenshotCard>
         </div>
       )}
 

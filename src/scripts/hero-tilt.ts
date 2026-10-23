@@ -1,5 +1,5 @@
 /**
- * Hero 设备框的桌面指针微倾斜。
+ * Hero 截图卡片的桌面指针微倾斜。
  *
  * - 仅在 `hover: hover` + `pointer: fine` 且未开启减弱动效时启用；
  * - 最大倾斜 3°，使用 requestAnimationFrame 合并写入；
@@ -9,7 +9,7 @@ const MAX_TILT = 3;
 
 export function initHeroTilt(): void {
   const stage = document.querySelector<HTMLElement>('[data-hero-tilt]');
-  const frame = stage?.querySelector<HTMLElement>('.device-frame');
+  const frame = stage?.querySelector<HTMLElement>('.screenshot-card');
   if (!stage || !frame || typeof matchMedia !== 'function') return;
 
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;

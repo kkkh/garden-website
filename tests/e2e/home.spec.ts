@@ -102,16 +102,34 @@ test.describe('截图轮播', () => {
     await expect(page.locator('[data-carousel-thumb]')).toHaveCount(22);
   });
 
-  test('设备框标注 iPhone 13 Pro Max · 苍岭绿', async ({ page }) => {
-    const frame = page.locator('[data-carousel-slide][data-active="true"] .device-frame');
-    await expect(frame).toHaveAttribute('data-device-model', 'iphone-13-pro-max');
-    await expect(frame).toHaveAttribute('data-device-finish', 'alpine-green');
+  test('截图标注 iPhone 13 Pro Max · 苍岭绿', async ({ page }) => {
+    const card = page.locator('[data-carousel-slide][data-active="true"] .screenshot-card');
+    await expect(card).toHaveAttribute('data-device-model', 'iphone-13-pro-max');
+    await expect(card).toHaveAttribute('data-device-finish', 'alpine-green');
     await expect(page.locator('[data-device-label]')).toContainText('iPhone 13 Pro Max');
     await expect(page.locator('[data-device-label]')).toContainText('苍岭绿');
-    await expect(page.locator('.hero__device .device-frame')).toHaveAttribute(
+    await expect(page.locator('.hero__device .screenshot-card')).toHaveAttribute(
       'data-device-model',
       'iphone-13-pro-max',
     );
+  });
+
+  test('截图完整展示不裁切', async ({ page }) => {
+    const heroImage = page.locator('.hero__device .screenshot-card img');
+    await expect(heroImage).toBeVisible();
+
+    const metrics = await heroImage.evaluate((image) => {
+      const img = image as HTMLImageElement;
+      const rect = img.getBoundingClientRect();
+      return {
+        displayedRatio: rect.width / rect.height,
+        naturalRatio: img.naturalWidth / img.naturalHeight,
+        fit: getComputedStyle(img).objectFit,
+      };
+    });
+
+    expect(metrics.fit).not.toBe('cover');
+    expect(Math.abs(metrics.displayedRatio - metrics.naturalRatio)).toBeLessThan(0.01);
   });
 
   test('箭头可前进与环形回退', async ({ page }) => {

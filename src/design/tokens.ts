@@ -41,12 +41,8 @@ export const primitiveColors = {
   'gold-700': '#6f5220',
   'gold-800': '#5f4517',
 
-  /* iPhone 13 Pro Max 苍岭绿：低饱和、偏灰的深绿，用于设备框而非品牌强调 */
-  'alpine-900': '#2b3630',
-  'alpine-800': '#3a473d',
-  'alpine-700': '#49584c',
+  /* iPhone 13 Pro Max 苍岭绿：仅用于截图来源标注色，不再模拟手机中框 */
   'alpine-600': '#596a5b',
-  'alpine-500': '#6b7d6c',
   'alpine-300': '#a6b4a2',
 
   'jade-300': '#8cc0ae',
@@ -102,13 +98,6 @@ export const lightColors = {
   'hero-glow': 'rgba(210, 178, 104, 0.17)',
   'hero-glow-soft': 'rgba(210, 178, 104, 0.06)',
 
-  /* 设备框：苍岭绿铝合金中框 + 屏幕底。物理外观不随页面主题改变 */
-  'device-frame': 'var(--color-alpine-600)',
-  'device-frame-deep': 'var(--color-alpine-800)',
-  'device-frame-edge': 'var(--color-alpine-300)',
-  'device-frame-shadow': 'var(--color-alpine-900)',
-  'device-screen': 'var(--color-ink-950)',
-
   overlay: 'rgba(7, 12, 20, 0.72)',
   'overlay-soft': 'rgba(251, 249, 243, 0.82)',
   'highlight-ring': 'rgba(210, 178, 104, 0.34)',
@@ -153,13 +142,6 @@ export const darkColors = {
   'hero-grid': 'rgba(245, 240, 229, 0.045)',
   'hero-glow': 'rgba(226, 201, 135, 0.14)',
   'hero-glow-soft': 'rgba(226, 201, 135, 0.05)',
-
-  /* 设备框在深色主题下保持同一苍岭绿，仅依靠环境阴影体现光线变化 */
-  'device-frame': 'var(--color-alpine-600)',
-  'device-frame-deep': 'var(--color-alpine-800)',
-  'device-frame-edge': 'var(--color-alpine-300)',
-  'device-frame-shadow': 'var(--color-alpine-900)',
-  'device-screen': 'var(--color-ink-950)',
 
   overlay: 'rgba(3, 7, 12, 0.84)',
   'overlay-soft': 'rgba(7, 12, 20, 0.82)',

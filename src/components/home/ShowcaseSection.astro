@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
-import DeviceFrame from '@/components/ui/DeviceFrame.astro';
+import ScreenshotCard from '@/components/ui/ScreenshotCard.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { screenshots } from '@/data/screenshots';
 import { site } from '@/data/site';
@@ -36,19 +36,6 @@ const device = site.screenshotDevice;
           <span class="sr-only">上一张截图</span>
         </button>
 
-        <button
-          class="showcase__expand js-only"
-          type="button"
-          data-carousel-expand
-          data-lightbox-trigger
-          data-lightbox-group="screenshots"
-          data-lightbox-index="0"
-          data-lightbox-group-title="应用界面"
-        >
-          <Icon name="expand" size={16} />
-          查看大图
-        </button>
-
         <div class="showcase__viewport">
           {screenshots.map((shot, index) => (
             <div
@@ -63,19 +50,19 @@ const device = site.screenshotDevice;
               data-lightbox-caption={shot.caption}
               data-lightbox-index={String(index)}
             >
-              <DeviceFrame>
+              <ScreenshotCard>
                 <Picture
                   src={shot.image}
                   alt={shot.alt}
-                  widths={[352, 704]}
-                  sizes="(max-width: 480px) 62vw, (max-width: 1024px) 46vw, 352px"
+                  widths={[352, 704, 1056]}
+                  sizes="(max-width: 480px) 62vw, (max-width: 1024px) 46vw, 304px"
                   formats={['avif', 'webp']}
                   quality={70}
                   loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                   fetchpriority={index === 0 ? 'high' : 'auto'}
                 />
-              </DeviceFrame>
+              </ScreenshotCard>
             </div>
           ))}
         </div>
@@ -101,6 +88,18 @@ const device = site.screenshotDevice;
           <strong data-carousel-caption-title>第 1 张</strong>
           <span data-carousel-caption-body>{first?.caption}</span>
         </p>
+        <button
+          class="showcase__expand js-only"
+          type="button"
+          data-carousel-expand
+          data-lightbox-trigger
+          data-lightbox-group="screenshots"
+          data-lightbox-index="0"
+          data-lightbox-group-title="应用界面"
+        >
+          <Icon name="expand" size={16} />
+          查看大图
+        </button>
         <p class="sr-only" role="status" aria-live="polite" data-carousel-live></p>
       </div>
 
