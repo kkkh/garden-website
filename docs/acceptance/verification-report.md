@@ -68,9 +68,10 @@
 
 ### 2.4 视觉回归
 
-- 基线数量：**48 张**（4 项目 × 12 场景），位于 `tests/e2e/visual.spec.ts-snapshots/`；
+- 基线数量：**64 张 PNG**（4 项目 × 16 场景，含桌面浅色 / 桌面深色 / 平板 / 手机），位于 `tests/e2e/visual.spec.ts-snapshots/`；
 - 覆盖：首页首屏/全页、轮播舞台与切换后状态、隐私页、404、按钮 default/hover/focus、卡片 default/hover、主题切换控件、灯箱打开、深色首页、深色法律页；
-- 判定：`maxDiffPixelRatio: 0.02`，动画禁用。
+- 判定：`maxDiffPixelRatio: 0.02`，动画禁用；
+- CI 拆分：视觉用例带 `@visual` 标记，仅在 macOS runner 执行（基线含 `-darwin` 平台后缀），其他任务用 `--grep-invert=@visual` 跳过。
 
 ### 2.5 before / after 证据
 

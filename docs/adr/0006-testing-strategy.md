@@ -26,7 +26,7 @@ v1 没有任何自动化测试、Lint、类型检查或 CI。
 
 1. **测试对象是构建产物**：Playwright 使用 `astro preview` 提供 `dist/`，而不是 dev server，避免「dev 正常、构建后异常」。
 2. **a11y 判定口径明确**：axe 使用 `wcag2a/wcag2aa/wcag21a/wcag21aa/best-practice` 标签，仅将 `serious` / `critical` 视为阻塞；仅豁免 `region` 规则（单页多区块布局下的地标粒度争议，已在 ADR-0010 记录）。
-3. **视觉回归多视口多主题**：桌面/平板/手机 × 浅色/深色，共 48 张基线；`maxDiffPixelRatio: 0.02`，禁用动画与光标以稳定截图。
+3. **视觉回归多视口多主题**：桌面/平板/手机 × 浅色/深色，共 64 张基线；`maxDiffPixelRatio: 0.02`，禁用动画与光标以稳定截图；视觉用例带 `@visual` 标记，仅在 macOS runner 上执行（基线文件名含平台后缀），避免跨平台渲染差异造成假失败。
 4. **弱视/减弱动效作为独立项目**：`prefers-reduced-motion` 用独立 Playwright 项目验证内容可见性与动画关闭。
 5. **埋点可断言**：`track()` 把事件写入 `window.__gardenEvents` 并派发 `garden:event`，E2E 直接断言（如轮播切换产生 `showcase:change`），不依赖任何外部分析服务。
 6. **不追求覆盖率数字**：覆盖率仅生成报告（`reports/coverage`），不作为门禁，避免为指标写无意义测试。
@@ -50,12 +50,13 @@ v1 没有任何自动化测试、Lint、类型检查或 CI。
 
 ## 影响
 
-| 影响面   | 变化                                                                                     |
-| -------- | ---------------------------------------------------------------------------------------- |
-| 开发流程 | 提交前跑 `npm run verify`（约 3–4 分钟）                                                 |
-| 产物     | `reports/`（Playwright HTML/JSON、覆盖率）、`test-results/`（失败附件、trace），均不入库 |
-| 视觉基线 | 入库到 `tests/e2e/visual.spec.ts-snapshots/`（约 17 MB），评审变更时需检查 diff          |
-| 依赖     | 新增 `@playwright/test`、`@axe-core/playwright`、`vitest`、`culori`（均锁定版本）        |
+| 影响面   | 变化                                                                                               |
+| -------- | -------------------------------------------------------------------------------------------------- |
+| 开发流程 | 提交前跑 `npm run verify`（约 3–4 分钟）                                                           |
+| 产物     | `reports/`（Playwright HTML/JSON、覆盖率）、`test-results/`（失败附件、trace），均不入库           |
+| 视觉基线 | 入库到 `tests/e2e/visual.spec.ts-snapshots/`（64 张 PNG，约 17 MB），评审变更时需检查 diff         |
+| 独立巡检 | `npm run review:independent`：独立实现路径的渲染巡检（不复用 E2E 代码），19 项检查 + 5 次 axe 扫描 |
+| 依赖     | 新增 `@playwright/test`、`@axe-core/playwright`、`vitest`、`culori`（均锁定版本）                  |
 
 ## 风险与回滚
 
