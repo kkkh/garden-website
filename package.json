@@ -28,6 +28,7 @@
     "test:visual:update": "npm run build && playwright test tests/e2e/visual.spec.ts --update-snapshots",
     "check:tokens": "node scripts/generate-tokens.mjs --check && node scripts/check-tokens.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "review:independent": "node scripts/independent-review.mjs",
     "verify": "npm run check:tokens && npm run check:contrast && npm run typecheck && npm run lint && npm run format:check && npm run test:unit && npm run build && playwright test",
     "audit": "npm audit --audit-level=high"
   },

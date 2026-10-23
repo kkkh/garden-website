@@ -13,6 +13,9 @@ src/styles/tokens.generated.css
 public/icons/
 public/og/
 docs/design-system/contrast-report.md
+docs/acceptance/independent-review.md
+docs/acceptance/independent-review.json
+docs/acceptance/logs/
 
 # 视觉回归基线（二进制）
 tests/e2e/**/*-snapshots/

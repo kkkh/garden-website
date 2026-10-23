@@ -6,11 +6,11 @@
 
 ## 1. 三级回滚策略
 
-| 级别 | 场景 | 动作 | 预计影响 |
-| --- | --- | --- | --- |
-| L1 内容回滚 | 某个文案/图片/参数错误，但站点结构正常 | `git revert <commit>` → 重新构建发布 | 一次发布周期 |
-| L2 版本回滚 | v2 发布后出现结构性问题（页面 404、样式崩坏） | 平台侧把发布目录改回仓库根，重新发布 `backup/pre-refactor-v1` 分支 | 数分钟 |
-| L3 完全回退 | 需要彻底放弃 v2 | 把 `main` 重置到 `backup/pre-refactor-v1` 的提交（保留 v2 在 `refactor/v2-astro` 分支） | 数分钟 |
+| 级别        | 场景                                          | 动作                                                                                    | 预计影响     |
+| ----------- | --------------------------------------------- | --------------------------------------------------------------------------------------- | ------------ |
+| L1 内容回滚 | 某个文案/图片/参数错误，但站点结构正常        | `git revert <commit>` → 重新构建发布                                                    | 一次发布周期 |
+| L2 版本回滚 | v2 发布后出现结构性问题（页面 404、样式崩坏） | 平台侧把发布目录改回仓库根，重新发布 `backup/pre-refactor-v1` 分支                      | 数分钟       |
+| L3 完全回退 | 需要彻底放弃 v2                               | 把 `main` 重置到 `backup/pre-refactor-v1` 的提交（保留 v2 在 `refactor/v2-astro` 分支） | 数分钟       |
 
 **关键前提**：v1 的完整代码保存在本地与远程的 `backup/pre-refactor-v1` 分支，且包含当时的 `index.html`、`styles.css`、`privacy.html`、`agreement.html`、`assets/`、`beian/`。
 
@@ -57,47 +57,59 @@ git push --force-with-lease origin main   # ⚠️ 需仓库管理员确认；ma
 
 ## 3. 演练记录
 
-**演练时间**：2026-10-23（本地，不涉及生产）
-**演练目标**：验证 L1 与 L2 的可执行性，以及构建产物可从任一提交重建。
+**演练时间**：2026-10-23（本地执行，不涉及生产环境）
+**演练对象**：`refactor/v2-astro` @ commit `379279b`
+**演练目标**：验证 L1（单次提交回滚）、L2（回退到 v1 并可用）与「从零重建产物」三条路径都可执行。
 
-### 3.1 L1 演练（revert 后再前进）
-
-```bash
-# 起点：refactor/v2-astro 分支，工作树干净
-git log --oneline -1
-# 结果：<v2 提交> refactor: v2 站点
-
-# 模拟一次错误提交后 revert
-git revert --no-commit <v2 提交> >/dev/null 2>&1 || true
-git revert --abort 2>/dev/null || true
-```
-
-实际执行时采用的等价验证（避免污染历史）：在独立临时分支上验证 `git revert` 可用性：
+### 3.1 L1 演练：revert 可用且工作树可恢复
 
 ```bash
-git checkout -b tmp/rollback-drill
-git revert --no-commit <某次 v2 提交> && git status --short | head -3
+git switch -c tmp/rollback-drill
+git revert --no-commit HEAD
+git diff --cached --stat | tail -3
 git revert --abort
-git checkout refactor/v2-astro && git branch -D tmp/rollback-drill
+git status --short
+git switch refactor/v2-astro && git branch -D tmp/rollback-drill
 ```
 
-**结论**：revert 流程可用，工作树可干净恢复（`git status` 无残留）。
+**实际输出（节选）**：
 
-### 3.2 L2 演练（v1 可重建、可服务）
+```text
+213 files changed, 2296 insertions(+), 19286 deletions(-)   # revert 内容已正确暂存
+（git status --short 输出为空）                              # abort 后工作树干净
+已删除分支 tmp/rollback-drill（原为 379279b）。
+```
+
+**结论**：`git revert` 可正确生成反向变更；`--abort` 后工作树无残留；临时分支已清理。
+
+### 3.2 L2 演练：v1 可取回并正常服务
 
 ```bash
 git worktree add /tmp/v1-check backup/pre-refactor-v1
-ls /tmp/v1-check                       # 应看到 index.html / styles.css / assets / beian
-cd /tmp/v1-check && python3 -m http.server 8099 &
-curl -s -o /dev/null -w "v1 root -> %{http_code}\n" http://127.0.0.1:8099/
-curl -s -o /dev/null -w "v1 privacy -> %{http_code}\n" http://127.0.0.1:8099/privacy.html
-kill %1
-git worktree remove /tmp/v1-check
+ls /tmp/v1-check
+(cd /tmp/v1-check && python3 -m http.server 8099 &)
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8099/
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8099/privacy.html
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8099/styles.css
+git worktree remove /tmp/v1-check --force
 ```
 
-**结论**：v1 可在本地完整重建并正常服务，L2 具备可执行性（线上切换只差平台目录配置）。
+**实际输出**：
 
-### 3.3 构建产物可重建性
+```text
+准备工作区（检出 'backup/pre-refactor-v1'）
+HEAD 现在位于 e1ff23f docs: archive v1 code wiki before refactor
+agreement.html  assets  beian  index.html  privacy.html  styles.css  wiki
+v1 root -> 200
+v1 privacy -> 200
+v1 css -> 200
+（worktree 已移除，git worktree list 仅剩主工作树）
+```
+
+**结论**：v1 的 HTML、样式与资源均在备份分支中完整可取回，并可直接以静态服务器提供服务。
+线上切回 v1 只差「平台输出目录改回仓库根」这一步人工操作。
+
+### 3.3 从零重建产物（删除 dist 与依赖后）
 
 ```bash
 rm -rf dist .astro
@@ -106,19 +118,51 @@ npm run build
 ls dist/*.html
 ```
 
-**结论**：从干净依赖安装到产物生成可重复完成（详见 `docs/acceptance/verification-report.md` 的构建日志）。
+**实际输出**：
+
+```text
+npm ci: OK
+build: OK
+dist/404.html  dist/agreement.html  dist/index.html  dist/privacy.html
+```
+
+随后用 `astro preview` 逐路由验证：
+
+```text
+/                                          200
+/privacy.html                              200
+/agreement.html                            200
+/does-not-exist                            404
+/site.webmanifest                          200
+/robots.txt                                200
+/sitemap-index.xml                         200
+/og/og-default.png                         200
+/icons/icon-192.png                        200
+/.well-known/apple-app-site-association    200
+```
+
+**结论**：产物可从任意状态重建（依赖、构建缓存、产物目录全部删除后仍成功），
+且全部关键路由可服务、未知路径正确返回 404。
+
+### 3.4 未演练的部分
+
+| 项                                                | 原因                                                 |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| L3（`reset --hard` + `push --force` 回退 `main`） | 属于破坏性且影响远程共享分支的操作，需人工批准后执行 |
+| 平台侧切换输出目录                                | 需要 EdgeOne 控制台权限                              |
+| 生产环境发布与回滚                                | 同上                                                 |
 
 ---
 
 ## 4. 何时必须回滚
 
-| 现象 | 判定 | 动作 |
-| --- | --- | --- |
-| 首页或法律页返回 404 | 发布配置错误 | L2（先改发布目录，通常无需回滚代码） |
-| 样式完全丢失或页面错乱 | 资源路径/缓存问题 | 先检查缓存头与 `_astro/` 是否上传；仍异常则 L2 |
-| 轮播或导航不可用（JS 报错） | 前端缺陷 | L1（若已知具体提交）或 L2（不确定时） |
-| 备案信息或法律文本错误 | 合规问题 | L1 立即修正，并复核三处一致性 |
-| 出现安全/隐私问题 | 严重 | L2 立即回到 v1，再排查 |
+| 现象                        | 判定              | 动作                                           |
+| --------------------------- | ----------------- | ---------------------------------------------- |
+| 首页或法律页返回 404        | 发布配置错误      | L2（先改发布目录，通常无需回滚代码）           |
+| 样式完全丢失或页面错乱      | 资源路径/缓存问题 | 先检查缓存头与 `_astro/` 是否上传；仍异常则 L2 |
+| 轮播或导航不可用（JS 报错） | 前端缺陷          | L1（若已知具体提交）或 L2（不确定时）          |
+| 备案信息或法律文本错误      | 合规问题          | L1 立即修正，并复核三处一致性                  |
+| 出现安全/隐私问题           | 严重              | L2 立即回到 v1，再排查                         |
 
 ---
 

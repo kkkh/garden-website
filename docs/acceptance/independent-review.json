@@ -1,0 +1,144 @@
+{
+  "base": "http://127.0.0.1:4321",
+  "generatedAt": "2026-10-23T07:04:37.020Z",
+  "totals": {
+    "pass": 19,
+    "fail": 0,
+    "total": 19
+  },
+  "results": [
+    {
+      "group": "A 首页结构",
+      "item": "地标与标题唯一、含跳转链接",
+      "status": "PASS",
+      "detail": "{\"header\":1,\"main\":1,\"footer\":1,\"h1\":1,\"skipLink\":true,\"lang\":\"zh-CN\"}",
+      "screenshot": null
+    },
+    {
+      "group": "A 首页结构",
+      "item": "七个内容区块齐备",
+      "status": "PASS",
+      "detail": "intro, features, screenshots, architecture, system, faq, about",
+      "screenshot": null
+    },
+    {
+      "group": "A 首页结构",
+      "item": "SEO 元信息与三类结构化数据",
+      "status": "PASS",
+      "detail": "{\"canonical\":\"https://jl.43322.cn/\",\"description\":\"园枢是一款面向山西晋中理工学院师生、考生与家长的校园信息聚合应用，聚合学校官网新闻、通知公告、院系专业、招生资讯、校园风光等内容，支持收藏、搜索、个性化阅读与本地通知提醒。\",\"ogImage\":\"https://jl.43322.cn/og/og-default.png\",\"manifest\":\"/site.webmanifest\",\"jsonLd\":[\"WebSite\",\"MobileApplication\",\"FAQPage\"],\"favicon\":2}",
+      "screenshot": null
+    },
+    {
+      "group": "A 首屏",
+      "item": "设备框未横向溢出视口",
+      "status": "PASS",
+      "detail": "{\"heroBox\":{\"x\":792.03125,\"y\":158.90118408203125,\"width\":288,\"height\":623.09375},\"heroSection\":{\"x\":0,\"y\":73,\"width\":1440,\"height\":884.671875},\"viewportWidth\":1440}",
+      "screenshot": "docs/acceptance/independent-review/a-hero-desktop.png"
+    },
+    {
+      "group": "B 轮播",
+      "item": "初始 01 / 22，箭头序列 02>03>04>03",
+      "status": "PASS",
+      "detail": "{\"initial\":{\"index\":\"01\",\"caption\":\"首页汇聚办学数据与院系、资讯、荣誉等高频入口，重\",\"activeSlides\":1,\"thumbs\":22,\"currentThumbs\":1},\"seq\":[\"02\",\"03\",\"04\",\"03\"]}",
+      "screenshot": "docs/acceptance/independent-review/b-carousel-step4.png"
+    },
+    {
+      "group": "B 轮播",
+      "item": "缩略图第 8 项联动序号/说明/高亮",
+      "status": "PASS",
+      "detail": "{\"index\":\"08\",\"caption\":\"机构与文章双通道检索，支持搜索历史与快捷回填，校园信息一\",\"selected\":1,\"selectedIndex\":7}",
+      "screenshot": null
+    },
+    {
+      "group": "B 轮播",
+      "item": "舞台焦点下方向键切换",
+      "status": "PASS",
+      "detail": "08 -> 09",
+      "screenshot": null
+    },
+    {
+      "group": "C 灯箱",
+      "item": "打开/切换/Esc 关闭/滚动锁定与恢复",
+      "status": "PASS",
+      "detail": "{\"opened\":{\"open\":true,\"count\":\"09 / 22\",\"title\":\"应用界面\",\"bodyLocked\":true,\"imageSrc\":\"/_astro/screenshot-09.CmIrn8mH.jpg\"},\"next\":\"10 / 22\",\"closed\":{\"open\":false,\"unlocked\":true}}",
+      "screenshot": "docs/acceptance/independent-review/c-lightbox.png"
+    },
+    {
+      "group": "D 主题",
+      "item": "切换生效、持久化、meta theme-color 同步",
+      "status": "PASS",
+      "detail": "{\"dark\":{\"theme\":\"dark\",\"colorScheme\":\"dark\",\"stored\":\"dark\",\"metaTheme\":\"#080f1a\",\"bodyBg\":\"rgb(7, 12, 20)\"},\"persisted\":\"dark\",\"light\":\"light\"}",
+      "screenshot": "docs/acceptance/independent-review/d-theme-dark.png"
+    },
+    {
+      "group": "E 导航",
+      "item": "锚点跳转到平台架构并可见",
+      "status": "PASS",
+      "detail": "{\"hash\":\"#architecture\",\"archVisible\":true}",
+      "screenshot": null
+    },
+    {
+      "group": "E FAQ",
+      "item": "6 条问答、第二项可展开、首项默认展开",
+      "status": "PASS",
+      "detail": "{\"count\":6,\"opened\":true,\"firstOpen\":true}",
+      "screenshot": null
+    },
+    {
+      "group": "F 法律页",
+      "item": "9 章目录、锚点可达、日期显示",
+      "status": "PASS",
+      "detail": "{\"tocCount\":9,\"firstHref\":\"#一引言\",\"headings\":[\"一引言\",\"二我们收集的信息\",\"三信息的使用目的\",\"四系统权限说明\",\"五信息是否共享给第三方\",\"六您的权利数据如何删除\",\"七未成年人条款\",\"八隐私政策的更新\",\"九联系我们\"],\"metaText\":\"生效日期：2026年9月25日 \\n|\\n\\n最近更新：2026年10月23日\",\"hasAnchorTarget\":true,\"inViewport\":true}",
+      "screenshot": "docs/acceptance/independent-review/f-legal-desktop.png"
+    },
+    {
+      "group": "F 法律页",
+      "item": "用户协议 7 章",
+      "status": "PASS",
+      "detail": "h2=7",
+      "screenshot": null
+    },
+    {
+      "group": "G 404",
+      "item": "状态码 404 + 品牌化页面 + 出口链接",
+      "status": "PASS",
+      "detail": "{\"status\":404,\"code\":\"404\",\"robots\":\"noindex, follow\",\"homeLink\":true}",
+      "screenshot": "docs/acceptance/independent-review/g-404.png"
+    },
+    {
+      "group": "H 资源",
+      "item": "8 个关键静态资源全部 200",
+      "status": "PASS",
+      "detail": "{\"/site.webmanifest\":200,\"/robots.txt\":200,\"/sitemap-index.xml\":200,\"/og/og-default.png\":200,\"/icons/favicon-32.png\":200,\"/icons/apple-touch-icon.png\":200,\"/beian/beian.png\":200,\"/.well-known/apple-app-site-association\":200}",
+      "screenshot": null
+    },
+    {
+      "group": "I 移动端",
+      "item": "无横向溢出、抽屉 8 项、点击后关闭并跳转、缩略图可横滑",
+      "status": "PASS",
+      "detail": "{\"noOverflow\":true,\"drawer\":{\"open\":true,\"links\":8},\"afterClick\":{\"open\":false,\"hash\":\"#architecture\"},\"railScrollable\":true}",
+      "screenshot": "docs/acceptance/independent-review/i-mobile-home.png"
+    },
+    {
+      "group": "J 可访问性",
+      "item": "5 次扫描（含深色）无 serious/critical 违规",
+      "status": "PASS",
+      "detail": "[{\"path\":\"/\",\"theme\":\"light\",\"blocking\":[]},{\"path\":\"/\",\"theme\":\"dark\",\"blocking\":[]},{\"path\":\"/privacy.html\",\"theme\":\"light\",\"blocking\":[]},{\"path\":\"/agreement.html\",\"theme\":\"light\",\"blocking\":[]},{\"path\":\"/definitely-not-a-page.html\",\"theme\":\"light\",\"blocking\":[]}]",
+      "screenshot": null
+    },
+    {
+      "group": "K 隐私",
+      "item": "加载阶段无第三方域名请求",
+      "status": "PASS",
+      "detail": "0 个第三方请求",
+      "screenshot": null
+    },
+    {
+      "group": "K 运行时",
+      "item": "无控制台错误与未捕获异常",
+      "status": "PASS",
+      "detail": "{\"consoleErrors\":[],\"pageErrors\":[]}",
+      "screenshot": null
+    }
+  ]
+}

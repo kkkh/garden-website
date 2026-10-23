@@ -33,17 +33,18 @@ npm run preview     # 预览构建产物
 npm run verify      # 一键执行下列全部检查
 ```
 
-| 命令                     | 作用                                                    | 失败即阻塞 |
-| ------------------------ | ------------------------------------------------------- | :--------: |
-| `npm run check:tokens`   | 校验生成令牌与 `tokens.ts` 一致，且代码中无硬编码颜色   |     ✅     |
-| `npm run check:contrast` | 33 项配色对比度检查（WCAG 2.1 AA），输出报告            |     ✅     |
-| `npm run typecheck`      | Astro + TypeScript strict 类型检查                      |     ✅     |
-| `npm run lint`           | ESLint（含 astro / typescript 规则）                    |     ✅     |
-| `npm run format:check`   | Prettier 格式检查                                       |     ✅     |
-| `npm run test:unit`      | Vitest 单元测试（轮播逻辑、主题、数据契约、结构化数据） |     ✅     |
-| `npm run build`          | 生产构建                                                |     ✅     |
-| `npx playwright test`    | E2E、可访问性（axe）、响应式、减弱动效、视觉回归        |     ✅     |
-| `npm run audit`          | 依赖漏洞扫描（high 及以上）                             |    建议    |
+| 命令                         | 作用                                                               | 失败即阻塞 |
+| ---------------------------- | ------------------------------------------------------------------ | :--------: |
+| `npm run check:tokens`       | 校验生成令牌与 `tokens.ts` 一致，且代码中无硬编码颜色              |     ✅     |
+| `npm run check:contrast`     | 33 项配色对比度检查（WCAG 2.1 AA），输出报告                       |     ✅     |
+| `npm run typecheck`          | Astro + TypeScript strict 类型检查                                 |     ✅     |
+| `npm run lint`               | ESLint（含 astro / typescript 规则）                               |     ✅     |
+| `npm run format:check`       | Prettier 格式检查                                                  |     ✅     |
+| `npm run test:unit`          | Vitest 单元测试（轮播逻辑、主题、数据契约、结构化数据）            |     ✅     |
+| `npm run build`              | 生产构建                                                           |     ✅     |
+| `npx playwright test`        | E2E、可访问性（axe）、响应式、减弱动效、视觉回归                   |     ✅     |
+| `npm run review:independent` | 独立实现路径的渲染巡检（需先 `npm run build` + `npm run preview`） |    建议    |
+| `npm run audit`              | 依赖漏洞扫描（high 及以上）                                        |    建议    |
 
 首次运行视觉回归前需生成基线：
 

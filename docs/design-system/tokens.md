@@ -44,32 +44,32 @@
 
 ### 2.2 使用规则
 
-| 场景 | 应使用 | 说明 |
-| --- | --- | --- |
-| 页面底色 | `--color-canvas` | 宣纸暖白 / 深墨 |
-| 卡片、面板 | `--color-surface` | 白 / 深墨一档 |
-| 交替区块底色 | `--color-surface-muted` | 轻微区分，不加阴影 |
-| 正文 | `--color-text-primary` | 对比度 17.35:1（浅色画布） |
-| 次要说明、描述 | `--color-text-secondary` | 7.00:1 以上 |
-| 极小字号元信息 | `--color-text-tertiary` | 4.81:1，仍满足 AA |
-| 品牌强调文字 | `--color-accent` / `--color-accent-strong` | 7.23 / 7.59:1 |
-| 强调浅底 | `--color-accent-soft` + `accent-strong` 文字 | 7.59:1 |
-| 链接 | `--color-link` | 9.15:1，悬停转 `--color-link-hover` |
-| 焦点轮廓 | `--color-focus` | 9.63:1，宽 2px、偏移 3px |
-| 成功后/危险 | `--color-success` / `--color-danger` | 8.38 / 7.67:1 |
-| 交互组件边界 | `--color-border-strong` | ≥ 3:1（WCAG 1.4.11） |
-| 装饰发丝线 | `--color-border-subtle` | 装饰性，豁免 3:1 |
-| 深色区块（hero、页脚、舞台） | `hero-*` 系列 | 在 `.hero` / `.section--ink` 内自动覆盖 `accent` 为 `gold-300` |
+| 场景                         | 应使用                                       | 说明                                                           |
+| ---------------------------- | -------------------------------------------- | -------------------------------------------------------------- |
+| 页面底色                     | `--color-canvas`                             | 宣纸暖白 / 深墨                                                |
+| 卡片、面板                   | `--color-surface`                            | 白 / 深墨一档                                                  |
+| 交替区块底色                 | `--color-surface-muted`                      | 轻微区分，不加阴影                                             |
+| 正文                         | `--color-text-primary`                       | 对比度 17.35:1（浅色画布）                                     |
+| 次要说明、描述               | `--color-text-secondary`                     | 7.00:1 以上                                                    |
+| 极小字号元信息               | `--color-text-tertiary`                      | 4.81:1，仍满足 AA                                              |
+| 品牌强调文字                 | `--color-accent` / `--color-accent-strong`   | 7.23 / 7.59:1                                                  |
+| 强调浅底                     | `--color-accent-soft` + `accent-strong` 文字 | 7.59:1                                                         |
+| 链接                         | `--color-link`                               | 9.15:1，悬停转 `--color-link-hover`                            |
+| 焦点轮廓                     | `--color-focus`                              | 9.63:1，宽 2px、偏移 3px                                       |
+| 成功后/危险                  | `--color-success` / `--color-danger`         | 8.38 / 7.67:1                                                  |
+| 交互组件边界                 | `--color-border-strong`                      | ≥ 3:1（WCAG 1.4.11）                                           |
+| 装饰发丝线                   | `--color-border-subtle`                      | 装饰性，豁免 3:1                                               |
+| 深色区块（hero、页脚、舞台） | `hero-*` 系列                                | 在 `.hero` / `.section--ink` 内自动覆盖 `accent` 为 `gold-300` |
 
 ### 2.3 禁用组合
 
-| 禁止 | 原因 |
-| --- | --- |
+| 禁止                                                 | 原因                                        |
+| ---------------------------------------------------- | ------------------------------------------- |
 | `--color-accent`（深金）直接用于 `hero-surface` 深底 | 对比不足；深底必须使用被覆盖后的 `gold-300` |
-| `--color-text-tertiary` 用于正文段落 | 仅为元信息设计，长文可读性不足 |
-| `--color-border-subtle` 作为表单/交互控件边界 | 属装饰线，不保证 3:1 |
-| 组件内写 `#hex` / `rgb()` / `hsl()` | 会被 `check:tokens` 拦截 |
-| 用 `--color-danger` 装饰非错误内容 | 语义污染 |
+| `--color-text-tertiary` 用于正文段落                 | 仅为元信息设计，长文可读性不足              |
+| `--color-border-subtle` 作为表单/交互控件边界        | 属装饰线，不保证 3:1                        |
+| 组件内写 `#hex` / `rgb()` / `hsl()`                  | 会被 `check:tokens` 拦截                    |
+| 用 `--color-danger` 装饰非错误内容                   | 语义污染                                    |
 
 ### 2.4 明暗主题
 
@@ -83,11 +83,11 @@
 
 ## 3. 排版
 
-| 项 | 令牌 | 值 |
-| --- | --- | --- |
+| 项       | 令牌             | 值                                                     |
+| -------- | ---------------- | ------------------------------------------------------ |
 | 展示字体 | `--font-display` | Fraunces Variable（Latin，本地自托管）+ 宋体栈（中文） |
-| 正文字体 | `--font-body` | 系统无衬线栈（PingFang SC 等） |
-| 等宽 | `--font-mono` | 系统等宽（序号、标签、代码） |
+| 正文字体 | `--font-body`    | 系统无衬线栈（PingFang SC 等）                         |
+| 等宽     | `--font-mono`    | 系统等宽（序号、标签、代码）                           |
 
 字号阶梯（`--text-*`）：`2xs .6875rem` → `xs .75rem` → `sm .875rem` → `md 1rem` → `lg 1.125rem` → `xl 1.375rem` → `2xl/3xl/4xl` 为 `clamp()` 流体值 → `display`（仅备用）。
 
@@ -118,14 +118,14 @@
 
 ### 5.1 Button（`.button`）
 
-| 变体 | 类名 | 用途 |
-| --- | --- | --- |
-| 主操作 | `--primary` | 页面主 CTA（金色渐变 + 深色文字） |
-| 次操作 | `--outline` | 与主操作并列的次级动作 |
-| 深底适配 | `--on-ink` | 墨色区块内的次要按钮 |
-| 弱化 | `--ghost` | 卡片内「查看相关界面」等 |
-| 图标 | `--icon` | 方形圆形图标按钮（≥ 44×44） |
-| 小号 | `--sm` | 页头 CTA |
+| 变体     | 类名        | 用途                              |
+| -------- | ----------- | --------------------------------- |
+| 主操作   | `--primary` | 页面主 CTA（金色渐变 + 深色文字） |
+| 次操作   | `--outline` | 与主操作并列的次级动作            |
+| 深底适配 | `--on-ink`  | 墨色区块内的次要按钮              |
+| 弱化     | `--ghost`   | 卡片内「查看相关界面」等          |
+| 图标     | `--icon`    | 方形圆形图标按钮（≥ 44×44）       |
+| 小号     | `--sm`      | 页头 CTA                          |
 
 - **Anatomy**：`<a|button class="button …">` 内可为文字、`Icon`（`.button__icon`）或 `sr-only` 文本；
 - **状态**：default / hover（上移 2px + 阴影）/ active（归位）/ focus-visible（全局轮廓）/ disabled（`opacity .55` + `not-allowed`，并支持 `aria-disabled`）；
@@ -142,13 +142,13 @@
 
 轮播的 DOM 契约与状态机见 `src/scripts/carousel.ts` 与下方约定：
 
-| 元素 | 契约 | 说明 |
-| --- | --- | --- |
-| 舞台 | `[data-carousel-stage]` + `#screenshots-stage` + `tabindex="0"` | 键盘方向键作用域 |
-| 幻灯片 | `[data-carousel-slide]` + `data-active` | 尺寸由 `.showcase__viewport` 决定（`aspect-ratio: var(--phone-ratio)`） |
-| 缩略图 | `[data-carousel-thumb]` + `aria-current` + roving `tabindex` | `role="group"`，不是 tablist（见 ADR-0005） |
-| 说明 | `[data-carousel-caption-title|body]` | 随切换更新，另用 `role="status"` 播报 |
-| 灯箱触发 | `[data-lightbox-trigger]` + `[data-lightbox-item]` | 分组 `screenshots` / `architecture` |
+| 元素     | 契约                                                            | 说明                                                                    |
+| -------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 舞台     | `[data-carousel-stage]` + `#screenshots-stage` + `tabindex="0"` | 键盘方向键作用域                                                        |
+| 幻灯片   | `[data-carousel-slide]` + `data-active`                         | 尺寸由 `.showcase__viewport` 决定（`aspect-ratio: var(--phone-ratio)`） |
+| 缩略图   | `[data-carousel-thumb]` + `aria-current` + roving `tabindex`    | `role="group"`，不是 tablist（见 ADR-0005）                             |
+| 说明     | `[data-carousel-caption-title                                   | body]`                                                                  | 随切换更新，另用 `role="status"` 播报 |
+| 灯箱触发 | `[data-lightbox-trigger]` + `[data-lightbox-item]`              | 分组 `screenshots` / `architecture`                                     |
 
 ### 5.4 Dialog（`.mobile-nav`、`.lightbox`）
 
@@ -158,30 +158,30 @@
 
 ### 5.5 其他组件
 
-| 组件 | 类名 | 关键约束 |
-| --- | --- | --- |
-| Tag / Chip | `.tag`、`.tag--accent`、`.tag--on-ink` | 等宽字体、圆角胶囊，非交互 |
-| 统计带 | `.stat-strip`、`.stat` | 4 列 → 768px 2 列 |
-| 系统卡 | `.system-card`、`.system-list` | 菱形项目符用 `accent` |
-| 目录 | `.legal-toc` | 粘性定位，`aria-current="true"` 标记当前章节 |
-| 时间线 | `.timeline` | 菱形节点 + 竖线 |
-| 提示 | `.notice` | 左侧 `accent` 竖线 + 图标 |
-| 回到顶部 | `.to-top` | 滚动 640px 后出现，`aria-label` |
+| 组件       | 类名                                   | 关键约束                                     |
+| ---------- | -------------------------------------- | -------------------------------------------- |
+| Tag / Chip | `.tag`、`.tag--accent`、`.tag--on-ink` | 等宽字体、圆角胶囊，非交互                   |
+| 统计带     | `.stat-strip`、`.stat`                 | 4 列 → 768px 2 列                            |
+| 系统卡     | `.system-card`、`.system-list`         | 菱形项目符用 `accent`                        |
+| 目录       | `.legal-toc`                           | 粘性定位，`aria-current="true"` 标记当前章节 |
+| 时间线     | `.timeline`                            | 菱形节点 + 竖线                              |
+| 提示       | `.notice`                              | 左侧 `accent` 竖线 + 图标                    |
+| 回到顶部   | `.to-top`                              | 滚动 640px 后出现，`aria-label`              |
 
 ---
 
 ## 6. 动效规范
 
-| 用途 | 触发 | 时长 | 缓动 | 降级 |
-| --- | --- | --- | --- | --- |
-| 按钮/链接悬停 | hover | `--duration-fast 140ms` | `--ease-standard` | reduced-motion 关闭过渡 |
-| 卡片悬停抬升 | hover | `--duration-base 220ms` | `--ease-out` | 同上 |
-| 卡片装饰线生长 | hover | `--duration-slow 420ms` | `--ease-out` | 同上 |
-| 幻灯片切换 | 状态变化 | `--duration-slow 420ms` | `--ease-out` | 过渡时长归零，状态即时切换 |
-| 灯箱出现 | `showModal()` | 浏览器原生 | — | 由浏览器处理 |
-| 滚动显现 | 进入视口 | `--duration-slow 420ms` | `--ease-out` | 直接可见（`reveal.ts` 判定） |
-| Hero 设备浮动 | 循环 | 9s | `--ease-standard` | 动画关闭 |
-| 缩略图滚动定位 | 切换后 | 平滑滚动 | — | 改为 `auto` |
+| 用途           | 触发          | 时长                    | 缓动              | 降级                         |
+| -------------- | ------------- | ----------------------- | ----------------- | ---------------------------- |
+| 按钮/链接悬停  | hover         | `--duration-fast 140ms` | `--ease-standard` | reduced-motion 关闭过渡      |
+| 卡片悬停抬升   | hover         | `--duration-base 220ms` | `--ease-out`      | 同上                         |
+| 卡片装饰线生长 | hover         | `--duration-slow 420ms` | `--ease-out`      | 同上                         |
+| 幻灯片切换     | 状态变化      | `--duration-slow 420ms` | `--ease-out`      | 过渡时长归零，状态即时切换   |
+| 灯箱出现       | `showModal()` | 浏览器原生              | —                 | 由浏览器处理                 |
+| 滚动显现       | 进入视口      | `--duration-slow 420ms` | `--ease-out`      | 直接可见（`reveal.ts` 判定） |
+| Hero 设备浮动  | 循环          | 9s                      | `--ease-standard` | 动画关闭                     |
+| 缩略图滚动定位 | 切换后        | 平滑滚动                | —                 | 改为 `auto`                  |
 
 规则：
 

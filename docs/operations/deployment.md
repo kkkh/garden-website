@@ -7,13 +7,13 @@
 
 ## 1. 当前线上形态（v1）
 
-| 项 | 值 | 证据 |
-| --- | --- | --- |
-| 域名 | `https://jl.43322.cn` | 站点正文与页脚 |
-| 托管 | 腾讯云 EdgeOne Makers（静态） | 响应头 `Server: edgeone makers` |
-| 站点根 | 仓库根目录（`index.html` 直接在根） | v1 仓库结构 |
-| 缓存 | `Cache-Control: public,max-age=0,must-revalidate` | 抓包响应头 |
-| 备案 | 晋ICP备2023020746号 / 晋公网安备 14010602111139号 | 页脚 |
+| 项     | 值                                                | 证据                            |
+| ------ | ------------------------------------------------- | ------------------------------- |
+| 域名   | `https://jl.43322.cn`                             | 站点正文与页脚                  |
+| 托管   | 腾讯云 EdgeOne Makers（静态）                     | 响应头 `Server: edgeone makers` |
+| 站点根 | 仓库根目录（`index.html` 直接在根）               | v1 仓库结构                     |
+| 缓存   | `Cache-Control: public,max-age=0,must-revalidate` | 抓包响应头                      |
+| 备案   | 晋ICP备2023020746号 / 晋公网安备 14010602111139号 | 页脚                            |
 
 v2 的**唯一破坏性变更**：站点根从「仓库根」改为「`dist/`」。
 
@@ -72,12 +72,12 @@ ossutil cp -r dist/ oss://<bucket>/ --update
 
 ### 3.3 缓存头建议
 
-| 路径 | 建议响应头 |
-| --- | --- |
-| `/_astro/*` | `Cache-Control: public, max-age=31536000, immutable` |
-| `/icons/*`、`/og/*`、`/beian/*` | `Cache-Control: public, max-age=86400` |
-| `/*.html` | `Cache-Control: public, max-age=300, must-revalidate` |
-| `/site.webmanifest`、`/robots.txt`、`/sitemap*.xml` | `Cache-Control: public, max-age=3600` |
+| 路径                                                | 建议响应头                                            |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| `/_astro/*`                                         | `Cache-Control: public, max-age=31536000, immutable`  |
+| `/icons/*`、`/og/*`、`/beian/*`                     | `Cache-Control: public, max-age=86400`                |
+| `/*.html`                                           | `Cache-Control: public, max-age=300, must-revalidate` |
+| `/site.webmanifest`、`/robots.txt`、`/sitemap*.xml` | `Cache-Control: public, max-age=3600`                 |
 
 v2 不再使用 `?v=` 手工版本号：CSS 与图片文件名带内容哈希，HTML 短缓存即可保证更新及时。
 

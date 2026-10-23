@@ -1,0 +1,3984 @@
+{
+  "config": {
+    "argv": [
+      "/Users/qinchao/.nvm/versions/node/v24.19.0/bin/node",
+      "/Users/qinchao/Music/tools/garden-website/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/Users/qinchao/Music/tools/garden-website/playwright.config.ts",
+    "rootDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-light",
+        "name": "desktop-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-dark",
+        "name": "desktop-dark",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/(visual|theme)\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "tablet-light",
+        "name": "tablet-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/visual\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-light",
+        "name": "mobile-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/(visual|mobile)\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "reduced-motion",
+        "name": "reduced-motion",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/reduced-motion\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "desktop-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "snapshotDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4321",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "colorScheme": "light",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop-light"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "desktop-dark",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "snapshotDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4321",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "colorScheme": "dark",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop-dark"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "tablet-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "snapshotDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4321",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "colorScheme": "light",
+          "userAgent": "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 810,
+            "height": 1080
+          },
+          "deviceScaleFactor": 2,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "webkit",
+          "browserName": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tablet-light"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "mobile-light",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "snapshotDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4321",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "colorScheme": "light",
+          "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "screen": {
+            "width": 390,
+            "height": 844
+          },
+          "deviceScaleFactor": 3,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "webkit",
+          "browserName": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "mobile-light"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/qinchao/Music/tools/garden-website/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "reduced-motion",
+        "testDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "snapshotDir": "/Users/qinchao/Music/tools/garden-website/tests/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4321",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "colorScheme": "light",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "reducedMotion": "reduce"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "reduced-motion"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "reports/playwright-html",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "reports/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": {
+      "command": "npm run preview -- --port 4321 --host 127.0.0.1",
+      "url": "http://127.0.0.1:4321",
+      "reuseExistingServer": false,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "a11y.spec.ts",
+      "file": "a11y.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "首页 · 无 serious/critical 级可访问性问题",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6713,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:01.714Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-62a9901e8729c653cc0c",
+          "file": "a11y.spec.ts",
+          "line": 16,
+          "column": 3
+        },
+        {
+          "title": "隐私政策 · 无 serious/critical 级可访问性问题",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 6596,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:01.720Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-b74d0272eeda10f7ae23",
+          "file": "a11y.spec.ts",
+          "line": 16,
+          "column": 3
+        },
+        {
+          "title": "用户协议 · 无 serious/critical 级可访问性问题",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1863,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:10.092Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-e563a71cfca86c463b4d",
+          "file": "a11y.spec.ts",
+          "line": 16,
+          "column": 3
+        },
+        {
+          "title": "404 · 无 serious/critical 级可访问性问题",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1698,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:10.195Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-046b56c4cceae726ef4c",
+          "file": "a11y.spec.ts",
+          "line": 16,
+          "column": 3
+        },
+        {
+          "title": "深色主题下同样通过扫描",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4932,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:11.908Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-dfb88b57222fa7da98bc",
+          "file": "a11y.spec.ts",
+          "line": 36,
+          "column": 1
+        },
+        {
+          "title": "键盘可完成主要操作路径",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2015,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:11.970Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-1acfda99f424014208f1",
+          "file": "a11y.spec.ts",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "触控目标尺寸符合移动端建议（≥ 44×44）",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 2906,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:14.003Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-a3c7bca4b1d948d803f7",
+          "file": "a11y.spec.ts",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "正文文本对比度抽样满足 AA",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3255,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:16.864Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "aa3ad05f8c0e05077efb-163b1a04b912be87e97b",
+          "file": "a11y.spec.ts",
+          "line": 102,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "home.spec.ts",
+      "file": "home.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "首页结构",
+          "file": "home.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "标题、语言与关键地标齐备",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3224,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:16.946Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-464f6749a975f350dcc9",
+              "file": "home.spec.ts",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "SEO 元信息完整且唯一",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 739,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:20.153Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-b2338f3f2be9798ec59d",
+              "file": "home.spec.ts",
+              "line": 22,
+              "column": 3
+            },
+            {
+              "title": "结构化数据可被解析且类型正确",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 708,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:20.182Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-88fb3fabd63eefda0803",
+              "file": "home.spec.ts",
+              "line": 39,
+              "column": 3
+            },
+            {
+              "title": "跳转链接指向主内容",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 634,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:20.904Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-6814426aebe323c84f4a",
+              "file": "home.spec.ts",
+              "line": 48,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "导航与锚点",
+          "file": "home.spec.ts",
+          "line": 56,
+          "column": 6,
+          "specs": [
+            {
+              "title": "锚点跳转并更新当前区域状态",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1150,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:20.906Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-eb66243b491913f6bb06",
+              "file": "home.spec.ts",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "移动端抽屉可打开并跳转",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 717,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:21.554Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-2b2a52b63499c3fd9a9d",
+              "file": "home.spec.ts",
+              "line": 64,
+              "column": 3
+            },
+            {
+              "title": "回到顶部按钮在滚动后出现",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1504,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:22.068Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-7fb51446795d7ab15132",
+              "file": "home.spec.ts",
+              "line": 79,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "截图轮播",
+          "file": "home.spec.ts",
+          "line": 88,
+          "column": 6,
+          "specs": [
+            {
+              "title": "初始状态为第 1 张，共 22 张",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 884,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:22.284Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-f2df1991e1388cdbc625",
+              "file": "home.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "箭头可前进与环形回退",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2635,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:23.183Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-0b17991e9b4621c6000d",
+              "file": "home.spec.ts",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "缩略图点击切换并同步 ARIA 状态",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2315,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:23.588Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-0a10b3a3a0a03ba08905",
+              "file": "home.spec.ts",
+              "line": 111,
+              "column": 3
+            },
+            {
+              "title": "说明文字随切换更新",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3021,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:25.841Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-e604e5acaa493165f587",
+              "file": "home.spec.ts",
+              "line": 122,
+              "column": 3
+            },
+            {
+              "title": "舞台支持左右方向键切换",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1436,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:25.931Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-84e023bf53503cddd196",
+              "file": "home.spec.ts",
+              "line": 130,
+              "column": 3
+            },
+            {
+              "title": "缩略图支持方向键、Home 与 End",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 641,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:27.393Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-27381f57660728daea6c",
+              "file": "home.spec.ts",
+              "line": 138,
+              "column": 3
+            },
+            {
+              "title": "滑动切换：横向生效，纵向不生效",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2512,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:28.048Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-c8e6f976b7dfbbb47945",
+              "file": "home.spec.ts",
+              "line": 151,
+              "column": 3
+            },
+            {
+              "title": "功能卡「查看相关界面」直达对应截图",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2099,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:28.881Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-ac330798990b28a550a0",
+              "file": "home.spec.ts",
+              "line": 183,
+              "column": 3
+            },
+            {
+              "title": "记录切换事件用于埋点断言",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2124,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:30.570Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-85978295dc0a9bb779de",
+              "file": "home.spec.ts",
+              "line": 189,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "灯箱",
+          "file": "home.spec.ts",
+          "line": 199,
+          "column": 6,
+          "specs": [
+            {
+              "title": "打开、切换、关闭并返回焦点",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2429,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:30.995Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-35cc69e59eb8de126904",
+              "file": "home.spec.ts",
+              "line": 204,
+              "column": 3
+            },
+            {
+              "title": "打开时锁定页面滚动，关闭后恢复",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2175,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:32.705Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-93c97f8e99a87b25f8de",
+              "file": "home.spec.ts",
+              "line": 223,
+              "column": 3
+            },
+            {
+              "title": "架构图可放大查看",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2203,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:33.438Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-6b12dca9acad2dfc0a4a",
+              "file": "home.spec.ts",
+              "line": 230,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "主题切换",
+          "file": "home.spec.ts",
+          "line": 240,
+          "column": 6,
+          "specs": [
+            {
+              "title": "浅色 / 深色 / 跟随系统切换并持久化",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 983,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:34.894Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-d8b03d0ec0eadad7ff6b",
+              "file": "home.spec.ts",
+              "line": 241,
+              "column": 3
+            },
+            {
+              "title": "首屏不出现主题闪烁（html 在脚本前已带 data-theme）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 646,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:35.660Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-0fc68191a2902e7d6a55",
+              "file": "home.spec.ts",
+              "line": 265,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "FAQ 与法律页面",
+          "file": "home.spec.ts",
+          "line": 273,
+          "column": 6,
+          "specs": [
+            {
+              "title": "FAQ 默认展开第一项且可切换",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2130,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:35.887Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-0fc83ec132a48c74196c",
+              "file": "home.spec.ts",
+              "line": 274,
+              "column": 3
+            },
+            {
+              "title": "隐私政策：目录锚点与正文标题一致",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 482,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:36.342Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-0f20df62791af44bc5cc",
+              "file": "home.spec.ts",
+              "line": 284,
+              "column": 3
+            },
+            {
+              "title": "用户协议：含 7 个章节与返回首页入口",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 673,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:36.832Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-1000536e5efdda92932f",
+              "file": "home.spec.ts",
+              "line": 296,
+              "column": 3
+            },
+            {
+              "title": "法律页可在两页之间往返",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 477,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:37.512Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-9b2ee0e2390a84af6129",
+              "file": "home.spec.ts",
+              "line": 303,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "外链与安全属性",
+          "file": "home.spec.ts",
+          "line": 311,
+          "column": 6,
+          "specs": [
+            {
+              "title": "备案外链带 noopener noreferrer 且指向官方站点",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 653,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:37.995Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-c4535c640ef8ef11180d",
+              "file": "home.spec.ts",
+              "line": 312,
+              "column": 3
+            },
+            {
+              "title": "页面加载阶段不请求第三方域名",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1060,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:38.033Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-a154d7038a18fc344fd8",
+              "file": "home.spec.ts",
+              "line": 326,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "404 页面",
+          "file": "home.spec.ts",
+          "line": 338,
+          "column": 6,
+          "specs": [
+            {
+              "title": "未知路径返回品牌化 404 并提供出口",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 352,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:38.655Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d318381359a9b96acb1e-2edca4878af11c797396",
+              "file": "home.spec.ts",
+              "line": 339,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "mobile.spec.ts",
+      "file": "mobile.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "响应式",
+          "file": "mobile.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "无横向溢出",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2301,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:39.024Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-97f7ceb548fd3fcdbb6b",
+              "file": "mobile.spec.ts",
+              "line": 8,
+              "column": 3
+            },
+            {
+              "title": "移动端使用抽屉导航，桌面导航隐藏",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 649,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:39.105Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-aacbd082eb032682c237",
+              "file": "mobile.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "缩略图在窄屏可横向滚动到当前项",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2635,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:39.764Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-2c116afee7078f06b72e",
+              "file": "mobile.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "手机竖屏下 Hero 与截图保持可读",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 543,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:41.331Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-faf81e5693df7bc10142",
+              "file": "mobile.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "无横向溢出",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2727,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:18.401Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-02793c0f3f5f2edc8215",
+              "file": "mobile.spec.ts",
+              "line": 8,
+              "column": 3
+            },
+            {
+              "title": "移动端使用抽屉导航，桌面导航隐藏",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 998,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:18.400Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-c08d836926311a5dc619",
+              "file": "mobile.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "缩略图在窄屏可横向滚动到当前项",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2477,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:20.129Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-8e14ff7b7acc618b3a4c",
+              "file": "mobile.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "手机竖屏下 Hero 与截图保持可读",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 513,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:21.859Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e79c838550b25e92508e-add30a8c9e525a8a0c48",
+              "file": "mobile.spec.ts",
+              "line": 54,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "reduced-motion.spec.ts",
+      "file": "reduced-motion.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "所有滚动显现内容直接可见，不依赖动画",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 433,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:41.887Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-84ba95650dda5bf83e31",
+          "file": "reduced-motion.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "首屏图标无持续浮动动画",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 504,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:42.329Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-c1b9dc4209301369cfc3",
+          "file": "reduced-motion.spec.ts",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "轮播切换不依赖过渡动画且状态即时更新",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 734,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:42.414Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-8d42cfc7a8e994274e7e",
+          "file": "reduced-motion.spec.ts",
+          "line": 32,
+          "column": 1
+        },
+        {
+          "title": "锚点跳转不使用平滑滚动",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-light",
+              "projectName": "desktop-light",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 523,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:06:42.854Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-d70df951104179780d9d",
+          "file": "reduced-motion.spec.ts",
+          "line": 47,
+          "column": 1
+        },
+        {
+          "title": "所有滚动显现内容直接可见，不依赖动画",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "reduced-motion",
+              "projectName": "reduced-motion",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1082,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:07:32.211Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-17feedb554aa30d52922",
+          "file": "reduced-motion.spec.ts",
+          "line": 9,
+          "column": 1
+        },
+        {
+          "title": "首屏图标无持续浮动动画",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "reduced-motion",
+              "projectName": "reduced-motion",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 964,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:07:32.212Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-bebfe28eb0f663f3a6b4",
+          "file": "reduced-motion.spec.ts",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "轮播切换不依赖过渡动画且状态即时更新",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "reduced-motion",
+              "projectName": "reduced-motion",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 755,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:07:34.325Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-4317da6b518379c34d2a",
+          "file": "reduced-motion.spec.ts",
+          "line": 32,
+          "column": 1
+        },
+        {
+          "title": "锚点跳转不使用平滑滚动",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "reduced-motion",
+              "projectName": "reduced-motion",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 589,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T07:07:34.327Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b3e080842fc0b9df9031-6fd52d17ef39e905af8b",
+          "file": "reduced-motion.spec.ts",
+          "line": 47,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "visual.spec.ts",
+      "file": "visual.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "页面视觉基线 @visual",
+          "file": "visual.spec.ts",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 797,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:43.164Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-80beba295151b64c6bda",
+              "file": "visual.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "首页全页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6090,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:43.396Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-f215c213c4345bdcd60e",
+              "file": "visual.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "截图轮播区",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1573,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:43.967Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-28dc501cf3fa4ecee8f6",
+              "file": "visual.spec.ts",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "轮播切换后状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2121,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:45.546Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c9ebc93d2b125e1022a4",
+              "file": "visual.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "隐私政策页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 800,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:47.680Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-4addaf6286b5f0b81f86",
+              "file": "visual.spec.ts",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "404 页面",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 542,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:48.495Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-b1c250cf9af14315dbd5",
+              "file": "visual.spec.ts",
+              "line": 47,
+              "column": 3
+            },
+            {
+              "title": "首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:54.066Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-ea09fd4c51c0e72db5f8",
+              "file": "visual.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "首页全页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6436,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:54.064Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-cd1ff8b2c07cd01ccb8f",
+              "file": "visual.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "截图轮播区",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1598,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:57.370Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-401115848c40b03265da",
+              "file": "visual.spec.ts",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "轮播切换后状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2199,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:58.978Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-0ab510d9a5c69941ffb8",
+              "file": "visual.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "隐私政策页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 970,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:01.187Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-dd43c25b00752a274899",
+              "file": "visual.spec.ts",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "404 页面",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 681,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:01.731Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-ea72cd4030d9b050fe09",
+              "file": "visual.spec.ts",
+              "line": 47,
+              "column": 3
+            },
+            {
+              "title": "首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2056,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:07.101Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-7a7d777bc7f861664efa",
+              "file": "visual.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "首页全页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5572,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:07.268Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c44b533175f2a8afe9b8",
+              "file": "visual.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "截图轮播区",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2021,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:10.068Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-3878ac467de3f6818380",
+              "file": "visual.spec.ts",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "轮播切换后状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1743,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:12.099Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-4cdb187304054c0f8ddf",
+              "file": "visual.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "隐私政策页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 669,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:13.752Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c63fea77c21575ef3f6a",
+              "file": "visual.spec.ts",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "404 页面",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 461,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:13.850Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-fe39d051dbbdf27bb8ec",
+              "file": "visual.spec.ts",
+              "line": 47,
+              "column": 3
+            },
+            {
+              "title": "首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 571,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:22.384Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c6f8ab44fbeaa3c5ec1f",
+              "file": "visual.spec.ts",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "首页全页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4912,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:22.630Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c88c6084bad3a8733451",
+              "file": "visual.spec.ts",
+              "line": 21,
+              "column": 3
+            },
+            {
+              "title": "截图轮播区",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1773,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:22.961Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-414cfacf20135f297261",
+              "file": "visual.spec.ts",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "轮播切换后状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2151,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:24.741Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-fb3f045b8d5ae77003d9",
+              "file": "visual.spec.ts",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "隐私政策页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 700,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:26.901Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-66c5347489ef311098b2",
+              "file": "visual.spec.ts",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "404 页面",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 455,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:27.550Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-7b136109b8560c76cfdf",
+              "file": "visual.spec.ts",
+              "line": 47,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "组件状态矩阵 @visual",
+          "file": "visual.spec.ts",
+          "line": 53,
+          "column": 6,
+          "specs": [
+            {
+              "title": "按钮四种状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1061,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:49.050Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-8f0813ebcb2dcb8b56d3",
+              "file": "visual.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "卡片 hover 状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1808,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:49.500Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-221b1321c4eec26960a8",
+              "file": "visual.spec.ts",
+              "line": 67,
+              "column": 3
+            },
+            {
+              "title": "主题切换控件状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 821,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:50.119Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-92f5f8879c37d4a1e5d8",
+              "file": "visual.spec.ts",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "按钮四种状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1505,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:02.193Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-1a2650dcc509f66db7a1",
+              "file": "visual.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "卡片 hover 状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2084,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:02.432Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c165d73b7529137b08e1",
+              "file": "visual.spec.ts",
+              "line": 67,
+              "column": 3
+            },
+            {
+              "title": "主题切换控件状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1096,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:03.711Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c6132c5a916c23edf875",
+              "file": "visual.spec.ts",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "按钮四种状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 990,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:14.324Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-9c9d577ca4a4feaeccc8",
+              "file": "visual.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "卡片 hover 状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1746,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:14.432Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-812d9446b64df7f44762",
+              "file": "visual.spec.ts",
+              "line": 67,
+              "column": 3
+            },
+            {
+              "title": "主题切换控件状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 772,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:15.321Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-ddf77b3d21fe6074e398",
+              "file": "visual.spec.ts",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "按钮四种状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1014,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:27.615Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-dc272c7eea9d375e5f63",
+              "file": "visual.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "卡片 hover 状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2157,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:28.016Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-3ae95d8b3ff0f2485849",
+              "file": "visual.spec.ts",
+              "line": 67,
+              "column": 3
+            },
+            {
+              "title": "主题切换控件状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 739,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:28.642Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-557123320ba9995fa491",
+              "file": "visual.spec.ts",
+              "line": 76,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "灯箱与深色主题 @visual",
+          "file": "visual.spec.ts",
+          "line": 85,
+          "column": 6,
+          "specs": [
+            {
+              "title": "灯箱打开状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2180,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:50.960Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-dfaab5cb50cc915277b8",
+              "file": "visual.spec.ts",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "深色主题首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 900,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:51.352Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-f5e7c8f4083bae825271",
+              "file": "visual.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "深色主题法律页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-light",
+                  "projectName": "desktop-light",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 804,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:06:52.262Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-f168a987ce8049d9a3f3",
+              "file": "visual.spec.ts",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "灯箱打开状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2296,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:04.530Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-c33f2c90216ea5e786d6",
+              "file": "visual.spec.ts",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "深色主题首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 916,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:04.824Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-006520e9c3184e7f2914",
+              "file": "visual.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "深色主题法律页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-dark",
+                  "projectName": "desktop-dark",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 626,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:05.750Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-636d42680e3bb522d8f8",
+              "file": "visual.spec.ts",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "灯箱打开状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1720,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:16.100Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-b463f21f5e86993afaeb",
+              "file": "visual.spec.ts",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "深色主题首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 961,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:16.191Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-1bff769b7b4ad19a8a16",
+              "file": "visual.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "深色主题法律页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-light",
+                  "projectName": "tablet-light",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 686,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:17.159Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-21c8a7b495ebb1746642",
+              "file": "visual.spec.ts",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "灯箱打开状态",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2171,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:29.386Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-14f0966649fcea39c293",
+              "file": "visual.spec.ts",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "深色主题首页首屏",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 771,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:30.180Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-99bdd34a4c8f3c24fa3d",
+              "file": "visual.spec.ts",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "深色主题法律页",
+              "ok": true,
+              "tags": [
+                "visual"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-light",
+                  "projectName": "mobile-light",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 761,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T07:07:30.958Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8324bb52c49185e48ff4-746909e5cf6f1e04ed14",
+              "file": "visual.spec.ts",
+              "line": 100,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-23T07:05:56.312Z",
+    "duration": 98823.31999999999,
+    "expected": 100,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

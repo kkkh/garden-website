@@ -3,10 +3,15 @@ import { expect, test } from '@playwright/test';
 /**
  * 视觉回归基线。
  * 覆盖桌面 / 平板 / 手机 × 浅色 / 深色，以及关键组件状态。
+ *
+ * 用例标题统一带 `@visual` 标记，便于 CI 按平台拆分：
+ * - 视觉用例仅在 macOS runner 上执行（基线文件名含 `-darwin` 平台后缀）；
+ * - 其他 CI 任务用 `--grep-invert=@visual` 跳过，避免跨平台像素差异造成假失败。
+ *
  * 首次运行会生成基线：`npm run test:visual:update`。
  */
 
-test.describe('页面视觉基线', () => {
+test.describe('页面视觉基线 @visual', () => {
   test('首页首屏', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.hero')).toBeVisible();
@@ -45,7 +50,7 @@ test.describe('页面视觉基线', () => {
   });
 });
 
-test.describe('组件状态矩阵', () => {
+test.describe('组件状态矩阵 @visual', () => {
   test('按钮四种状态', async ({ page }) => {
     await page.goto('/');
 
@@ -77,7 +82,7 @@ test.describe('组件状态矩阵', () => {
   });
 });
 
-test.describe('灯箱与深色主题', () => {
+test.describe('灯箱与深色主题 @visual', () => {
   test('灯箱打开状态', async ({ page }) => {
     await page.goto('/#screenshots');
     await page.locator('[data-carousel-expand]').click();
