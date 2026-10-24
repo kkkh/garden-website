@@ -36,6 +36,7 @@ const resolve = (href: string) => (href.startsWith('#') ? `${homeHref}${href}` :
               </a>
             </li>
           ))}
+          <li class="footer-list__divider" role="presentation" aria-hidden="true"></li>
           {resourceNavigation.map((item) => (
             <li>
               <a href={resolve(item.href)} data-track="nav:click" data-track-label={item.label}>

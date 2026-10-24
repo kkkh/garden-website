@@ -19,33 +19,38 @@ const SubHeading = isPreview ? 'h4' : 'h3';
     const groups = groupReleaseChanges(release);
     return (
       <article class="release" id={anchor} aria-labelledby={`release-${anchor}-title`}>
-        <header class="release__head">
-          <Heading class="release__title" id={`release-${anchor}-title`}>
-            <span class="release__version">{release.version}</span>
-            <span class="release__name">{release.title}</span>
-          </Heading>
-          <p class="release__meta">
+        <div class="release__aside">
+          <p class="release__version">{release.version}</p>
+          <p class="release__status">
             {release.date ? (
               <time datetime={release.date}>{formatDateFromIso(release.date)}</time>
             ) : (
               <span class="release__pending">待上架</span>
             )}
           </p>
-        </header>
+        </div>
 
-        <p class="release__summary">{release.summary}</p>
+        <div class="release__body">
+          <header class="release__head">
+            <Heading class="release__title" id={`release-${anchor}-title`}>
+              {release.title}
+            </Heading>
+          </header>
 
-        <div class="release__groups">
-          {groups.map((group) => (
-            <div class="release__group">
-              <SubHeading class="release__label">{group.label}</SubHeading>
-              <ul class="release__changes">
-                {group.items.map((change) => (
-                  <li>{change.text}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <p class="release__summary">{release.summary}</p>
+
+          <div class="release__groups">
+            {groups.map((group) => (
+              <div class="release__group">
+                <SubHeading class="release__label">{group.label}</SubHeading>
+                <ul class="release__changes">
+                  {group.items.map((change) => (
+                    <li>{change.text}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </article>
     );

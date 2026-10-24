@@ -6,7 +6,7 @@
  * - 颜色全部取自设计令牌，保持与站点一致；
  * - 文案改动后重新执行即可。
  */
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +16,9 @@ import { primitiveColors } from '../src/design/tokens.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(root, 'public', 'og');
+const iconBase64 = (await readFile(path.join(root, 'public/icons/icon-192.png'))).toString(
+  'base64',
+);
 
 const ink = primitiveColors['ink-900'];
 const inkSoft = primitiveColors['ink-800'];
@@ -60,6 +63,9 @@ function renderSvg({ eyebrow, title, subtitle }) {
       <stop offset="0" stop-color="${gold}" stop-opacity="0.18"/>
       <stop offset="1" stop-color="${gold}" stop-opacity="0"/>
     </radialGradient>
+    <clipPath id="iconClip">
+      <rect x="900" y="218" width="184" height="184" rx="42"/>
+    </clipPath>
   </defs>
 
   <rect width="1200" height="630" fill="url(#bg)"/>
@@ -69,6 +75,16 @@ function renderSvg({ eyebrow, title, subtitle }) {
     <line x1="80" y1="0" x2="80" y2="630"/>
     <line x1="1120" y1="0" x2="1120" y2="630"/>
   </g>
+
+  <image
+    href="data:image/png;base64,${iconBase64}"
+    x="900"
+    y="218"
+    width="184"
+    height="184"
+    clip-path="url(#iconClip)"
+  />
+  <rect x="900" y="218" width="184" height="184" rx="42" fill="none" stroke="${gold}" stroke-opacity="0.35"/>
 
   <rect x="80" y="104" width="56" height="3" fill="${gold}"/>
 

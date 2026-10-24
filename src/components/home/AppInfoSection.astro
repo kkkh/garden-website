@@ -50,13 +50,12 @@ const state = live ? 'live' : 'soon';
         下载园枢
       </h2>
       <p class="section-lede">
-        应用信息、系统要求与隐私摘要集中在这里；上架当天，此处的提醒会切换为 App Store
-        下载入口与二维码。
+        应用信息、系统要求与隐私摘要集中在这里；上架当天，这里会切换为真正的下载入口与二维码。
       </p>
     </div>
 
-    <div class="app-info">
-      <div class="app-info__intro" data-reveal>
+    <div class="app-info__panel" data-reveal>
+      <div class="app-info__intro">
         <Picture
           src={mark}
           alt="园枢应用图标"
@@ -68,6 +67,10 @@ const state = live ? 'live' : 'soon';
         <div class="app-info__identity">
           <h3 class="app-info__name">{site.name}</h3>
           <p class="app-info__meta">{site.platform}</p>
+          <p class="app-info__status">
+            <span class="app-info__dot" aria-hidden="true"></span>
+            {site.availability}
+          </p>
         </div>
         <p class="app-info__body">{site.description}</p>
 
@@ -83,11 +86,13 @@ const state = live ? 'live' : 'soon';
                 <Icon name="info" size={16} />
                 上架时提醒我
               </a>
-              <p class="app-info__hint">
-                {site.availability}。上架后本页会显示 App Store 按钮与下载二维码。
-              </p>
+              <p class="app-info__hint">上架后本页会显示 App Store 按钮与下载二维码。</p>
             </>
           )}
+          <a class="app-info__link" href="/changelog.html">
+            查看版本更新日志
+            <Icon name="arrow-right" size={14} />
+          </a>
         </div>
 
         <div class="app-info__privacy">
@@ -107,7 +112,7 @@ const state = live ? 'live' : 'soon';
         </div>
       </div>
 
-      <div class="app-info__details" data-reveal>
+      <div class="app-info__details">
         <div>
           <h3 class="app-info__subtitle">应用信息</h3>
           <dl class="spec-list">
