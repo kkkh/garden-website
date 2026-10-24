@@ -107,6 +107,8 @@
   font-size: var(--text-xl);
   color: var(--color-gold-200);
   letter-spacing: var(--tracking-wider);
+  /* 窄屏换行时均分两行，避免末行只剩两个字 */
+  text-wrap: balance;
 }
 
 .hero__lede {
@@ -129,6 +131,16 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.25em;
+  white-space: nowrap;
+}
+
+/* 窄屏下说明文字本身较长，链接单独占一行，避免词组被拆断 */
+@media (max-width: 640px) {
+  .hero__note-link {
+    display: block;
+    margin-inline-start: 0;
+    margin-block-start: var(--space-2);
+  }
 }
 
 .hero__note-link:hover {
