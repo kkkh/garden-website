@@ -1,9 +1,9 @@
 # 生产部署验证（最近一次）
 
-- 时间：2026-10-24T05:35Z
+- 时间：2026-10-24T07:58Z
 - 目标：https://jl.43322.cn
-- 发布提交：0d87273（下载入口状态机 + 应用信息区 + 更新日志 + 安全响应头）
-- 部署观察：main 推送后约 125 秒，`/changelog.html` 返回 200
+- 发布提交：690130f（v3 视觉精修：下载面板、更新日志版本栏、页脚分隔、OG 图标）
+- 部署观察：main 推送后约 135 秒，`/changelog.html` 出现新版结构
 
 ## 1. 页面与 404
 
@@ -35,6 +35,7 @@ MobileApplication.offers.availability: PreOrder
 
 ## 4. 渲染与无障碍
 
+视觉精修：`release__aside` / `app-info__status` 结构命中；三张 OG 含应用图标
 Chromium + WebKit × 5 页面 × 明暗主题：0 控制台错误、0 失败请求、0 4xx/5xx、无溢出、无破图
 axe 双引擎 × 双主题 × 5 页面：0 serious/critical
 

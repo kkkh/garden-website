@@ -123,6 +123,18 @@
   letter-spacing: var(--tracking-wide);
 }
 
+.hero__note-link {
+  margin-inline-start: var(--space-2);
+  color: var(--color-gold-300);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.hero__note-link:hover {
+  color: var(--color-gold-200);
+}
+
 .hero__lede strong {
   color: var(--color-hero-text);
   font-weight: var(--font-weight-semibold);
