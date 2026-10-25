@@ -7,7 +7,7 @@
 | Node.js     | ≥ 24（`package.json` 的 `engines`）          |
 | npm         | 随 Node 24 提供                              |
 | 操作系统    | macOS / Linux（`sharp` 需对应平台二进制）    |
-| 浏览器      | 现代浏览器；E2E 使用 Playwright Chromium     |
+| 浏览器      | 现代浏览器；E2E 使用 Playwright Chromium + WebKit（Safari 基线） |
 | 磁盘        | 依赖 + 构建产物 + 视觉基线，建议预留 ≥ 1 GB  |
 | 网络        | 首次 `npm ci` 与 Playwright 浏览器下载需要   |
 
@@ -39,7 +39,7 @@ npm run preview   # 预览 dist/（默认端口 4321）
 
 - `site: 'https://jl.43322.cn'`：canonical、sitemap、OG 绝对地址；
 - `build.format: 'file'`：输出 `privacy.html` 等文件路径；
-- `inlineStylesheets: 'auto'`：小型样式自动内联；
+- `inlineStylesheets: 'always'`：样式全部内联，消除首屏阻塞请求；
 - `compressHTML: true`；
 - `prefetch`: 默认 `hover`，不预取全部；
 - `@astrojs/sitemap` 过滤 `/404`；
@@ -77,6 +77,9 @@ npm run preview   # 预览 dist/（默认端口 4321）
 | `npm run verify`           | 见下节                                                                   | 一键完整门禁                         |
 | `npm run audit`            | `npm audit --audit-level=high`                                           | 依赖漏洞扫描                         |
 
+> `test:e2e` 会跑全部 6 个项目（含 `webkit-visual`），需先 `npx playwright install chromium webkit`；
+> `test:visual` / `test:visual:update` 只针对 `visual.spec.ts`（Chromium 基线），WebKit 基线请用 `npx playwright test tests/e2e/visual-webkit.spec.ts --update-snapshots`。
+
 ---
 
 ## 4. 质量门禁
@@ -95,14 +98,14 @@ check:tokens → check:contrast → typecheck → lint → format:check
 | `typecheck`             | Astro + TS strict（含 `noUncheckedIndexedAccess`）                        | 类型错误                                   |
 | `lint`                  | ESLint：JS/TS/Astro、禁 `any`、`console` 仅允许 warn/error                | 代码规范问题                               |
 | `format:check`          | Prettier（100 列、单引号、尾逗号）                                        | 未格式化                                   |
-| `test:unit`             | 3 个文件 38 个用例                                                        | 轮播算法、主题、数据契约回归               |
-| `build`                 | Astro 构建成功，5 个页面输出                                              | 组件/内容/图片管线错误                     |
+| `test:unit`             | 6 个测试文件（轮播、主题、数据、上架状态、版本、配置）                     | 算法与数据契约回归                         |
+| `build`                 | Astro 构建成功，5 个 HTML 页面输出                                        | 组件/内容/图片管线错误                     |
 | `check:release`         | 根目录产物与 `dist/` 体积、清单一致，无残留旧文件                        | 忘记同步产物                               |
 | `playwright test`       | 结构、交互、a11y、响应式、减弱动效、视觉基线                              | 功能或像素回归                             |
 | `review:independent`    | 独立实现的 A–K 巡检（不包含在 verify 内）                                 | 交叉验证失败，建议在发布前执行             |
 | `audit`                 | high 及以上漏洞（CI 中 `continue-on-error`）                              | 依赖风险，需人工评估                       |
 
-最近一次验收记录：54 个单元测试、132 个 Playwright 用例通过，`npm run verify` 退出码 0（详见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)）。该记录是时点证据，不代表当前工作区一定已重新跑过。
+用例数量会随版本变化，请以 `npm run test:unit` / `npx playwright test --list` 的实际输出为准；历史验收记录见 [docs/acceptance/verification-report.md](../docs/acceptance/verification-report.md)，不代表当前工作区一定已重新跑过。
 
 ---
 
@@ -116,7 +119,7 @@ npm run test:unit
 
 - 环境 `node`，入口 `tests/unit/**/*.test.ts`；
 - 别名 `@` → `src`；
-- 覆盖 `wrapIndex` / `formatIndex` / `isHorizontalSwipe`、主题读写与应用、数据契约与 schema；
+- 覆盖 `wrapIndex` / `formatIndex` / `isHorizontalSwipe`、主题读写与应用、数据契约与 schema、上架状态机、版本数据、`edgeone.json` 配置；
 - 覆盖率报告输出到 `reports/coverage`，范围为 `src/lib`、`src/scripts`、`src/data`。
 
 ### 5.2 E2E（Playwright）
@@ -138,13 +141,17 @@ npm run test:e2e        # 先 build，再跑全部项目
 
 项目划分：
 
-| 项目             | 设备 / 主题                          | 运行的测试                              |
-| ---------------- | ------------------------------------ | --------------------------------------- |
-| `desktop-light`  | Desktop Chrome，light                | 全部                                    |
-| `desktop-dark`   | Desktop Chrome，dark                 | `visual` / `theme` 匹配的测试            |
-| `tablet-light`   | iPad (gen 7) 视口，Chromium          | `visual`                                |
-| `mobile-light`   | iPhone 13 视口，Chromium             | `visual` / `mobile`                     |
-| `reduced-motion` | Desktop Chrome，`reducedMotion: reduce` | `reduced-motion`                     |
+| 项目             | 设备 / 主题                            | 运行的测试                                                  |
+| ---------------- | -------------------------------------- | ----------------------------------------------------------- |
+| `desktop-light`  | Desktop Chrome，light                  | 全部（`testIgnore` 排除 `visual-webkit.spec.ts`）            |
+| `desktop-dark`   | Desktop Chrome，dark                   | `testMatch: /(visual\|theme)\.spec\.ts/`                     |
+| `tablet-light`   | iPad (gen 7) 视口，Chromium            | `testMatch: /visual\.spec\.ts/`                              |
+| `mobile-light`   | iPhone 13 视口，Chromium               | `testMatch: /(visual\|mobile\|app-info)\.spec\.ts/`          |
+| `reduced-motion` | Desktop Chrome，`reducedMotion: reduce` | `testMatch: /reduced-motion\.spec\.ts/`                    |
+| `webkit-visual`  | Desktop Safari（WebKit 引擎）          | `testMatch: /visual-webkit\.spec\.ts/`（7 个关键界面基线）   |
+
+> `tablet-light` / `mobile-light` 只借用设备描述符的视口与触控语义，仍使用 Chromium 引擎，减少 CI 的浏览器下载体积。
+> `npm run test:visual` 只跑 `visual.spec.ts`；`visual-webkit.spec.ts` 由 `npm run test:e2e` 或 `npx playwright test --project=webkit-visual` 触发，运行前需 `npx playwright install webkit`。
 
 ### 5.3 视觉基线
 
@@ -154,10 +161,13 @@ npm run test:e2e        # 先 build，再跑全部项目
 npm run test:visual:update
 ```
 
-- 基线位于 `tests/e2e/visual.spec.ts-snapshots/`，文件名含项目、主题与平台后缀（如 `home-hero-desktop-dark-darwin.png`）；
-- 共 12 个视觉用例，产生 16 组快照名 × 4 个项目 = 64 张 PNG；
+- 基线目录：
+  - `tests/e2e/visual.spec.ts-snapshots/`：13 个用例 × 4 个 Chromium 项目（`desktop-light`、`desktop-dark`、`tablet-light`、`mobile-light`）= 67 张 PNG；
+  - `tests/e2e/visual-webkit.spec.ts-snapshots/`：7 张 WebKit 关键界面 PNG（首屏、轮播舞台、法律页、灯箱、深色首屏、更新日志、404）；
+- 文件名含项目、主题与平台后缀（如 `home-hero-desktop-dark-darwin.png`），当前基线共 **74 张**；
 - **只在 macOS 生成/更新**，CI 的视觉任务固定在 `macos-latest`，避免跨平台字体渲染差异；
-- 更新基线后必须人工查看差异图，确认是预期变化。
+- WebKit 基线守护 Safari 在 `aspect-ratio`、`clamp()`、可变字体与图片解码上的差异，全页长截图仍由 Chromium 基线负责；
+- 更新基线后必须人工查看差异图，确认是预期变化；只更新 WebKit 基线时追加 `--project=webkit-visual`。
 
 ### 5.4 独立巡检
 
@@ -184,7 +194,7 @@ npm run release
 
 # 3. 提交源码与同步产物
 git add -A
-git commit -m "release: v2 <说明>"
+git commit -m "release: v3 <说明>"
 
 # 4. 推送 main，触发平台更新
 git push origin main
@@ -198,13 +208,13 @@ node scripts/sync-root.mjs
 node scripts/sync-root.mjs --check
 ```
 
-发布产物（共 437 个文件，随内容变化）：
+发布产物（当前 `.release-manifest.json` 记录 443 个文件，随内容变化）：
 
 ```text
 index.html  privacy.html  agreement.html  changelog.html  404.html
 _astro/                 # 哈希命名的 CSS/JS/AVIF/WebP/图片
 icons/                  # favicon、Apple Touch Icon、192/512
-og/og-default.png       # 1200×630 分享图
+og/                     # og-default / og-privacy / og-agreement / og-changelog，1200×630
 beian/beian.png
 .well-known/apple-app-site-association
 robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
@@ -230,7 +240,7 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 
 | 项       | 值                                                                 |
 | -------- | ------------------------------------------------------------------ |
-| 域名     | `https://jl.43322.cn`（2026-10-23 已上线 v2，交互增强 commit `78b9fcd`）      |
+| 域名     | `https://jl.43322.cn`（2026-10-23 上线，2026-10-24 迭代至 v3.0.0）  |
 | 仓库     | `https://github.com/kkkh/garden-website`                            |
 | 分支     | `main`                                                              |
 | 托管     | 腾讯云 EdgeOne Makers（静态，从仓库根目录服务）                     |
@@ -245,49 +255,60 @@ robots.txt  site.webmanifest  sitemap-index.xml  sitemap-0.xml
 ```bash
 BASE=https://jl.43322.cn
 
-# 7.1 页面状态码
-for p in / /privacy.html /agreement.html; do
+# 7.1 页面状态码（5 个页面 + 更新日志短链）
+for p in / /privacy.html /agreement.html /changelog.html /nonexist; do
   printf "%-16s " "$p"; curl -s -o /dev/null -w "%{http_code}\n" "$BASE$p"
 done
+curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "$BASE/changelog"   # 期望 301 → /changelog.html
 
-# 7.2 确认线上是 v2
+# 7.2 确认线上主结构与结构化数据
 curl -s "$BASE" | grep -c 'data-carousel'                # 期望 2
-curl -s "$BASE" | grep -o 'application/ld+json' | wc -l   # 期望 3
+curl -s "$BASE" | grep -o 'application/ld+json' | wc -l   # 首页期望 3（WebSite / MobileApplication / FAQPage）
+curl -s "$BASE/changelog.html" | grep -o 'application/ld+json' | wc -l  # 期望 3（WebSite / Breadcrumb / ItemList）
 curl -s "$BASE" | grep -c 'site.webmanifest'              # 期望 1
+curl -s "$BASE" | grep -o 'data-app-store-state="[^"]*"'  # 未上架期望 coming-soon
+curl -s "$BASE" | grep -c 'apple-itunes-app'              # 未上架期望 0；上架后期望 1
 
 # 7.3 新增资源
-for p in /site.webmanifest /robots.txt /sitemap-index.xml /og/og-default.png /icons/icon-192.png /.well-known/apple-app-site-association; do
+for p in /site.webmanifest /robots.txt /sitemap-index.xml /og/og-default.png /og/og-changelog.png /icons/icon-192.png /.well-known/apple-app-site-association; do
   printf "%-44s " "$p"; curl -s -o /dev/null -w "%{http_code}\n" "$BASE$p"
 done
 
 # 7.4 未知路径应返回品牌化 404
 curl -s -o /dev/null -w "%{http_code}\n" "$BASE/not-exist-page"
 
-# 7.5 缓存与响应头
-curl -sI "$BASE" | grep -iE 'cache-control|server'
+# 7.5 缓存与安全响应头（由 edgeone.json 下发）
+curl -sI "$BASE" | grep -iE 'cache-control|server|content-security-policy|x-frame-options|referrer-policy'
+curl -sI "$BASE/og/og-default.png" | grep -i cache-control   # 期望 max-age=86400
 ```
 
 浏览器人工确认：
 
-- [ ] 首屏为 v2 版式（墨蓝 + 鎏金 + 设备框），无主题闪烁；
+- [ ] 首屏版式正常（墨蓝 + 鎏金 + 设备框），无主题闪烁；
 - [ ] 22 张截图可切换，缩略图与灯箱正常；
 - [ ] 深/浅主题切换后刷新保持；
 - [ ] 移动端抽屉导航可用，无横向滚动；
 - [ ] 页脚两个备案链接可打开；
-- [ ] 首页出现「常见问题」区块。
+- [ ] `#download` 下载区显示「即将上架」状态、10 项应用信息与更新日志入口；
+- [ ] 首页 `#updates` 显示最近 3 条版本记录，点击「查看全部更新」可达 `/changelog.html`；
+- [ ] 更新日志页锚点（`#v1-0-0`）可直接定位，返回首页与 `/#download` 链接正常。
 
 ---
 
-## 8. 缓存建议
+## 8. 缓存与安全响应头
 
-| 路径                                           | 建议响应头                                      |
+下表与 [edgeone.json](../edgeone.json) 的实际规则一一对应（浏览器端与 CDN 端行为一致）：
+
+| 路径                                           | 实际响应头                                      |
 | ---------------------------------------------- | ----------------------------------------------- |
 | `/_astro/*`                                    | `Cache-Control: public, max-age=31536000, immutable` |
-| `/icons/*`、`/og/*`、`/beian/*`                 | `Cache-Control: public, max-age=86400`          |
 | `/*.html`                                      | `Cache-Control: public, max-age=300, must-revalidate` |
-| `/site.webmanifest`、`/robots.txt`、`/sitemap*.xml` | `Cache-Control: public, max-age=3600`       |
+| `/og/*`                                        | `Cache-Control: public, max-age=86400`          |
+| `/icons/*`、`/beian/*`、`/*.txt`、`/*.xml`     | 未显式声明，使用平台默认策略                    |
+| 全站                                           | CSP、`Referrer-Policy: strict-origin-when-cross-origin`、`X-Content-Type-Options: nosniff`、`X-Frame-Options: DENY`、`Permissions-Policy`（禁用 camera/microphone/geolocation/payment/usb） |
+| `/changelog`                                   | `301` → `/changelog.html`                       |
 
-v2 不再使用 `?v=` 手工版本号：CSS/JS/图片文件名带内容哈希，HTML 短缓存即可保证更新及时。
+v3 不使用 `?v=` 手工版本号：CSS/JS/图片文件名带内容哈希，HTML 短缓存即可保证更新及时；样式已全量内联进 HTML，`/_astro/*` 主要是脚本与图片。
 
 ---
 
@@ -305,6 +326,10 @@ v2 不再使用 `?v=` 手工版本号：CSS/JS/图片文件名带内容哈希，
 | 视觉回归大面积失败       | 字体/浏览器版本变化、非 macOS 更新了基线   | 在 macOS 重新 `test:visual:update`，人工审查差异                       |
 | `check:release` 失败     | 根产物与 `dist/` 不一致                    | 重新 `release`；确认没有手改根目录 HTML                                |
 | `check:tokens` 失败      | 手改生成 CSS 或组件写了颜色字面量          | 改 `tokens.ts` 后 `tokens:build`；或改用 `var(--color-...)`            |
+| 下载区仍显示「即将上架」 | `appStore.status` 未切为 `live`，或 `url` 为空/不合规 | 按 [06-maintenance.md](./06-maintenance.md) 的「上架切换」改数据，确保 URL 为 `https://apps.apple.com/...` |
+| 更新日志页为空           | `releases` 中没有 `released` 记录          | 为版本补 `status: 'released'` 与真实日期；预览只取最近 3 条            |
+| `apple-itunes-app` 未注入 | `smartBannerEnabled` 关闭，或 `appStoreId` 非纯数字 | 检查 `appStore.ts` 与 `lib/app-store.ts` 的 `appleItunesAppContent()`   |
+| 安全响应头缺失           | `edgeone.json` 未随仓库生效或被平台覆盖    | 确认平台读取该文件；`curl -sI` 复核 CSP / X-Frame-Options              |
 | `npm run dev` 启动失败   | Node < 24 / 依赖未按 lockfile 安装          | 升级 Node；`npm ci` 重装                                               |
 
 ---

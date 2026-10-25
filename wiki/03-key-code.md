@@ -1,6 +1,6 @@
 # 03 · 关键代码说明
 
-本文件聚焦「改代码前必须知道」的实现细节：DOM 契约、关键组件与函数、轮播/灯箱状态机、主题与埋点、构建脚本算法。所有行号基于 commit `3c9d801`。
+本文件聚焦「改代码前必须知道」的实现细节：DOM 契约、关键组件与函数、轮播/灯箱状态机、主题与埋点、上架状态机、构建脚本算法。路径均相对于仓库根目录，行为以当前 `main` HEAD `8ea113e` 为准。
 
 ---
 
@@ -44,6 +44,8 @@
 | `data-reveal`                          | 各区块                              | `reveal.ts`                       | 滚动显现元素                                      |
 | `data-legal-toc` / `data-legal-article`| `LegalLayout.astro`                 | `legal-toc.ts`                    | 目录与文章容器                                    |
 | `data-track` / `data-track-*`           | 各组件                              | `analytics.ts`                    | 声明式埋点                                        |
+| `data-app-store-state`                 | `AppInfoSection.astro`              | 测试                              | `soon` / `live`，用于断言下载区状态                |
+| `data-lightbox-group-title`            | Showcase / Architecture             | `lightbox.ts`                     | 灯箱标题；截图组为「应用界面」，架构组为「平台架构」 |
 
 > 行为脚本从不依赖 `.showcase__rail` 以外的视觉 class；轮播用该类定位横向滚动容器（`carousel.ts:48`）。
 
@@ -95,7 +97,7 @@ const fullTitle = path === '/' ? title : `${title} · ${site.name}`;
 const jsonLd = [websiteSchema(), mobileApplicationSchema(), faqSchema(faqItems)];
 ```
 
-组件顺序固定为 `Hero → FactBand → Intro → Showcase → Architecture → System → Faq → About`。新增/调整首页顺序只需改此文件，但需同步导航与测试。
+组件顺序固定为 `Hero → FactBand → AppInfo(#download) → Intro(#intro/#features) → Showcase(#screenshots) → Architecture(#architecture) → System(#system) → 内联 #updates → Faq(#faq) → About(#about)`。新增/调整首页顺序只需改此文件，但需同步导航与测试。
 
 ### 2.4 `[slug].astro`：静态路径与目录锚点
 
@@ -127,6 +129,22 @@ export async function getStaticPaths() {
 
 - 404 使用 `BaseLayout` 且 `noindex`，出口为 `/`、`/#screenshots`、`/#architecture`、`/privacy.html`；
 - `site.webmanifest.ts` 导出 `GET: APIRoute`，`display: standalone`，主题色取 `site.themeColor` / `metaColors`，图标路径直接引用 `assets` 常量，避免与 `generate-icons.mjs` 产物脱节。
+
+### 2.7 `changelog.astro`：更新日志页
+
+```ts
+const latest = getLatestReleasedRelease();
+const jsonLd = [
+  websiteSchema(),
+  breadcrumbSchema([{ name: '首页', path: '/' }, { name: '更新日志', path: '/changelog.html' }]),
+  changelogSchema(releases),
+];
+```
+
+- 页面使用 `BaseLayout` 的 `type="article"`、独立 OG 图 `assets.ogImages.changelog`；
+- 仅当存在已发布版本时写入 `publishedTime` / `modifiedTime`，未上架时不伪造日期；
+- 正文用 `ReleaseTimeline variant="full"` 渲染全部版本，底部提供返回首页与下载入口；
+- 首页 `#updates` 用 `variant="preview"` 与 `getRecentReleases(3)`，标题层级降为 `h3/h4`，避免与 `h2` 区块冲突。
 
 ---
 
@@ -230,9 +248,41 @@ export function track(name: AnalyticsEventName, payload: AnalyticsPayload = {}):
 | `websiteSchema()`                   | `WebSite`           | `name`、`alternateName`、`url`、`inLanguage`、`description`、`publisher`（Person + email）    |
 | `mobileApplicationSchema()`         | `MobileApplication` | `applicationCategory: EducationApplication`、`operatingSystem: iOS 26.0+`、免费、`PreOrder`、6 项 `featureList` |
 | `breadcrumbSchema(items)`           | `BreadcrumbList`    | `position` 从 1 递增，`item` 为绝对 URL                                                       |
+| `changelogSchema(items)`            | `ItemList`          | 按版本倒序，`ListItem` 指向 `/changelog.html#v...`，内嵌 `SoftwareApplication`                 |
 | `faqSchema(items)`                  | `FAQPage`           | 每项 `Question` + `acceptedAnswer`，与页面 FAQ 同源                                           |
 
 所有 URL 通过 `new URL(path, site.domain)` 生成绝对地址，避免结构化数据校验失败。
+
+### 5.1 App Store 上架状态机（[appStore.ts](../src/data/appStore.ts)）
+
+```ts
+export type AppStoreStatus = 'coming-soon' | 'live';
+
+export function isAllowedAppStoreUrl(url: string | null): boolean {
+  if (!url) return false;
+  const parsed = new URL(url);
+  return parsed.protocol === 'https:' && parsed.hostname === 'apps.apple.com';
+}
+
+export function hasDownloadUrl(config = appStore): boolean {
+  return config.status === 'live' && isAllowedAppStoreUrl(config.url);
+}
+```
+
+- `hasDownloadUrl()` 是唯一开关：`AppInfoSection` 决定渲染下载按钮+二维码或「上架时提醒我」，FAQ 首条与 Hero 文案使用派生值 `appAvailability`；
+- `mobileApplicationSchema()` 依据同一开关把 `offers.availability` 在 `PreOrder` / `InStock` 间切换，并在 live 时补 `installUrl`、`softwareVersion`、`fileSize`、`datePublished`、`privacyPolicy`；
+- `appleItunesAppContent()`（[lib/app-store.ts](../src/lib/app-store.ts)）仅在 `smartBannerEnabled && status === 'live'` 且 `appStoreId` 为纯数字时返回 `app-id=...`，`appArgument` 未验证前不会拼接；
+- 切换上架只需改 `appStore` 与 `releases`；另需手动更新 [HeroSection.astro](../src/components/home/HeroSection.astro) 第 79 行写死的「即将上架 App Store」标签，其余组件与脚本无需改动。
+
+### 5.2 版本更新数据（[releases.ts](../src/data/releases.ts)）
+
+| 导出 / 函数 | 行为 |
+| --- | --- |
+| `releases` | 版本数组；未发布版本 `status: 'upcoming'` 且 `date: null` |
+| `releaseAnchor(version)` | `1.0.0` → `v1-0-0`，用于时间线与 JSON-LD 锚点 |
+| `getRecentReleases(limit = 3)` | 取前 N 条供首页预览 |
+| `getLatestReleasedRelease()` | 首个 `status: 'released'` 的版本，供 `appInfo` 与页面时间元数据 |
+| `groupReleaseChanges(release)` | 按 `added` / `improved` / `fixed` 分组并过滤空组，顺序与 `releaseCategoryMeta` 一致 |
 
 ---
 
@@ -300,7 +350,13 @@ export class ScreenshotCarousel {
 - 把当前幻灯片的灯箱数据同步到「查看大图」按钮；
 - 非初始化时调用 `scrollThumbIntoView`。
 
-**预加载**：对 `index - 1 / index / index + 1` 的图片 `currentSrc || src` 建立 `Image`，用 `Set` 去重。
+**相邻预取**（`preloadAround`）：
+
+- 只在 `document.readyState === 'complete'` 后通过 `requestIdleCallback`（无该 API 时 `setTimeout` 200ms）执行；
+- 把 `index - 1 / index / index + 1` 幻灯片内 `<img loading="lazy">` 改为 `loading="eager"`，由浏览器按 `srcset/sizes` 选择合适格式与宽度，**不再手动 `new Image()` 拉取 JPG**；
+- `navigator.connection.saveData` 或 `effectiveType` 为 `slow-2g` / `2g` 时整段跳过，避免无效流量。
+
+**切换反馈**：`sync` 在非 `init` 来源时调用 `pulseMeta()`，给 `.showcase__meta` 加 `is-switching` 类 460ms 后移除；`prefers-reduced-motion` 时跳过。
 
 **缩略图居中**：计算缩略图相对轨道的偏移，减去可视宽度的一半，再夹在 `[0, scrollWidth - clientWidth]`；减弱动效时 `behavior: 'auto'`。
 
@@ -313,7 +369,7 @@ export class ScreenshotCarousel {
 | 缩略图 keydown                    | ←/→/Home/End 切换并把焦点移到目标缩略图                                 |
 | 舞台 keydown                      | ←/→/Home/End 切换；若事件来自按钮/链接则忽略                            |
 | 舞台 pointerdown                  | 记录起点并尝试 `setPointerCapture`                                      |
-| 舞台 pointerup                    | 释放捕获；`isHorizontalSwipe` 通过则按方向切换，来源 `swipe`            |
+| 舞台 pointerup                    | 释放捕获；位移 < 6px 视为轻点并点击「查看大图」；`isHorizontalSwipe` 通过则按方向切换，来源 `swipe` |
 | 舞台 dragstart                    | `preventDefault()`，防止原生拖拽中断 pointer 序列                       |
 | 舞台 pointercancel               | 清空起点                                                                |
 
@@ -450,10 +506,10 @@ if (document.readyState === 'loading') {
 
 ### 10.3 `sync-root.mjs`
 
-- `SYNC_TARGETS` 白名单：5 个 HTML、`robots.txt`、`site.webmanifest`、两个 sitemap、`_astro`、`icons`、`og`、`beian`、`.well-known`；
+- `SYNC_TARGETS` 白名单共 14 项：5 个 HTML（`index` / `privacy` / `agreement` / `changelog` / `404`）、`robots.txt`、`site.webmanifest`、两个 sitemap、`_astro`、`icons`、`og`、`beian`、`.well-known`；
 - 同步前检查白名单条目是否都在 `dist/`；
 - `--check` 逐文件比较体积、清理名单中的残留旧产物、核对 manifest 清单是否过期；
-- 同步模式复制新文件、删除上次清单中已不存在的文件、写入 `{ generatedAt, count, files }`。
+- 同步模式复制新文件、删除上次清单中已不存在的文件、写入 `{ generatedAt, count, files }`（当前 443 个文件）。
 
 ### 10.4 `check-tokens.mjs`
 
@@ -484,12 +540,18 @@ if (document.readyState === 'loading') {
 | --------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `tests/unit/carousel.test.ts` | `wrapIndex` 的越界/负数/NaN/小数；`formatIndex` 补零；滑动阈值与方向判定                                      |
 | `tests/unit/theme.test.ts`    | 非法偏好拒绝；`system` 跟随系统；`applyTheme` 写 DOM 与 meta；存储异常不抛错                                   |
-| `tests/unit/data.test.ts`     | 导航 id 唯一、备案格式、22 张截图序号连续且 alt/caption 不重复、10 张架构图、4/6/4 数量、功能卡目标范围、schema 类型 |
+| `tests/unit/data.test.ts`     | 导航 id 唯一、备案格式、22 张截图序号连续且 alt/caption 不重复、10 张架构图、4/6/4 数量、功能卡目标范围、五类 schema 类型 |
+| `tests/unit/app-store.test.ts` | URL 白名单（协议/域名）、`hasDownloadUrl` 状态组合、`apple-itunes-app` 拼接与回退、`appAvailability` 文案 |
+| `tests/unit/releases.test.ts` | 版本号格式、released 必须有日期 / upcoming 必须为 null、`releaseAnchor`、预览条数、变更分组 |
+| `tests/unit/config.test.ts`   | `edgeone.json` 的 301、安全响应头与缓存策略 |
 | `tests/e2e/home.spec.ts`      | 标题/语言/地标唯一、canonical/OG/manifest、三类 JSON-LD、轮播 4 种操作、灯箱焦点恢复、主题持久化、首屏无闪烁、FAQ、法律页、外链安全、404 |
-| `tests/e2e/a11y.spec.ts`      | 四页 + 深色 axe 扫描无 serious/critical、Tab 顺序、键盘操作、触控目标 ≥ 40px、正文对比度 ≥ 4.5                    |
+| `tests/e2e/app-info.spec.ts`  | 下载区未上架降级、应用信息与隐私摘要、结构化数据 PreOrder 断言 |
+| `tests/e2e/changelog.spec.ts` | 更新日志结构、锚点、独立 OG、首页预览互链、页脚入口、零第三方请求 |
+| `tests/e2e/a11y.spec.ts`      | 五页 + 深色 axe 扫描无 serious/critical、Tab 顺序、键盘操作、触控目标 ≥ 40px、正文对比度 ≥ 4.5              |
 | `tests/e2e/mobile.spec.ts`    | 无横向溢出、<1024px 抽屉 / ≥1024px 桌面导航、缩略图滚入视野、Hero 可读                                 |
 | `tests/e2e/reduced-motion.spec.ts` | `[data-reveal]` 全部可见、无循环动画、过渡 ≤ 0.0001s、`scroll-behavior: auto`                                |
-| `tests/e2e/visual.spec.ts`    | 12 个页面/组件状态用例，16 组快照 × 4 个项目共 64 张基线，`maxDiffPixelRatio: 0.02`                            |
+| `tests/e2e/visual.spec.ts`    | 13 个页面/组件状态用例，Chromium 四项目共 67 张基线，`maxDiffPixelRatio: 0.02`                            |
+| `tests/e2e/visual-webkit.spec.ts` | 7 个关键界面 WebKit 基线（首屏、轮播、法律页、灯箱、深色首屏、更新日志、404）                              |
 
 ---
 
@@ -500,4 +562,6 @@ if (document.readyState === 'loading') {
 3. 新增交互：尊重 `prefers-reduced-motion`，补键盘路径与 ARIA 状态；
 4. 新增页面：必须走 `BaseLayout`，补 SEO、JSON-LD（如适用）与 sitemap 过滤规则；
 5. 改法律文本：确认 H2 数量与 TOC 断言；日期字段用 `YYYY-MM-DD`；
-6. 改发布产物：同步 `sync-root.mjs` 白名单、`.release-manifest.json` 与部署文档。
+6. 改版本记录：`releases.ts` 的顺序、`status/date` 组合、锚点与预览条数需同步单测与 E2E；
+7. 切换上架：只改 `appStore.ts` 的 `status` / `appStoreId` / `url`，并确认 URL 域名为 `apps.apple.com`；
+8. 改发布产物：同步 `sync-root.mjs` 白名单、`.release-manifest.json` 与部署文档。

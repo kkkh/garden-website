@@ -11,7 +11,7 @@
 | 运行期资源           | 来源                                          | 加载方式                                       |
 | -------------------- | --------------------------------------------- | ---------------------------------------------- |
 | 页面 HTML            | Astro 构建期生成                              | 直接请求                                       |
-| 样式                 | `src/styles/*` 经 Vite 打包                   | `/_astro/*.css`，`inlineStylesheets: 'auto'`    |
+| 样式                 | `src/styles/*` 经 Vite 打包                   | 全部内联进 HTML（`inlineStylesheets: 'always'`） |
 | 交互脚本             | `src/scripts/app.ts` 及其导入模块             | `/_astro/*.js`，`type="module"`                |
 | 字体                 | `@fontsource-variable/fraunces` npm 包        | CSS `@import` 后被 Vite 打包为本地字体文件      |
 | 图片                 | `src/assets/**` 经 sharp 派生                  | `dist/_astro/*.avif`、`*.webp`、原格式多尺寸     |
@@ -69,6 +69,9 @@ flowchart TD
         SHOTS["data/screenshots.ts"]
         ARCH["data/architecture.ts"]
         FAQ["data/faq.ts"]
+        STORE["data/appStore.ts"]
+        INFO["data/appInfo.ts"]
+        REL["data/releases.ts"]
         TYPES["data/types.ts"]
         LEGAL["content/legal/*.md"]
     end
@@ -84,6 +87,7 @@ flowchart TD
         THEME["lib/theme.ts"]
         ANALYTICS["lib/analytics.ts"]
         FORMAT["lib/format.ts"]
+        APPSTORE["lib/app-store.ts"]
         BASE["layouts/BaseLayout.astro"]
         LEGALLAYOUT["layouts/LegalLayout.astro"]
     end
@@ -92,12 +96,15 @@ flowchart TD
         CHROME["components/chrome/*"]
         HOMEC["components/home/*"]
         UIC["components/ui/*"]
+        APPC["components/app/*"]
+        LOGC["components/changelog/*"]
     end
 
     subgraph Pages["页面"]
         INDEX["pages/index.astro"]
         SLUG["pages/[slug].astro"]
         P404["pages/404.astro"]
+        LOGP["pages/changelog.astro"]
         MANIFEST["pages/site.webmanifest.ts"]
     end
 
@@ -124,8 +131,22 @@ flowchart TD
     HOME --> HOMEC
     SHOTS --> HOMEC
     ARCH --> HOMEC
+    STORE --> APPSTORE
+    STORE --> FAQ
+    STORE --> HOMEC
+    STORE --> SCHEMA
+    REL --> INFO
+    REL --> SCHEMA
+    REL --> LOGC
+    INFO --> HOMEC
+    INFO --> SCHEMA
+    APPSTORE --> SEO
+    APPC --> HOMEC
+    LOGC --> INDEX
+    LOGC --> LOGP
     FAQ --> INDEX
     SCHEMA --> INDEX
+    SCHEMA --> LOGP
     SCHEMA --> LEGALLAYOUT
     FORMAT --> LEGALLAYOUT
     SEO --> BASE
@@ -133,6 +154,7 @@ flowchart TD
     UIC --> BASE
     BASE --> INDEX
     BASE --> P404
+    BASE --> LOGP
     BASE --> LEGALLAYOUT
     LEGAL --> SLUG
     SLUG --> LEGALLAYOUT
@@ -150,8 +172,8 @@ flowchart TD
 
 补充说明：
 
-- `data/site.ts` 只依赖 `design/tokens.ts` 的 `metaColors`，是唯一被「数据 → 设计」反向引用的点；
-- `lib/schema.ts` 依赖 `data/site.ts`，被首页与法律布局共同使用；
+- `data/site.ts` 只依赖 `design/tokens.ts` 的 `metaColors` 与 `data/appStore.ts` 的 `appAvailability`；
+- `data/appInfo.ts` 依赖 `data/releases.ts`；`lib/schema.ts` 依赖 `site`、`appStore`、`appInfo`、`releases`，被首页、法律布局与更新日志页共同使用；
 - `scripts/*` 不相互导入，统一由 `app.ts` 组合，便于单独测试纯函数；
 - 组件不直接导入具体交互模块（仅 `SiteHeader` 与 `BaseLayout` 声明入口 `app.ts`），行为与结构通过 DOM 契约解耦。
 
@@ -182,7 +204,9 @@ flowchart TD
 | `public/icons/favicon.svg`              | `generate-icons.mjs`         | `Seo.astro` 的 SVG favicon                                     |
 | `public/icons/apple-touch-icon.png`    | `generate-icons.mjs`         | `Seo.astro` 与 manifest                                        |
 | `public/icons/icon-192.png` / `512`    | `generate-icons.mjs`         | `site.webmanifest`、页头与页脚的品牌图                          |
-| `public/og/og-default.png`             | `generate-icons.mjs`         | OG / Twitter / `assets.ogImage` / schema 的 `image`             |
+| `public/og/og-default.png`             | `generate-icons.mjs`         | 首页与默认 OG / Twitter / schema 的 `image`                     |
+| `public/og/og-privacy.png`、`og-agreement.png`、`og-changelog.png` | `generate-og.mjs` | 法律页与更新日志页的独立 OG 图                                 |
+| `public/qr/app-store.svg`              | 上架后手工生成               | `QrCode.astro`（当前 `status: coming-soon` 时不请求）           |
 | `public/beian/beian.png`               | 手工提供                     | 页脚公安备案徽标                                               |
 | `dist/_astro/*`                        | Astro + sharp                | HTML 中的 CSS/JS/图片引用                                      |
 | `sitemap-index.xml` / `sitemap-0.xml`  | `@astrojs/sitemap`           | 搜索引擎；`robots.txt` 指向 index                              |
@@ -198,6 +222,7 @@ flowchart TD
 | ICP 备案     | `https://beian.miit.gov.cn/`                                         | 页脚、关于区块                    | `target="_blank"` + `noopener noreferrer` |
 | 公安备案查询 | `https://beian.mps.gov.cn/#/query/webSearch?code=14010602111139`     | 页脚、关于区块                    | 同上                         |
 | 邮件         | `mailto:56967916@qq.com` / `mailto:uull@aliyun.com`                  | 页脚、关于区块、法律页联系声明    | 无                           |
+| App Store    | `https://apps.apple.com/app/id...`（仅 `status: live` 且通过白名单） | 下载区按钮 / 二维码说明           | `target="_blank"` + `noopener noreferrer` |
 | 结构化数据   | `https://jl.43322.cn/...`                                            | JSON-LD 的 `url` / `item` / `image` | 仅数据，不发请求             |
 | Universal Links | `public/.well-known/apple-app-site-association` 中的 `appID`     | 静态文件                          | 由系统处理                   |
 
@@ -215,6 +240,8 @@ flowchart TD
 | `<dialog>` + `showModal`             | 移动导航、灯箱                 | 原生焦点陷阱与 Esc；脚本仅在支持时初始化          |
 | `CustomEvent`                        | 埋点与主题事件                 | 无替代；不影响页面内容                           |
 | `requestAnimationFrame`              | 滚动节流                       | 现代浏览器均支持                                 |
+| `requestIdleCallback`                | 轮播相邻预取                   | 无该 API 时退化为 `setTimeout(200)`              |
+| `navigator.connection`               | 省流量 / 2G 时跳过预取         | 缺失时按正常网络处理                             |
 | Pointer Events / `setPointerCapture` | 轮播滑动                       | 捕获失败时仍可在 `pointerup` 判定                |
 | `HTMLImageElement.decode()`          | 灯箱                           | 可选链调用；失败转入错误态                       |
 | `window.scrollTo` / `scrollIntoView` | 回到顶部、缩略图居中           | 立即跳转仍可用                                   |

@@ -11,10 +11,12 @@ src/
 ├── pages/          路由与页面编排
 ├── layouts/        HTML 骨架与两类页面模板
 ├── components/
+│   ├── app/        上架后下载入口（AppStoreBadge、QrCode）
+│   ├── changelog/  版本时间线（ReleaseTimeline）
 │   ├── seo/        元信息与结构化数据
 │   ├── chrome/     站点框架（页头、抽屉导航、页脚、回到顶部）
-│   ├── home/       首页八个区块
-│   └── ui/         可复用小部件（图标、主题切换、灯箱）
+│   ├── home/       首页九个区块组件
+│   └── ui/         可复用小部件（图标、主题切换、灯箱、截图卡片）
 ├── data/           站点常量与内容索引（构建期只读）
 ├── lib/            主题、埋点、日期、结构化数据等纯函数/浏览器服务
 ├── scripts/        运行时交互增强（轮播、灯箱、导航、显现、目录）
@@ -34,8 +36,9 @@ tests/              单元与端到端测试
 
 | 模块                     | 职责                                                                                                                         | 依赖                                                                                           |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `index.astro`            | 组装首页八个区块；生成 `websiteSchema + mobileApplicationSchema + faqSchema` 数组并传给布局                                   | `BaseLayout`、8 个首页组件、`data/faq`、`data/site`、`lib/schema`                               |
+| `index.astro`            | 组装首页 9 个组件 + 内联 `#updates` 区块；生成 `websiteSchema + mobileApplicationSchema + faqSchema` 数组并传给布局            | `BaseLayout`、9 个首页组件、`ReleaseTimeline`、`data/faq`、`data/releases`、`data/site`、`lib/schema` |
 | `[slug].astro`           | 读取 `legal` 集合生成静态路径；渲染 Markdown；从正文提取 H2 并用 `GithubSlugger` 生成目录锚点；路径强制 `.html`              | `astro:content`、`github-slugger`、`LegalLayout`                                                |
+| `changelog.astro`        | 更新日志页：完整版本时间线；生成 `websiteSchema + breadcrumbSchema + changelogSchema`；独立 OG 与文章时间                 | `BaseLayout`、`ReleaseTimeline`、`data/releases`、`lib/schema`                                 |
 | `404.astro`              | 品牌化 404，提供首页、截图、架构、隐私政策四个出口；`noindex`                                                                 | `BaseLayout`                                                                                    |
 | `site.webmanifest.ts`    | 静态 `APIRoute`，输出 Web App Manifest（名称、主题色、三个图标）                                                               | `data/site`、`design/tokens` 的 `metaColors`                                                    |
 
@@ -87,8 +90,9 @@ tests/              单元与端到端测试
 
 | 组件                      | 内容与数据源                                                                                                   | 关键交互 / 契约                                                                                     |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `HeroSection.astro`       | 品牌、定位、简介、两个 CTA、首张截图（`screenshots[0]`）、平台标签                                             | 首图 `eager` + `fetchpriority="high"`；CTA 埋点                                                        |
+| `HeroSection.astro`       | 品牌、定位、简介、两个 CTA、首张截图（`screenshots[0]`）、平台标签                                             | 首图 `eager` + `fetchpriority="high"`；CTA 埋点；「即将上架 App Store」标签为静态文案，上架时需手改 |
 | `FactBand.astro`          | 4 项概览数据（`facts`）                                                                                        | `data-reveal` + `reveal-delay-*`                                                                      |
+| `AppInfoSection.astro`    | `#download` 下载区：上架状态、10 项应用信息、隐私摘要、App Store 按钮/二维码或提醒入口                          | `data-app-store-state`；`hasDownloadUrl()` 决定分支；链接到更新日志与隐私政策                          |
 | `IntroSection.astro`      | 同时渲染「应用介绍」（4 卡，`introCards`）与「功能特性」（6 卡，`features`）                                   | 功能卡链接带 `data-shot-target`，点击后轮播跳到对应截图                                               |
 | `ShowcaseSection.astro`   | 22 张截图：舞台、前后箭头、查看大图、说明计数、缩略图轨、隐藏灯箱数据源、操作提示                              | `data-carousel-*`、`data-lightbox-*`、`data-shot-target` 的目标                                          |
 | `ArchitectureSection.astro` | 10 张架构图卡片（标题、FIG 序号、说明），点击打开灯箱                                                        | `data-lightbox-trigger` / `data-lightbox-item`，组名 `architecture`                                   |
@@ -111,17 +115,28 @@ tests/              单元与端到端测试
 
 `Icon` 的图标表是纯数据映射；新增图标需要同时改 `name` 类型与 `PATHS`。
 
+### 7.1 下载与更新日志组件
+
+| 组件 | 职责 | 关键契约 |
+| --- | --- | --- |
+| `app/AppStoreBadge.astro` | 已上架时渲染 App Store 下载主按钮；未上架时不输出 | `hasDownloadUrl()`、`outbound:click` 埋点 |
+| `app/QrCode.astro` | 已上架时渲染 `/qr/app-store.svg` 二维码；未上架时显示占位文案 | `hasDownloadUrl()` |
+| `changelog/ReleaseTimeline.astro` | 版本时间线，`variant="preview"` 用 `h3/h4` 并附「查看全部更新」，`full` 用 `h2/h3` | `releases`、`variant`；锚点由 `releaseAnchor()` 生成 |
+
 ---
 
 ## 8. 数据模块（`src/data/`）
 
 | 模块               | 导出                                                                                                                                             | 被谁消费                                                       |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| `site.ts`          | `site`（品牌、域名、描述、关键词、平台、开发者、联系方式、备案、主题色）、`assets`（图标/OG 路径）、`navigation`、`legalNavigation`、两个类型 | 布局、页头、页脚、关于、Seo、manifest、schema、测试             |
+| `site.ts`          | `site`（品牌、域名、描述、关键词、平台、开发者、联系方式、备案、主题色）、`assets`（图标/OG/二维码路径）、`navigation`、`legalNavigation`、`resourceNavigation`、三个类型 | 布局、页头、页脚、关于、Seo、manifest、schema、测试             |
 | `home.ts`          | `facts`、`introCards`、`features`、`systemGroups`                                                                                                | Hero 之外的首页区块、数据测试                                  |
 | `screenshots.ts`   | `screenshots`：22 项 `{ index, image, alt, caption }`                                                                                            | Hero、Showcase、功能卡（`targetShot`）、数据测试、灯箱          |
 | `architecture.ts`  | `architectureFigures`：10 项 `{ index, image, title, description }`                                                                              | Architecture、数据测试、灯箱                                    |
 | `faq.ts`           | `faqItems`：6 项问答                                                                                                                             | FaqSection、`faqSchema`、数据测试                               |
+| `appStore.ts`      | `appStore` 配置、`AppStoreStatus`、`isAllowedAppStoreUrl()`、`hasDownloadUrl()`、`appAvailability`                                                | 下载区、FAQ、Seo、schema、测试                                  |
+| `appInfo.ts`       | `appInfo`：bundleId、版本/日期（派生自 releases）、大小、分级、价格、隐私摘要                                                                       | 下载区、schema                                                  |
+| `releases.ts`      | `releases`、`releaseCategoryMeta`、`releaseAnchor()`、`getRecentReleases()`、`getLatestReleasedRelease()`、`groupReleaseChanges()`                  | 首页 `#updates`、更新日志页、`appInfo`、schema、测试             |
 | `types.ts`         | `Screenshot`、`ArchitectureFigure`、`Feature`、`IntroCard`、`SystemGroup`、`Fact` 等接口                                                          | 数据模块与组件 Props                                            |
 
 **单一事实源规则**：同一文案只允许存在一处。例如备案号只在 `site.filing` 定义，三处页面引用；FAQ 同源驱动可见列表与 JSON-LD。
@@ -136,9 +151,10 @@ tests/              单元与端到端测试
 | `theme-init.ts`        | 导出内联脚本字符串，在 `<head>` 中提前设置 `data-theme`、`color-scheme` 并添加 `.js` 类                       | 构建期注入 / 运行期执行 |
 | `analytics.ts`         | `track()` 本地事件缓冲（上限 200）+ `CustomEvent`；`initAnalytics()` 通过 `data-track` 统一委托               | 运行期                 |
 | `format.ts`            | 中文日期格式化（固定 `Asia/Shanghai`）与 ISO 日期切片                                                        | 构建期                 |
-| `schema.ts`            | `websiteSchema`、`mobileApplicationSchema`、`breadcrumbSchema`、`faqSchema`                                    | 构建期                 |
+| `schema.ts`            | `websiteSchema`、`mobileApplicationSchema`、`breadcrumbSchema`、`changelogSchema`、`faqSchema`                | 构建期                 |
+| `app-store.ts`         | `appleItunesAppContent()`：仅在 live + 数字 ID 时生成 Smart Banner 内容                                       | 构建期                 |
 
-`lib/` 不依赖任何组件；其中 `theme.ts` 与 `analytics.ts` 有单元测试覆盖。
+`lib/` 不依赖任何组件；其中 `theme.ts`、`format.ts` 与 `schema.ts` 有单元测试覆盖。
 
 ### 9.1 类型声明
 
@@ -216,7 +232,7 @@ tests/              单元与端到端测试
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `tests/unit/carousel.test.ts` | 环形索引、两位序号、滑动判定（阈值/比例/斜向）                                                                    |
 | `tests/unit/theme.test.ts`    | 偏好校验、系统解析、DOM/meta 应用、存储读写与异常降级                                                             |
-| `tests/unit/data.test.ts`     | 导航、备案、22 张截图、10 张架构图、4/6/4 内容数量、功能卡目标范围、四类 schema 契约                              |
+| `tests/unit/data.test.ts`     | 导航、备案、22 张截图、10 张架构图、4/6/4 内容数量、功能卡目标范围、五类 schema 契约                              |
 | `tests/unit/app-store.test.ts` | 下载入口状态机：地址白名单、App Store ID、Smart Banner 拼接与回退                                                |
 | `tests/unit/releases.test.ts` | 版本号格式、发布日期约束、锚点、预览条数与变更分组                                                              |
 | `tests/unit/config.test.ts`   | `edgeone.json` 的 301、安全响应头与缓存策略                                                                      |
@@ -226,9 +242,9 @@ tests/              单元与端到端测试
 | `tests/e2e/changelog.spec.ts` | 更新日志结构、锚点、独立 OG、首页预览互链、页脚入口、零第三方请求                                                 |
 | `tests/e2e/mobile.spec.ts`    | 无横向溢出、抽屉/桌面导航切换、缩略图滚动、Hero 可读性                                                            |
 | `tests/e2e/reduced-motion.spec.ts` | 内容直接可见、无持续动画、过渡近似 0、锚点非平滑滚动                                                         |
-| `tests/e2e/visual.spec.ts`    | 页面与组件状态视觉基线（16 组快照，4 个项目共 67 张 PNG）                                          |
+| `tests/e2e/visual.spec.ts`    | 页面与组件状态视觉基线（13 个用例，Chromium 67 张 PNG）                                                          |
 | `tests/e2e/visual-webkit.spec.ts` | WebKit 关键界面基线（7 个场景：首屏/轮播/法律页/灯箱/深色首屏/更新日志/404）                                |
-| `playwright.config.ts`       | 6 个项目、`astro preview` webServer、报告输出、1% 像素容差                                                         |
+| `playwright.config.ts`       | 6 个项目（desktop-light、desktop-dark、tablet-light、mobile-light、reduced-motion、webkit-visual）、`astro preview` webServer、报告输出、2% 像素容差 |
 | `vitest.config.ts`           | Node 环境、`@` 别名、覆盖率范围                                                                                   |
 | `eslint.config.mjs`          | JS/TS/Astro 规则、禁 `any`、console 限制、忽略发布产物                                                             |
 | `.prettierrc.json`           | 100 列、单引号、尾逗号、Astro 插件                                                                                 |
@@ -266,6 +282,8 @@ tests/              单元与端到端测试
 | 功能卡文案或目标截图         | `data/home.ts`、`targetShot` 范围测试、FAQ/文案一致性                                             |
 | 导航项                       | `data/site.ts`、页头/抽屉/页脚、E2E 导航断言、区块锚点                                             |
 | 备案号 / 联系方式            | `data/site.ts`、数据测试、页脚与关于区块（自动同步）                                               |
+| 版本记录 / 更新日志          | `data/releases.ts`、`appInfo`（版本/日期派生）、首页预览、`/changelog.html`、`releases.test.ts`、视觉基线 |
+| 上架状态 / 下载入口          | `data/appStore.ts`（status / appStoreId / url）、`AppInfoSection`、FAQ、Seo Smart Banner、schema、`app-store.test.ts` |
 | 法律文本章节                 | `content/legal/*.md`、E2E 目录/章节数断言、日期                                                 |
 | 设计令牌                     | `design/tokens.ts` → `tokens:build` → 对比度门禁 → 视觉基线                                       |
 | 交互脚本 DOM 契约            | 对应组件属性、`03-key-code.md`、E2E                                                              |

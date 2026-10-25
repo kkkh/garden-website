@@ -202,7 +202,9 @@ git add package.json package-lock.json
 
 ```bash
 npm run test:visual:update
-git add tests/e2e/visual.spec.ts-snapshots
+# WebKit 基线需单独更新：
+npx playwright test tests/e2e/visual-webkit.spec.ts --update-snapshots
+git add tests/e2e/visual.spec.ts-snapshots tests/e2e/visual-webkit.spec.ts-snapshots
 ```
 
 - 基线文件名包含项目、主题与平台后缀，**只在 macOS 更新**；
@@ -218,6 +220,7 @@ git add tests/e2e/visual.spec.ts-snapshots
 | --- | --- |
 | 记录一个新版本 | 在 `src/data/releases.ts` 顶部新增条目：已发布用 `status: 'released'` + 真实 `date`；未发布用 `upcoming` + `date: null` |
 | 应用上架 | 把 `src/data/appStore.ts` 的 `status` 改为 `'live'`，填真实数字 `appStoreId` 与 `https://apps.apple.com/app/id...` |
+| 同步 Hero 标签 | [HeroSection.astro](../src/components/home/HeroSection.astro) 第 79 行的「即将上架 App Store」是静态文案，上架后需手动改为已上架表述（其余位置由 `site.availability` 自动切换） |
 | 补充商店信息 | 在 `src/data/appInfo.ts` 填 `size`、`ageRating`；`version`/日期自动跟随 `releases` |
 | 生成二维码 | 上架后用 QR 生成脚本输出 `public/qr/app-store.svg`（当前未引入生成依赖，按需添加），并把 `qr` 加入 `SYNC_TARGETS` |
 | 切换后验证 | `npm run verify` → `release` → 推送 → 检查 `apps.apple.com` 外链、`apple-itunes-app`、`InStock` 结构化数据 |
@@ -265,7 +268,7 @@ git add tests/e2e/visual.spec.ts-snapshots
 [ ] 如改截图/架构图数量：单测、E2E、OG 文案、README/wiki 数量全部同步
 [ ] 如改法律文本：日期与章节数断言同步
 [ ] 如改令牌：tokens.generated.css 已由脚本生成，未手改
-[ ] npm run release 已执行，根产物与 dist/ 一致（437 个文件，随内容变化）
+[ ] npm run release 已执行，根产物与 dist/ 一致（443 个文件，随内容变化）
 [ ] git status 中产物变更已一并提交
 [ ] 推送 main 后按 05 的 7.1–7.5 验证线上
 ```

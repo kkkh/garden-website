@@ -75,7 +75,7 @@ flowchart LR
     subgraph Output["产物"]
         CSS["styles/tokens.generated.css"]
         ICONS["public/icons + public/og"]
-        DIST["dist/（437 个文件）"]
+        DIST["dist/（443 个文件）"]
         ROOT["仓库根同步产物"]
     end
 
@@ -129,7 +129,14 @@ BaseLayout
 │   └── <script> import '@/scripts/app'
 ```
 
-法律页在 `main` 内使用 `LegalLayout`：左侧目录（`data-legal-toc`）+ 右侧文章（`data-legal-article`）。首页由八个区块组件按顺序拼接。
+法律页在 `main` 内使用 `LegalLayout`：左侧目录（`data-legal-toc`）+ 右侧文章（`data-legal-article`）。首页由 9 个组件与 1 个内联区块按固定顺序拼接：
+
+```text
+HeroSection → FactBand → AppInfoSection(#download) → IntroSection(#intro/#features)
+→ ShowcaseSection(#screenshots) → ArchitectureSection(#architecture)
+→ SystemSection(#system) → 内联 #updates(ReleaseTimeline preview)
+→ FaqSection(#faq) → AboutSection(#about)
+```
 
 ---
 
@@ -140,9 +147,12 @@ BaseLayout
 ```text
 site.ts ───────────────┐
 home.ts ───────────────┤
-screenshots.ts ────────┼──▶ index.astro ──▶ Hero / FactBand / Intro / Showcase /
-architecture.ts ───────┤                    Architecture / System / Faq / About
-faq.ts ────────────────┤
+screenshots.ts ────────┤
+architecture.ts ───────┼──▶ index.astro ──▶ Hero / FactBand / AppInfo / Intro / Showcase /
+faq.ts ────────────────┤                    Architecture / System / updates / Faq / About
+appStore.ts ───────────┤
+appInfo.ts ────────────┤
+releases.ts ───────────┤
 schema.ts ─────────────┘                    └──▶ Seo（JSON-LD：WebSite + MobileApplication + FAQPage）
 ```
 
@@ -176,6 +186,7 @@ LegalLayout：目录、日期、面包屑 JSON-LD、另一份法律文档与返�
 | ------------------------------- | ----------------------- | -------------------------------------------------------------------- | ---------------------------------------- |
 | `src/design/tokens.ts`          | `generate-tokens.mjs`   | `src/styles/tokens.generated.css`                                    | `global.css` 的第一层导入                |
 | `src/assets/brand/app-icon.png` | `generate-icons.mjs`    | `public/icons/favicon-32.png`、`favicon.svg`、`icon-192/512.png`、`apple-touch-icon.png`、`public/og/og-default.png` | SEO、manifest、页头品牌图、关于区块       |
+| `scripts/generate-og.mjs`       | 手工一次性运行          | `public/og/og-privacy.png`、`og-agreement.png`、`og-changelog.png` | 各页面独立 OG 图（`Seo` 按 `assets.ogImages` 选择） |
 | `src/assets/screenshots/*.jpg`  | Astro + sharp           | `dist/_astro/*.avif`、`*.webp`、原格式多尺寸                         | Hero、轮播、缩略图、灯箱                  |
 | `src/assets/architecture/*.png` | Astro + sharp           | 同上                                                                 | 架构图卡片与灯箱                          |
 | `dist/**`                       | `sync-root.mjs`         | 仓库根同名产物 + `.release-manifest.json`                            | 静态托管平台                              |
@@ -197,6 +208,7 @@ HTML 解析
               ├── initThemeToggle()      三态按钮 + 系统主题监听
               ├── initMobileNav()        <dialog> 抽屉
               ├── initHeader()           滚动状态、当前区块、回到顶部
+              ├── initHeroTilt()         Hero 设备框桌面微倾斜
               ├── initLightbox()         全局灯箱单例
               ├── initCarousel()         截图轮播（失败时兜底第一张）
               ├── initLegalToc()         法律页目录高亮
@@ -228,9 +240,10 @@ HTML 解析
 
 | 路由                 | 源文件                                                            | 输出                            | 说明                                             |
 | -------------------- | ----------------------------------------------------------------- | ------------------------------- | ------------------------------------------------ |
-| `/`                  | `src/pages/index.astro`                                           | `index.html`                    | 首页八个区块 + 三类 JSON-LD                      |
+| `/`                  | `src/pages/index.astro`                                           | `index.html`                    | 9 个组件 + 内联更新区块 + 三类 JSON-LD           |
 | `/privacy.html`      | `src/pages/[slug].astro` + `src/content/legal/privacy.md`         | `privacy.html`                  | 9 个 H2 章节，含目录与打印样式                   |
 | `/agreement.html`    | `src/pages/[slug].astro` + `src/content/legal/agreement.md`       | `agreement.html`                | 7 个 H2 章节                                     |
+| `/changelog.html`    | `src/pages/changelog.astro`                                       | `changelog.html`                | 版本时间线 + WebSite / BreadcrumbList / ItemList |
 | `/404.html`          | `src/pages/404.astro`                                             | `404.html`                      | `noindex`，四个出口                              |
 | `/site.webmanifest`  | `src/pages/site.webmanifest.ts`                                   | `site.webmanifest`              | 静态端点，图标路径固定                           |
 | `/sitemap-index.xml` | `@astrojs/sitemap`                                                | `sitemap-index.xml` + `sitemap-0.xml` | 过滤 `/404`，`changefreq: weekly`          |
@@ -240,16 +253,18 @@ HTML 解析
 ```text
 #top             Hero：品牌、定位、两个 CTA、首张截图、平台标签
 （无 id）         FactBand：44 个本科专业 / 35 个机构 / 22 张界面 / 0 注册
+#download        下载区：上架状态、应用信息 10 项、隐私摘要、更新日志入口
 #intro           应用介绍：4 张卡片
 #features        功能特性：6 张卡片，可跳转到对应截图
 #screenshots     应用截图：22 张 iPhone 13 Pro Max（苍岭绿）轮播 + 缩略图轨 + 灯箱
 #architecture    平台架构：10 张架构图 + 灯箱
 #system          系统与隐私：4 组说明 + 官网隐私声明
+#updates         最近更新：ReleaseTimeline 预览最近 3 条
 #faq             常见问题：6 项（首项默认展开）
 #about           关于我们：开发信息、联系方式、备案信息
 ```
 
-导航由 `src/data/site.ts` 的 `navigation` 与 `legalNavigation` 定义；页头在非首页把 `#anchor` 解析为 `/#anchor`，保证跨页锚点可用。
+导航由 `src/data/site.ts` 的 `navigation`（页内 6 项）、`legalNavigation`（两份法律文档）与 `resourceNavigation`（下载入口、更新日志）定义；页头与页脚在非首页把 `#anchor` 解析为 `/#anchor`，保证跨页锚点可用。
 
 ---
 
@@ -258,7 +273,7 @@ HTML 解析
 ### 7.1 SEO 与结构化数据
 
 - 每页输出 `<title>`、`meta description`、`canonical`、Open Graph、Twitter Card；非首页标题自动追加 `· 园枢`；
-- 首页输出 `WebSite`、`MobileApplication`、`FAQPage` 三类 JSON-LD；法律页输出 `WebSite` + `BreadcrumbList`；
+- 首页输出 `WebSite`、`MobileApplication`、`FAQPage` 三类 JSON-LD；法律页输出 `WebSite` + `BreadcrumbList`；更新日志页输出 `WebSite` + `BreadcrumbList` + `ItemList`；
 - `@astrojs/sitemap` 生成站点地图，`robots.txt` 指向 sitemap；
 - 404 页面输出 `noindex, follow`，并从 sitemap 中排除。
 
@@ -287,11 +302,22 @@ HTML 解析
 
 ### 7.5 性能
 
-- 页面为静态 HTML，CSS 内联策略为 `inlineStylesheets: 'auto'`；
+- 页面为静态 HTML，CSS 内联策略为 `inlineStylesheets: 'always'`（全量内联，消除首屏阻塞请求）；
 - 图片由 `<Picture>` 输出 AVIF/WebP 多宽度，Hero 首图 `eager` + `fetchpriority="high"`，其余 `lazy`；
 - 轮播预加载相邻两张；灯箱预加载下一张；
 - `compressHTML: true`；prefetch 默认 `hover`，按需预取站内链接；
 - 无客户端框架运行时，交互脚本只有一个入口。
+
+### 7.6 上架状态与更新日志
+
+两处「可切换状态」都收敛到数据层，页面组件基本只消费派生结果（例外：`HeroSection` 中一枚「即将上架 App Store」标签为静态文案，上架时需手动同步）：
+
+| 状态源 | 位置 | 派生函数 / 字段 | 影响面 |
+| --- | --- | --- | --- |
+| App Store 上架状态 | `src/data/appStore.ts` | `hasDownloadUrl()`、`isAllowedAppStoreUrl()`、`appAvailability` | 下载区按钮/二维码、Hero 与 FAQ 文案、`apple-itunes-app`、`MobileApplication.offers.availability` |
+| 版本记录 | `src/data/releases.ts` | `getRecentReleases()`、`getLatestReleasedRelease()`、`groupReleaseChanges()`、`releaseAnchor()` | 首页 `#updates`、`/changelog.html`、`appInfo.version/releaseDate`、`ItemList` JSON-LD |
+
+安全约束：只有 `status === 'live'` 且 URL 为 `https://apps.apple.com/...` 时才渲染任何下载外链；未上架时不伪造发布日期与商店地址。
 
 ---
 
@@ -313,7 +339,7 @@ dist/ ────────────────┐
 ```
 
 - 双兼容策略解决「无法从代码侧确认平台输出目录」的问题，避免推送后 404；
-- `.release-manifest.json` 记录 437 个文件，`--check` 按体积与清单比对，CI 与 `verify` 会拦截「改了源码但忘记同步」；
+- `.release-manifest.json` 记录 443 个文件，`--check` 按体积与清单比对，CI 与 `verify` 会拦截「改了源码但忘记同步」；
 - 缓存策略建议：`_astro/*` 长缓存 immutable，HTML 短缓存，图标/OG 一天，manifest/sitemap 一小时（详见 [05](05-run-and-deploy.md)）。
 
 ---
