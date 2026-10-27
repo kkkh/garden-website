@@ -35,6 +35,12 @@ export default defineConfig({
       filter: (page) => !page.includes('/404'),
       changefreq: 'weekly',
       priority: 0.7,
+      // 站点地图必须列出最终 URL：本站 build.format 为 'file'，canonical / og:url 均以 .html 结尾，
+      // 而集成默认会剥掉扩展名（/privacy），两者不一致会让搜索引擎收到相互矛盾的信号。
+      serialize: (item) => ({
+        ...item,
+        url: item.url.endsWith('/') ? item.url : `${item.url}.html`,
+      }),
     }),
   ],
   markdown: {
